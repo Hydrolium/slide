@@ -1,4 +1,4 @@
-import { edit_setting, type SongContext } from './main'
+import type { ModifiedSongData } from "../song_settingt"
 
 interface Editor {
     editor: HTMLInputElement | null
@@ -32,11 +32,6 @@ const element_textEditor: Editor = {
 }
 const element_cancelPopupButton = document.querySelector<HTMLButtonElement>('#cancel-popup')
 const element_savePopupButton = document.querySelector<HTMLButtonElement>('#save-popup')
-
-element_cancelPopupButton?.addEventListener('click', () => {
-    if(element_popupContainer) element_popupContainer.style.display = 'none'
-    if(element_savePopupButton) element_savePopupButton.oncancel = null
-})
 
 const setValue = (target: HTMLInputElement | null, value: string | undefined) => {
     if(target) target.value = value || ""
@@ -83,16 +78,16 @@ const changeShadowColor = (editor: Editor) => {
 })
 
 
-export const openPopup = (context: SongContext, textIdx: number) => {
+export const openEditorPopup = (songData: ModifiedSongData) => {
+    
+    if(!element_popupContainer || !element_titleEditor || !element_textEditor || !element_savePopupButton || !element_cancelPopupButton) return
 
-    if(!element_popupContainer || !element_titleEditor || !element_textEditor || !element_savePopupButton) return
+    setValue(element_titleEditor.editor, songData.title)
+    setValue(element_titleEditor.colorEditor, songData.titleColor)
+    setValue(element_titleEditor.strokeColorEditor, songData.titleStroke)
+    setValue(element_titleEditor.shadowColorEditor, songData.titleShadow.slice(0, -2))
 
-    setValue(element_titleEditor.editor, context.title)
-    setValue(element_titleEditor.colorEditor, context.titleColor)
-    setValue(element_titleEditor.strokeColorEditor, context.titleStroke)
-    setValue(element_titleEditor.shadowColorEditor, context.titleShadow.slice(0, -2))
-
-    const titleOpacity = hexToPercent(context.titleShadow.slice(-2))
+    const titleOpacity = hexToPercent(songData.titleShadow.slice(-2))
     setValue(element_titleEditor.shadowOpacityEditor, titleOpacity)
     setValue(element_titleEditor.shadowOpacityLabelEditor, titleOpacity)
 
@@ -100,12 +95,12 @@ export const openPopup = (context: SongContext, textIdx: number) => {
     changeStrokeColor(element_titleEditor)
     changeShadowColor(element_titleEditor)
 
-    setValue(element_textEditor.editor, context.text)
-    setValue(element_textEditor.colorEditor, context.textColor)
-    setValue(element_textEditor.strokeColorEditor, context.textStroke)
-    setValue(element_textEditor.shadowColorEditor, context.textShadow.slice(0, -2))
+    setValue(element_textEditor.editor, songData.text)
+    setValue(element_textEditor.colorEditor, songData.textColor)
+    setValue(element_textEditor.strokeColorEditor, songData.textStroke)
+    setValue(element_textEditor.shadowColorEditor, songData.textShadow.slice(0, -2))
 
-    const textOpacity = hexToPercent(context.textShadow.slice(-2))
+    const textOpacity = hexToPercent(songData.textShadow.slice(-2))
     setValue(element_textEditor.shadowOpacityEditor, textOpacity)
     setValue(element_textEditor.shadowOpacityLabelEditor, textOpacity)
 
@@ -113,36 +108,41 @@ export const openPopup = (context: SongContext, textIdx: number) => {
     changeStrokeColor(element_textEditor)
     changeShadowColor(element_textEditor)
 
-    if(element_textEditors) element_textEditors.style.backgroundImage = `url(${context.background})`
+    if(element_textEditors) element_textEditors.style.backgroundImage = `url(${songData.background})`
 
     element_popupContainer.style.display = 'block'
 
-    element_savePopupButton.onclick = () => {
-        closePopup(context, textIdx)
-        element_savePopupButton.onclick = null
-    }
-}
+    return new Promise<ModifiedSongData | null>((resolve) => {
+        element_cancelPopupButton.onclick = () => {
+            if(element_popupContainer) element_popupContainer.style.display = 'none'
 
-const closePopup = (context: SongContext, textIdx: number) => {
-    if(!element_popupContainer || !element_titleEditor || !element_textEditor) return
+            element_cancelPopupButton.onclick = null
+            element_savePopupButton.oncancel = null
 
-    element_popupContainer.style.display = 'none'
+            resolve(null)
+        }
+        element_savePopupButton.onclick = () => {
 
-    const newTitle = element_titleEditor.editor?.value || "ERROR"
-    const newText = element_textEditor.editor?.value || "ERROR"
+            element_popupContainer.style.display = 'none'
 
-    edit_setting(
-        context.title,
-        textIdx,
-        {   title: newTitle,
-            text: newText,
-            background: context.background,
-            titleColor: element_titleEditor.colorEditor?.value || context.title,
-            titleStroke: element_titleEditor.strokeColorEditor?.value || context.titleStroke,
-            titleShadow: getShadowColor(element_titleEditor) || context.titleShadow,
-            textColor: element_textEditor.colorEditor?.value || context.text,
-            textStroke: element_textEditor.strokeColorEditor?.value || context.textStroke,
-            textShadow: getShadowColor(element_textEditor) || context.textShadow
-        })
+            element_cancelPopupButton.onclick = null
+            element_savePopupButton.onclick = null
+
+            resolve({
+                id: songData.id, 
+                title: element_titleEditor.editor?.value || "ERROR",
+                text: element_textEditor.editor?.value || "ERROR",
+                textIdx: songData.textIdx,
+                background: songData.background,
+                titleColor: element_titleEditor.colorEditor?.value || songData.title,
+                titleStroke: element_titleEditor.strokeColorEditor?.value || songData.titleStroke,
+                titleShadow: getShadowColor(element_titleEditor) || songData.titleShadow,
+                textColor: element_textEditor.colorEditor?.value || songData.textColor,
+                textStroke: element_textEditor.strokeColorEditor?.value || songData.textStroke,
+                textShadow: getShadowColor(element_textEditor) || songData.textShadow
+            })
+        }
+    })
+
 
 }

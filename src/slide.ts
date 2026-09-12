@@ -1,12 +1,5 @@
-import type { SongContext } from './main'
-
-export const $createDiv = (text: string, ...classes: string[]) => {
-    const element_div: HTMLDivElement = document.createElement('div')
-    element_div.textContent = text
-    element_div.classList.add(...classes)
-
-    return element_div
-}
+import { $createDiv } from "./main"
+import type { SongContext } from "./song_settingt"
 
 export class Slide {
 

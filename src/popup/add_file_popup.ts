@@ -1,16 +1,12 @@
-import { loadFiles } from "./main";
-import { $createDiv } from "./slide";
-import { $create } from "./sort_popup";
+import { $create, $createDiv } from "../main"
 
-const element_filePopupContainer = document.querySelector<HTMLDivElement>("#file-popup-container")
+const element_fileAddPopupContainer = document.querySelector<HTMLDivElement>("#file-adding-popup-container")
 const element_dropFileBox = document.querySelector<HTMLButtonElement>("#drop-file-box")
 
-// const element_fileBox = document.querySelector<HTMLDivElement>("#file-box")
+const element_fileList = document.querySelector<HTMLUListElement>("#added-file-list")
 
-const element_fileList = document.querySelector<HTMLUListElement>("#file-list")
-
-const element_cancelFilePopup = document.querySelector<HTMLButtonElement>("#cancel-file-popup")
-const element_saveFilePopup = document.querySelector<HTMLButtonElement>("#save-file-popup")
+const element_cancelFileAddPopup = document.querySelector<HTMLButtonElement>("#cancel-file-adding-popup")
+const element_saveFileAddPopup = document.querySelector<HTMLButtonElement>("#save-file-adding-popup")
 
 let candidates: File[] = []
 
@@ -65,26 +61,32 @@ const render = () => {
     candidates.forEach(file =>
         element_fileList?.appendChild(
             createFileItem(file.name)))
-
 }
 
-export const openManageFilePopup = () => {
-    if(element_filePopupContainer)
-        element_filePopupContainer.style.display = 'block'
+export const openAddFilePopup = () => {
+    if(element_fileAddPopupContainer)
+        element_fileAddPopupContainer.style.display = 'block'
 
     candidates = []
 
     render()
+
+    return new Promise<File[] | null>((resolve) => {
+        if(element_cancelFileAddPopup && element_saveFileAddPopup) {
+            element_cancelFileAddPopup.onclick = () => {
+                closePopup()
+                resolve(null)
+            }
+            element_saveFileAddPopup.onclick = () => {
+                closePopup()
+
+                resolve(candidates)
+            }
+        }
+    })    
 }
 
-element_cancelFilePopup?.addEventListener('click', () => {
-    if(element_filePopupContainer)
-        element_filePopupContainer.style.display = 'none'
-})
-
-element_saveFilePopup?.addEventListener('click', () => {
-    loadFiles(candidates)
-
-    if(element_filePopupContainer)
-        element_filePopupContainer.style.display = 'none'
-})
+const closePopup = () => {
+    if(element_fileAddPopupContainer)
+        element_fileAddPopupContainer.style.display = 'none'
+}

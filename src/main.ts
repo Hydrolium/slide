@@ -1,61 +1,39 @@
-import JSZip from 'jszip'
-import { openPopup } from './popup_editor'
+import { openEditorPopup } from './popup/editor_popup'
 import { Slide } from './slide'
 import './style/slide_style.css'
 import './style/style.css'
-import { openSortPopup } from './sort_popup'
-import { openManageFilePopup } from './manage_file_popup'
-import { openSettingPopup } from './setting_popup'
+import { openSortPopup } from './popup/sort_popup'
+import { openAddFilePopup } from './popup/add_file_popup'
+import { openSettingPopup } from './popup/setting_popup'
+import { songSetting, type SongContext } from './song_settingt'
+import { openManageFilePopup } from './popup/manage_file'
 
-export interface SongContext {
-  readonly title: string
-  readonly text: string
-  readonly background: string
-  readonly titleColor: string
-  readonly titleStroke: string
-  readonly titleShadow: string
-  readonly textColor: string
-  readonly textStroke: string
-  readonly textShadow: string
+export const $createDiv = (text: string, ...classes: string[]) => {
+    const element_div: HTMLDivElement = document.createElement('div')
+    element_div.textContent = text
+    element_div.classList.add(...classes)
+
+    return element_div
 }
 
-interface SongInfo {
-  readonly texts: string[]
-  readonly background: string
-  readonly titleColor: string
-  readonly titleStroke: string
-  readonly titleShadow: string
-  readonly textColor: string
-  readonly textStroke: string
-  readonly textShadow: string
-}
+export const $create = (tag: string, ...classes: string[]) => {
+    const element_div = document.createElement(tag)
+    element_div.classList.add(...classes)
 
-interface SongInfoJSONFormat extends SongInfo {
-  readonly title: string
-}
-
-interface SongSetting {
-  songs: Record<string, SongInfo>
-  order: string[]
-  currentSong: string
-  currentTextIndex: number
-}
-
-export interface ImageInfo {
-  readonly file: File
-  url: string
+    return element_div
 }
 
 let slideShowWindow: Window | null = null;
 
 const element_slideBox = document.querySelector<HTMLUListElement>("#slide-box")
 
-const element_manageImages = document.querySelector<HTMLButtonElement>("#manage-imges")
+const element_addFilesButton = document.querySelector<HTMLButtonElement>("#add-files")
+const element_manageFilesButton = document.querySelector<HTMLButtonElement>("#manage-files")
 const element_resortButton = document.querySelector<HTMLButtonElement>("#resort-slides")
-const element_resetButton = document.querySelector<HTMLButtonElement>("#reset-slides")
 const element_openButton = document.querySelector<HTMLButtonElement>("#open_viewer")
 const element_exportButton = document.querySelector<HTMLButtonElement>("#export-slides")
-const elmeent_editSetting = document.querySelector<HTMLButtonElement>("#edit-setting")
+const elmeent_editSettingButton = document.querySelector<HTMLButtonElement>("#edit-setting")
+
 
 const sendToPopup = (data: any) => {
   if (slideShowWindow && !slideShowWindow.closed) {
@@ -69,160 +47,48 @@ const openShow = () => {
   slideShowWindow = window.open('slide_show.html', 'MyPopup', 'width=500,height=600')
 }
 
-let imgUrls: Record<string, ImageInfo> = {}
-let songSetting: SongSetting = {songs: {}, order: [], currentSong: "", currentTextIndex: -1}
-
 let titleFontSize = '90'
 let textFontSize = '80'
-
-const check = () => {
-
-  if(songSetting.order.length === 0) return false
-  if(songSetting.currentSong === "" || !songSetting.songs[songSetting.currentSong]) {
-    songSetting.currentSong = songSetting.order[0]
-    songSetting.currentTextIndex = 0
-  }
-
-  return true
-}
-
-const getContext = () => {
-  const song = songSetting.songs[songSetting.currentSong]
-
-  return {
-    ...song,
-    title: songSetting.currentSong,
-    text: song.texts[songSetting.currentTextIndex],
-    background: song.background
-  }
-}
-
-const previous: () => SongContext | undefined = () => {
-
-  if(!check()) return
-  
-  songSetting.currentTextIndex--;
-
-  if(songSetting.currentTextIndex < 0 ) {
-    const songIdx = songSetting.order.indexOf(songSetting.currentSong) - 1
-
-    if(songIdx < 0) {
-      songSetting.currentTextIndex = 0
-      return
-    }
-
-    const songTitle = songSetting.order[songIdx]
-
-    songSetting.currentSong = songTitle
-    songSetting.currentTextIndex = songSetting.songs[songTitle].texts.length - 1
-  }
-
-  updateSong()
-  return getContext()
-}
-
-const next: () => SongContext | undefined = () => {
-
-  if(!check()) return
-  
-  const song = songSetting.songs[songSetting.currentSong]
-
-  songSetting.currentTextIndex++;
-
-  if(songSetting.currentTextIndex >= song.texts.length) {
-    const songIdx = songSetting.order.indexOf(songSetting.currentSong) + 1
-
-    if(songIdx >= songSetting.order.length) {
-      songSetting.currentTextIndex = song.texts.length -1
-      return
-    }
-
-    songSetting.currentSong = songSetting.order[songIdx]
-    songSetting.currentTextIndex = 0
-  }
-
-
-  updateSong()
-  return getContext()
-}
-
-export const resort_order = (titles: string[]) => {
-  
-  const nts = new Set(titles)
-
-  songSetting.order.forEach(t => {
-    if(!nts.has(t)) {
-      delete songSetting.songs[t]
-    }
-  })
-
-  songSetting.order = [...titles]
-
-  updateSong()
-
-}
-
-export const edit_setting = (originalTitle: string, targetTextIdx: number, newContext: SongContext) => {
-  
-  if(!songSetting.songs[originalTitle]) return
-
-  const originalBackground = songSetting.songs[originalTitle].background
-  const originalTexts = [...songSetting.songs[originalTitle].texts]
-  originalTexts[targetTextIdx] = newContext.text
-
-  if(originalTitle !== newContext.title) {
-    delete songSetting.songs[originalTitle]
-
-    songSetting.order.splice(
-      songSetting.order.indexOf(originalTitle), 1, newContext.title
-    )    
-  }
-
-  songSetting.songs[newContext.title] = {...newContext, texts: originalTexts, background: originalBackground}
-
-  updateSong()
-  
-}
 
 const updateSong = () => {
 
   element_slideBox?.replaceChildren()
 
-  if(!check()) {
+  if(songSetting.isEmpty()) {
     sendToPopup({type: "CLOSE"})
     return
   }
 
-  songSetting.order.forEach(title => {
+  songSetting.order.forEach(id => {
 
     const created_slide_li = document.createElement('li')
     created_slide_li.classList.add("slide-li")
 
-    const song = songSetting.songs[title]
+    const song = songSetting.getSongWithId(id)
 
     song.texts.forEach((text, idx) => {
 
       const context: SongContext = {
           ...song,
-          title: title,
           text: text,
-          background: imgUrls[song.background]?.url
+          background: songSetting.imgUrls[song.background]?.url
         }
 
-      const slide = new Slide(context, title == songSetting.currentSong && idx == songSetting.currentTextIndex).render()
+      const slide = new Slide(context, id === songSetting.currentSongId && idx === songSetting.currentTextIndex).render()
 
       slide.addEventListener("click", () => {
-
-        songSetting.currentSong = title
-        songSetting.currentTextIndex = idx
-        sendToPopup({type: 'CHANGE', context: context})
+        songSetting.goto(id, idx)
         updateSong()
       })
 
-      slide.addEventListener("contextmenu", (event: MouseEvent) => {
+      slide.addEventListener("contextmenu", async (event: MouseEvent) => {
         event.preventDefault()
 
-        openPopup(context, idx)
+        const result = await openEditorPopup({...context, id: id, textIdx: idx})
+
+        if(result) songSetting.modifySong(result)
+
+        updateSong()
       })
 
       created_slide_li.appendChild(slide)
@@ -233,76 +99,45 @@ const updateSong = () => {
 
   })
 
-  sendToPopup({type: 'CHANGE', context: getContext()})
+  sendToPopup({type: 'CHANGE', context: songSetting.currentContext})
 }
 
-export const loadFiles = (files: File[]) => {
-  
-  if (!files || files.length === 0) return
-
-
-  const jsonFiles: Promise<string>[] = []
-
-  for(const file of files) { 
-
-    if(file.type.includes('json')) {
-      jsonFiles.push(file.text())
-    }
-    else if (file.type.startsWith('image/')) {
-      
-      if(file.name in imgUrls) URL.revokeObjectURL(imgUrls[file.name].url)
-
-      imgUrls[file.name] = {file: file, url: URL.createObjectURL(file)}
-
-    }
-  }
-
-  Promise.all(jsonFiles).then(jsons => {
-    jsons.forEach(json => {
-      const parsed = JSON.parse(json)
-
-      const parseSong = (p: SongInfoJSONFormat) => {
-        if(!songSetting.songs[p.title]) songSetting.order.push(p.title)
-        songSetting.songs[p.title] = p
-      }
-
-      if(Array.isArray(parsed)) parsed.forEach(v => parseSong(v))
-      else parseSong(parsed)
-      
-    })
-
-    sendToPopup({type: 'UPDATE_BACKGROUND', data: imgUrls})
-    updateSong()
-  })
-}
-
-export const resizeTitle = (pixel: string) => {
+const resizeTitle = (pixel: string) => {
   titleFontSize = pixel
   sendToPopup({type: "RESIZE_TITLE", data: pixel})
 }
 
-export const resizeText = (pixel: string) => {
+const resizeText = (pixel: string) => {
   textFontSize = pixel
   sendToPopup({type: "RESIZE_TEXT", data: pixel})
 }
 
-element_manageImages?.addEventListener('click', () => {
-  openManageFilePopup()
+element_addFilesButton?.addEventListener('click', async () => {
+  const result = await openAddFilePopup()
+  if(result) await songSetting.loadFiles(result)
+
+  sendToPopup({type: 'UPDATE_BACKGROUND', data: songSetting.imgUrls})
+
+  updateSong()
 })
 
-element_resortButton?.addEventListener('click', () => {
-  openSortPopup(songSetting.order)
-})
-
-element_resetButton?.addEventListener('click', () => {
-
-  if(!confirm('모든 슬라이드를 삭제하시겠습니까?')) return
-  Object.values(imgUrls).forEach(({url}) => {
-    URL.revokeObjectURL(url)
+element_manageFilesButton?.addEventListener('click', async () => {
+  
+  const aboutJsonFile: Record<string, string> = {}
+  Object.entries(songSetting.jsonFiles).forEach(([fileName, data]) => {
+    aboutJsonFile[fileName] = `${data.map(d => d.title).join(', ')}`
   })
+  
+  const result = await openManageFilePopup(aboutJsonFile, songSetting.imgUrls)
+  if(result) songSetting.manageFile(Object.keys(result.jsonCandidates), Object.keys(result.imgCandidates));
 
-  imgUrls = {}
-  songSetting = {songs: {}, order: [], currentSong: "", currentTextIndex: -1}
+  updateSong()
+})
+
+element_resortButton?.addEventListener('click', async () => {
+  
+  const result = await openSortPopup(songSetting.order, songSetting.songs)
+  if(result) songSetting.resortOrder(result)
 
   updateSong()
 })
@@ -312,24 +147,8 @@ element_openButton?.addEventListener('click', () => {
 })
 
 element_exportButton?.addEventListener('click', async () => {
-  const export_list: SongInfoJSONFormat[] = []
-  songSetting.order.forEach(title => {
-    const info = songSetting.songs[title]
 
-    export_list.push({title: title, ...info})
-  })
-
-  const zip = new JSZip()
-
-  const jsonString = JSON.stringify(export_list, null, 2)
-  zip.file('data.json', jsonString)
-
-  Object.values(imgUrls).forEach(({file}) => {
-    zip.file(file.name, file)
-  })
-
-  const zipBlob = await zip.generateAsync({type: 'blob'})
-  const downloadUrl = URL.createObjectURL(zipBlob)
+  const downloadUrl = await songSetting.getExportLink()
 
   const link = document.createElement('a')
   link.href = downloadUrl
@@ -342,18 +161,21 @@ element_exportButton?.addEventListener('click', async () => {
 
 })
 
-elmeent_editSetting?.addEventListener('click', () =>
-  openSettingPopup(titleFontSize, textFontSize)
+elmeent_editSettingButton?.addEventListener('click', () =>
+  openSettingPopup(titleFontSize, textFontSize, resizeTitle, resizeText)
 )
 
 window.addEventListener('keydown', (event: KeyboardEvent) => {
+  if(event.target instanceof HTMLElement && ['INPUT', 'TEXTAREA'].includes(event.target.tagName)) return
 
   switch(event.key) {
     case "ArrowLeft":
-      previous()
+      songSetting.previous()
+      updateSong()
       break
     case "ArrowRight":
-      next()
+      songSetting.next()
+      updateSong()
       break
   }
 })
@@ -361,24 +183,22 @@ window.addEventListener('keydown', (event: KeyboardEvent) => {
 window.addEventListener('message', (event: MessageEvent) => {
   if (event.origin !== window.location.origin) return;
 
-  let context
   switch(event.data) {
     case "REQUEST_PREVIOUS":
-      context = previous()
-      if(context) sendToPopup({type: 'CHANGE', context: context})
+      songSetting.previous()
+      updateSong()
       break
     case "REQUEST_NEXT":
-      context = next()
-      if(context) sendToPopup({type: 'CHANGE', context: context})
+      songSetting.next()
+      updateSong()
       break
     case "REQUEST_INITIALIZATION":
-      sendToPopup({type: 'UPDATE_BACKGROUND', data: imgUrls})
+      sendToPopup({type: 'UPDATE_BACKGROUND', data: songSetting.imgUrls})
 
-      if(!check()) return
+      if(songSetting.isEmpty()) return
 
-      sendToPopup({type: 'CHANGE', context: getContext() })
+      sendToPopup({type: 'CHANGE', context: songSetting.currentContext })
       break
   }
 
-  
 });

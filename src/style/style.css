@@ -100,9 +100,6 @@
 
         background-color: #0000;
 
-        /* border: 1.5px solid #e2e8f0;
-        border-radius: 10px; */
-
         border: none;
 
         outline: none;
@@ -134,7 +131,6 @@
 
         .color-editor {
           display: flex;
-          /* flex-direction: column; */
           align-items: center;
           gap: 5px;
 
@@ -152,6 +148,11 @@
           }
         }
       }
+
+    .tip {
+      color: #555;
+      user-select: none;
+    }
 
     .popup-button-box {
 
@@ -295,8 +296,6 @@
       color: #333;
       font-size: 20px;
 
-      margin-bottom: 20px;
-
       &.dragover {
         background-color: #ffffff;
         border-color: #d83a27;
@@ -311,19 +310,23 @@
       
       gap: 10px;
 
-      margin-bottom: 20px;
+      max-height: 400px;
+      overflow-y: auto;
 
       user-select: none;
 
       .file-item {
 
-        display: flex;
+        display: grid;
         justify-content: flex-start;
         align-items: center;
-
+        grid-template-columns: 30px auto 1fr;
+        flex-shrink: 0;
+        
         cursor: pointer;
 
-        height: 30px;
+        min-height: 30px;
+        
         gap: 15px;
 
         border: none;
@@ -363,11 +366,15 @@
           }
         }
 
-        .remove-file-button:hover + .file-item-text {
+        .remove-file-button:hover ~ div {
           color: #b91c1c;
         }
 
-        .file-item-text {
+        .file-item-img {
+          height: 30px;
+        }
+
+        .file-item-text, .file-item-detail {
           display: flex;
           justify-content: flex-start;
           align-items: center;
@@ -376,6 +383,11 @@
           font-size: 15px;
 
           transition: all 0.2s ease;
+        }
+
+        .file-item-detail {
+          align-items: flex-start;
+          min-width: 0;
         }
       }
     }
@@ -418,17 +430,15 @@
 
   position: fixed;
   bottom: 10px;
+  right: 10px;
 
-  width: 100vw;
-  height: 100px;
-
-  padding: 0 20px;
   display: flex;
   align-items: flex-end;
   justify-content: flex-end;
   gap: 5px;
 
   z-index: 3;
+
 
   .menu-button {
     display: flex;
@@ -455,6 +465,9 @@
       background-color: #f1f3f5;
       color: #495057;
 
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
+
+
       transition: all .2s ease;
 
       & + div {
@@ -465,6 +478,12 @@
         background-color: #fff;
 
         transition: all .2s ease;
+
+        user-select: none;
+      }
+
+      svg {
+        transition: all .2s ease;
       }
 
       &:hover {
@@ -474,6 +493,10 @@
 
         & + div {
           color: #d83a27;
+        }
+
+        svg {
+          transform: rotate(10deg);
         }
       }
 
