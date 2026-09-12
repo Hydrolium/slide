@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  base: '/Hydrolium/',
+  base: '/slide/',
   build: {
     rollupOptions: {
       input: {
