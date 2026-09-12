@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Slide!</title>
+    <script type="module" crossorigin src="/assets/main-AsJjjE9m.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/main-uC6iEiSv.css">
+  </head>
+  <body>
+
+
+    <div class="app">
+
+      <ul id="slide-box"></ul>
+
+      <div id="popup-container" class="popup-container" >
+        <div class="popup">
+          
+          <div class="title-editor-box">
+
+            <div class="color-editors">
+              <div class="color-editor">
+                <div class="color-editor-label">제목 색상</div>
+                <input type="color" id="title-color-editor" value="#000000"></input>
+              </div>
+              <div class="color-editor">
+                <div class="color-editor-label">윤곽선 색상</div>
+                <input type="color" id="title-stroke-color-editor" value="#000000"></input>
+              </div>
+              <div class="color-editor">
+                <div class="color-editor-label">그림자 색상</div>
+                <input type="color" id="title-shadow-color-editor" value="#000000"></input>
+              </div>
+              <div class="color-editor">
+                <div class="color-editor-label">그림자 투명도</div>
+                <input type="range" id="title-shadow-opacity-editor" min="0" max="100" step="1" value="0"></input>
+                <input type="number" id="title-shadow-opacity-label-editor" min="0" max="100" step="1" value="0"></input>
+              </div>
+            </div>
+
+          </div>
+          <div class="text-editors" id="text-editors">
+            <input type="text" id="title-editor" class="title-editor"></input>
+            <textarea rows="4" cols="10" id="text-editor" class="text-editor"></textarea>
+          </div>
+
+          <div class="text-editor-box">
+          
+            <div class="color-editors">
+              <div class="color-editor">
+                <div class="color-editor-label">가사 색상</div>
+                <input type="color" id="text-color-editor" value="#000000"></input>
+              </div>
+              <div class="color-editor">
+                <div class="color-editor-label">윤곽선 색상</div>
+                <input type="color" id="text-stroke-color-editor" value="#000000"></input>
+              </div>
+              <div class="color-editor">
+                <div class="color-editor-label">그림자 색상</div>
+                <input type="color" id="text-shadow-color-editor" value="#000000"></input>
+              </div>
+              <div class="color-editor">
+                <div class="color-editor-label">그림자 투명도</div>
+                <input type="range" id="text-shadow-opacity-editor" min="0" max="100" step="1" value="0"></input>
+                <input type="number" id="text-shadow-opacity-label-editor" min="0" max="100" step="1" value="0"></input>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="popup-button-box">
+            <button id="cancel-popup" class="cancel-popup">취소</button>
+            <button id="save-popup" class="save-popup">저장</button>
+          </div>
+
+        </div>
+      </div>
+
+      <div id="sort-popup-container" class="popup-container">
+        <div class="popup">
+          
+          <ul id="sort-slide-box" class="sort-slide-box">
+          </ul>
+
+          <div class="popup-button-box">
+            <button id="cancel-sort-popup" class="cancel-popup">취소</button>
+            <button id="save-sort-popup" class="save-popup">저장</button>
+          </div>
+
+        </div>
+      </div>
+
+      <div id="file-adding-popup-container" class="popup-container">
+        <div class="popup">
+          
+          <div id="drop-file-box" class="drop-file-box">
+            <div class="drop-file-text">파일을 드래그하여 추가하세요.</div>
+          </div>
+
+          <ul id="added-file-list" class="file-list">
+          </ul>
+
+          <div class="popup-button-box">
+            <button id="cancel-file-adding-popup" class="cancel-popup">취소</button>
+            <button id="save-file-adding-popup" class="save-popup">저장</button>
+          </div>
+
+        </div>
+      </div>
+
+      <div id="edit-setting-popup-container" class="popup-container">
+        <div class="popup">
+          
+          <ul class="setting-list">
+            <li class="setting-item">
+              <div class="setting-label">타이틀 크기</div>
+              <input type="number" id="title-size" class="setting-input" value="32"></input>
+            </li>
+            <li class="setting-item">
+              <div class="setting-label">본문 크기</div>
+              <input type="number" id="text-size" class="setting-input" value="24"></input>
+            </li>
+          </ul>
+
+          <div class="popup-button-box">
+            <button id="close-setting-popup" class="cancel-popup">닫기</button>
+          </div>
+
+        </div>
+      </div>
+      
+      <div id="file-manage-popup-container" class="popup-container">
+        <div class="popup">
+          
+          <ul id="existing-file-list" class="file-list"></ul>
+
+          <div class="tip">*저장 시 모든 변경사항이 초기화됩니다. 변경 내용은 [내보내기]로 저장하세요.</div>
+
+          <div class="popup-button-box">
+            <button id="cancel-file-manage-popup" class="cancel-popup">취소</button>
+            <button id="save-file-manage-popup" class="save-popup">저장</button>
+          </div>
+
+        </div>
+      </div>
+      <div class="footer">
+
+        <div class="menu-button">
+          <button id="add-files">
+          <svg width="40px" height="40px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H12M13 3L19 9M13 3V7.4C13 7.96005 13 8.24008 13.109 8.45399C13.2049 8.64215 13.3578 8.79513 13.546 8.89101C13.7599 9 14.0399 9 14.6 9H19M19 9V12M17 19H21M19 17V21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div>파일추가</div>
+        </div>
+
+        <div class="menu-button">
+          <button id="manage-files">
+          <svg width="40px" height="40px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H10M13 3L19 9M13 3V7.4C13 7.96005 13 8.24008 13.109 8.45399C13.2049 8.64215 13.3578 8.79513 13.546 8.89101C13.7599 9 14.0399 9 14.6 9H19M19 9V10M14 21L16.025 20.595C16.2015 20.5597 16.2898 20.542 16.3721 20.5097C16.4452 20.4811 16.5147 20.4439 16.579 20.399C16.6516 20.3484 16.7152 20.2848 16.8426 20.1574L21 16C21.5523 15.4477 21.5523 14.5523 21 14C20.4477 13.4477 19.5523 13.4477 19 14L14.8426 18.1574C14.7152 18.2848 14.6516 18.3484 14.601 18.421C14.5561 18.4853 14.5189 18.5548 14.4903 18.6279C14.458 18.7102 14.4403 18.7985 14.405 18.975L14 21Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div>파일관리</div>
+        </div>
+
+        <div class="menu-button">
+          <button id="resort-slides">
+            <svg width="45px" height="45px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 18L16 6M16 6L20 10.125M16 6L12 10.125" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6L8 18M8 18L12 13.875M8 18L4 13.875" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>     
+          </button>
+          <div>순서수정</div>
+        </div>
+
+        <div class="menu-button">
+          <button id="export-slides">
+            <svg width="40px" height="40px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M15 17H21M21 17L19 19M21 17L19 15M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H15M13 3L19 9M13 3V7.4C13 7.96005 13 8.24008 13.109 8.45399C13.2049 8.64215 13.3578 8.79513 13.546 8.89101C13.7599 9 14.0399 9 14.6 9H19M19 9V11.0228" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+          </button>
+          <div>내보내기</div>
+        </div>
+
+        <div class="menu-button">
+          <button id="open_viewer">
+            <svg width="34px" height="34px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M23 4C23 2.34315 21.6569 1 20 1H16C15.4477 1 15 1.44772 15 2C15 2.55228 15.4477 3 16 3H20C20.5523 3 21 3.44772 21 4V8C21 8.55228 21.4477 9 22 9C22.5523 9 23 8.55228 23 8V4Z" fill="currentColor"/><path d="M23 16C23 15.4477 22.5523 15 22 15C21.4477 15 21 15.4477 21 16V20C21 20.5523 20.5523 21 20 21H16C15.4477 21 15 21.4477 15 22C15 22.5523 15.4477 23 16 23H20C21.6569 23 23 21.6569 23 20V16Z" fill="currentColor"/><path d="M4 21H8C8.55228 21 9 21.4477 9 22C9 22.5523 8.55228 23 8 23H4C2.34315 23 1 21.6569 1 20V16C1 15.4477 1.44772 15 2 15C2.55228 15 3 15.4477 3 16V20C3 20.5523 3.44772 21 4 21Z" fill="currentColor"/><path d="M1 8C1 8.55228 1.44772 9 2 9C2.55228 9 3 8.55228 3 8L3 4C3 3.44772 3.44772 3 4 3H8C8.55228 3 9 2.55228 9 2C9 1.44772 8.55228 1 8 1H4C2.34315 1 1 2.34315 1 4V8Z" fill="currentColor"/></svg>
+          </button>
+          <div>전체화면</div>
+        </div>
+
+        <div class="menu-button">
+          <button id="edit-setting">
+            <svg width="40px" height="40px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="currentColor" stroke-width="1.6" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12.8799V11.1199C2 10.0799 2.85 9.21994 3.9 9.21994C5.71 9.21994 6.45 7.93994 5.54 6.36994C5.02 5.46994 5.33 4.29994 6.24 3.77994L7.97 2.78994C8.76 2.31994 9.78 2.59994 10.25 3.38994L10.36 3.57994C11.26 5.14994 12.74 5.14994 13.65 3.57994L13.76 3.38994C14.23 2.59994 15.25 2.31994 16.04 2.78994L17.77 3.77994C18.68 4.29994 18.99 5.46994 18.47 6.36994C17.56 7.93994 18.3 9.21994 20.11 9.21994C21.15 9.21994 22.01 10.0699 22.01 11.1199V12.8799C22.01 13.9199 21.16 14.7799 20.11 14.7799C18.3 14.7799 17.56 16.0599 18.47 17.6299C18.99 18.5399 18.68 19.6999 17.77 20.2199L16.04 21.2099C15.25 21.6799 14.23 21.3999 13.76 20.6099L13.65 20.4199C12.75 18.8499 11.27 18.8499 10.36 20.4199L10.25 20.6099C9.78 21.3999 8.76 21.6799 7.97 21.2099L6.24 20.2199C5.33 19.6999 5.02 18.5299 5.54 17.6299C6.45 16.0599 5.71 14.7799 3.9 14.7799C2.85 14.7799 2 13.9199 2 12.8799Z" stroke="currentColor" stroke-width="1.6" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div>설정변경</div>
+        </div>
+
+
+      </div>
+    </div>
+  </body>
+</html>
