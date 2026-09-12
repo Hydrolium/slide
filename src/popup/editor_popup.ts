@@ -37,8 +37,8 @@ const setValue = (target: HTMLInputElement | null, value: string | undefined) =>
     if(target) target.value = value || ""
 }
 
-const percentToHex = (percent: string = '1') => Math.round((100 - Number(percent)) * 2.55).toString(16).padStart(2, '0')
-const hexToPercent = (hex: string) => `${Math.round(100 - parseInt(hex, 16) / 255 * 100)}`
+const percentToHex = (percent: string = '1') => Math.round(((100 - Number(percent)) / 100 ) * 255).toString(16).padStart(2, '0')
+const hexToPercent = (hex: string) => `${Math.round(100 - (parseInt(hex, 16) / 255) * 100)}`
 
 const changeColor = (editor: Editor) => {
     if(editor.editor) editor.editor.style.color = editor.colorEditor?.value || ''
@@ -85,11 +85,32 @@ export const openEditorPopup = (songData: ModifiedSongData) => {
     setValue(element_titleEditor.editor, songData.title)
     setValue(element_titleEditor.colorEditor, songData.titleColor)
     setValue(element_titleEditor.strokeColorEditor, songData.titleStroke)
-    setValue(element_titleEditor.shadowColorEditor, songData.titleShadow.slice(0, -2))
 
-    const titleOpacity = hexToPercent(songData.titleShadow.slice(-2))
-    setValue(element_titleEditor.shadowOpacityEditor, titleOpacity)
-    setValue(element_titleEditor.shadowOpacityLabelEditor, titleOpacity)
+    let titleShadowColor
+    let titleShadowOpacity
+
+    if(!songData.titleShadow.startsWith('#')) {
+        titleShadowColor = '#000'
+        titleShadowOpacity = '100'
+    } else if(songData.titleShadow.length === 9) { // # ff ff ff ff
+        titleShadowColor = songData.titleShadow.slice(0, -2)
+        titleShadowOpacity = hexToPercent(songData.titleShadow.slice(-2))
+
+        // console.log(titleShadowOpacity, hexToPercent(songData.titleShadow.slice(-2)), songData.titleShadow.slice(-2), songData.titleShadow)
+    } else if(songData.titleShadow.length === 7) { // # ff ff ff
+        titleShadowColor = songData.titleShadow
+        titleShadowOpacity = '0'
+    } else if(songData.titleShadow.length === 5) { // # f f f f
+        titleShadowColor = '#' + Array.from(songData.titleShadow.slice(1, -1)).map(v => v.repeat(2)).join()
+        titleShadowOpacity = hexToPercent(songData.titleShadow[4].repeat(2))
+    } else if(songData.titleShadow.length === 4) { // # f f f
+        titleShadowColor = '#' + Array.from(songData.titleShadow.slice(1)).map(v => v.repeat(2)).join()
+        titleShadowOpacity = '0'
+    }
+    setValue(element_titleEditor.shadowColorEditor, titleShadowColor)
+
+    setValue(element_titleEditor.shadowOpacityEditor, titleShadowOpacity)
+    setValue(element_titleEditor.shadowOpacityLabelEditor, titleShadowOpacity)
 
     changeColor(element_titleEditor)
     changeStrokeColor(element_titleEditor)
