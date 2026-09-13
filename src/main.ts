@@ -1,12 +1,13 @@
-import { openEditorPopup } from './popup/editor_popup'
 import { Slide } from './slide'
 import './style/slide_style.css'
 import './style/style.css'
-import { openSortPopup } from './popup/sort_popup'
-import { openAddFilePopup } from './popup/add_file_popup'
-import { openSettingPopup } from './popup/setting_popup'
+import { SlideSorterPopup } from './popup/sort_popup'
 import { songSetting, type SongContext } from './song_settingt'
-import { openManageFilePopup } from './popup/manage_file'
+import { FileManagerPopup } from './popup/manage_file'
+import { addFooterButton } from './footer'
+import { FileAdderPopup } from './popup/add_file_popup'
+import { SettingEditorPopup } from './popup/setting_popup'
+import { EditorPopup } from './popup/editor_popup'
 
 export const $createDiv = (text: string, ...classes: string[]) => {
     const element_div: HTMLDivElement = document.createElement('div')
@@ -16,24 +17,16 @@ export const $createDiv = (text: string, ...classes: string[]) => {
     return element_div
 }
 
-export const $create = (tag: string, ...classes: string[]) => {
-    const element_div = document.createElement(tag)
-    element_div.classList.add(...classes)
+export const $create = <K extends keyof HTMLElementTagNameMap>(tag: K, ...classes: string[]): HTMLElementTagNameMap[K] => {
+    const created = document.createElement(tag)
+    if(classes.length > 0) created.classList.add(...classes)
 
-    return element_div
+    return created
 }
 
 let slideShowWindow: Window | null = null;
 
 const element_slideBox = document.querySelector<HTMLUListElement>("#slide-box")
-
-const element_addFilesButton = document.querySelector<HTMLButtonElement>("#add-files")
-const element_manageFilesButton = document.querySelector<HTMLButtonElement>("#manage-files")
-const element_resortButton = document.querySelector<HTMLButtonElement>("#resort-slides")
-const element_openButton = document.querySelector<HTMLButtonElement>("#open_viewer")
-const element_exportButton = document.querySelector<HTMLButtonElement>("#export-slides")
-const elmeent_editSettingButton = document.querySelector<HTMLButtonElement>("#edit-setting")
-
 
 const sendToPopup = (data: any) => {
   if (slideShowWindow && !slideShowWindow.closed) {
@@ -84,7 +77,7 @@ const updateSong = () => {
       slide.addEventListener("contextmenu", async (event: MouseEvent) => {
         event.preventDefault()
 
-        const result = await openEditorPopup({...context, id: id, textIdx: idx})
+        const result = await new EditorPopup({...context, id: id, textIdx: idx}).run()
 
         if(result) songSetting.modifySong(result)
 
@@ -112,58 +105,63 @@ const resizeText = (pixel: string) => {
   sendToPopup({type: "RESIZE_TEXT", data: pixel})
 }
 
-element_addFilesButton?.addEventListener('click', async () => {
-  const result = await openAddFilePopup()
-  if(result) await songSetting.loadFiles(result)
+addFooterButton('파일추가', 'imgs/footer_icons/add_file.svg',
+  async () => {
+    const result = await new FileAdderPopup().run()
+    if(result) await songSetting.loadFiles(result)
 
-  sendToPopup({type: 'UPDATE_BACKGROUND', data: songSetting.imgUrls})
+    sendToPopup({type: 'UPDATE_BACKGROUND', data: songSetting.imgUrls})
 
-  updateSong()
-})
-
-element_manageFilesButton?.addEventListener('click', async () => {
-  
-  const aboutJsonFile: Record<string, string> = {}
-  Object.entries(songSetting.jsonFiles).forEach(([fileName, data]) => {
-    aboutJsonFile[fileName] = `${data.map(d => d.title).join(', ')}`
+    updateSong()
   })
+
+addFooterButton('파일관리', 'imgs/footer_icons/manage_file.svg',
+  async () => {
+    const aboutJsonFile: Record<string, string> = {}
+    Object.entries(songSetting.jsonFiles).forEach(([fileName, data]) => {
+      aboutJsonFile[fileName] = `${data.map(d => d.title).join(', ')}`
+    })
+    
+    const result = await new FileManagerPopup(aboutJsonFile, songSetting.imgUrls).run()
+    if(result) songSetting.manageFile(Object.keys(result.jsonCandidates), Object.keys(result.imgCandidates));
+
+    updateSong()
+  })
+
+addFooterButton('순서수정', 'imgs/footer_icons/resort_slides.svg', 
+  async () => {
   
-  const result = await openManageFilePopup(aboutJsonFile, songSetting.imgUrls)
-  if(result) songSetting.manageFile(Object.keys(result.jsonCandidates), Object.keys(result.imgCandidates));
+    const result = await new SlideSorterPopup(songSetting.order, songSetting.songs).run()
+    if(result) songSetting.resortOrder(result)
 
-  updateSong()
+    updateSong()
 })
 
-element_resortButton?.addEventListener('click', async () => {
-  
-  const result = await openSortPopup(songSetting.order, songSetting.songs)
-  if(result) songSetting.resortOrder(result)
+addFooterButton('내보내기', 'imgs/footer_icons/export_slides.svg',
+  async () => {
 
-  updateSong()
-})
+    const downloadUrl = await songSetting.getExportLink()
 
-element_openButton?.addEventListener('click', () => {
-  openShow()
-})
+    const link = document.createElement('a')
+    link.href = downloadUrl
+    link.download = 'settings'
+    document.body.appendChild(link)
+    link.click()
 
-element_exportButton?.addEventListener('click', async () => {
+    document.body.removeChild(link)
+    URL.revokeObjectURL(downloadUrl)
 
-  const downloadUrl = await songSetting.getExportLink()
+  })
 
-  const link = document.createElement('a')
-  link.href = downloadUrl
-  link.download = 'settings'
-  document.body.appendChild(link)
-  link.click()
+addFooterButton('전체화면', 'imgs/footer_icons/open_viewer.svg',
+  () => {
+    openShow()
+  })
 
-  document.body.removeChild(link)
-  URL.revokeObjectURL(downloadUrl)
-
-})
-
-elmeent_editSettingButton?.addEventListener('click', () =>
-  openSettingPopup(titleFontSize, textFontSize, resizeTitle, resizeText)
-)
+addFooterButton('설정변경', 'imgs/footer_icons/edit_setting.svg', 
+  () => {
+    new SettingEditorPopup(titleFontSize, textFontSize, resizeTitle, resizeText).run()
+  })
 
 window.addEventListener('keydown', (event: KeyboardEvent) => {
   if(event.target instanceof HTMLElement && ['INPUT', 'TEXTAREA'].includes(event.target.tagName)) return

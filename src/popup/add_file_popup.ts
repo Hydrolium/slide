@@ -1,92 +1,87 @@
 import { $create, $createDiv } from "../main"
+import { PopupGenerator } from "./popup"
 
-const element_fileAddPopupContainer = document.querySelector<HTMLDivElement>("#file-adding-popup-container")
-const element_dropFileBox = document.querySelector<HTMLButtonElement>("#drop-file-box")
+export class FileAdderPopup extends PopupGenerator<File[]> {
 
-const element_fileList = document.querySelector<HTMLUListElement>("#added-file-list")
+    private candidates: File[] = []
 
-const element_cancelFileAddPopup = document.querySelector<HTMLButtonElement>("#cancel-file-adding-popup")
-const element_saveFileAddPopup = document.querySelector<HTMLButtonElement>("#save-file-adding-popup")
+    private addDragDropEvent(element_dropFileBox: HTMLDivElement, element_fileList: HTMLUListElement): void {
+        ;['dragenter', 'dragover', 'dragleave', 'drop']
+        .forEach((eventName) => {
+            element_dropFileBox?.addEventListener(eventName, (e: Event) => {
+                e.preventDefault()
+                e.stopPropagation()
+            })
+        })
 
-let candidates: File[] = []
+        element_dropFileBox?.addEventListener('dragover', () => {
+            element_dropFileBox?.classList.add('dragover')
+        })
 
-;['dragenter', 'dragover', 'dragleave', 'drop'].forEach((eventName) => {
-  element_dropFileBox?.addEventListener(eventName, (e: Event) => {
-    e.preventDefault()
-    e.stopPropagation()
-  })
-})
+        ;['dragleave', 'drop']
+        .forEach((eventName) => {
+            element_dropFileBox?.addEventListener(eventName, () => {
+                element_dropFileBox?.classList.remove('dragover');
+            })
+        })
 
-element_dropFileBox?.addEventListener('dragover', () => {
-    element_dropFileBox?.classList.add('dragover')
-})
+        element_dropFileBox?.addEventListener('drop', (e: DragEvent) => {
+            const files = e.dataTransfer?.files
 
-;['dragleave', 'drop'].forEach((eventName) => {
-  element_dropFileBox?.addEventListener(eventName, () => {
-    element_dropFileBox?.classList.remove('dragover');
-  })
-})
+            if(files) [...files].forEach(f => {
+                if(f.type.includes('json') || f.type.startsWith('image/'))
+                    this.candidates.push(f)})
 
-element_dropFileBox?.addEventListener('drop', (e: DragEvent) => {
-  const files = e.dataTransfer?.files
+            this.renderFileList(element_fileList)
+        })
+    }
 
-  if(files) [...files].forEach(f => {
-    if(f.type.includes('json') || f.type.startsWith('image/'))
-        candidates.push(f)})
+    private createFileItem(fileName: string, element_fileList: HTMLUListElement): HTMLLIElement {
+        const created_fileItem = $create('li', 'file-item')
 
-  render()
-})
+        const created_removeButton = $create('button', 'remove-file-button')
+        created_fileItem.appendChild(created_removeButton)
 
-const createFileItem = (fileName: string) => {
-    const created_fileItem = $create('li', 'file-item')
+        created_removeButton.addEventListener('click', () => {
+            this.candidates = this.candidates.filter(f => f.name != fileName)
+            this.renderFileList(element_fileList)
+        })
 
-    const created_removeButton = $create('button', 'remove-file-button')
-    created_fileItem.appendChild(created_removeButton)
+        created_fileItem.appendChild(
+            $createDiv(fileName, 'file-item-text')
+        )
 
-    created_removeButton.addEventListener('click', () => {
-        candidates = candidates.filter(f => f.name != fileName)
-        render()
-    })
+        return created_fileItem
+    }
 
-    created_fileItem.appendChild(
-        $createDiv(fileName, 'file-item-text')
-    )
+    private renderFileList(element_fileList: HTMLUListElement): void {
+        element_fileList.replaceChildren()
 
-    return created_fileItem
-}
+        this.candidates.forEach(file =>
+            element_fileList.appendChild(
+                this.createFileItem(file.name, element_fileList)))
+    }
 
-const render = () => {
-    element_fileList?.replaceChildren()
+    protected draw(element_popup: HTMLDivElement, resolve: (value: File[] | null) => void): void {
+        const created_dropFileBox = $create('div', 'drop-file-box')
+        
+        const created_dropFileText = $createDiv('파일을 드래그하여 추가하세요', 'drop-file-text')
+        created_dropFileBox.appendChild(created_dropFileText)
+        
+        const created_addedFileList = $create('ul', 'file-list')
 
-    candidates.forEach(file =>
-        element_fileList?.appendChild(
-            createFileItem(file.name)))
-}
+        this.addDragDropEvent(created_dropFileBox, created_addedFileList)
 
-export const openAddFilePopup = () => {
-    if(element_fileAddPopupContainer)
-        element_fileAddPopupContainer.style.display = 'block'
+        element_popup.appendChild(created_dropFileBox)
+        element_popup.appendChild(created_addedFileList)
 
-    candidates = []
+        this.addNegativeButton('취소', () => {
+            resolve(null)
+        })
 
-    render()
+        this.addPositiveButton('저장', () => {
+            resolve(this.candidates)
+        })
 
-    return new Promise<File[] | null>((resolve) => {
-        if(element_cancelFileAddPopup && element_saveFileAddPopup) {
-            element_cancelFileAddPopup.onclick = () => {
-                closePopup()
-                resolve(null)
-            }
-            element_saveFileAddPopup.onclick = () => {
-                closePopup()
-
-                resolve(candidates)
-            }
-        }
-    })    
-}
-
-const closePopup = () => {
-    if(element_fileAddPopupContainer)
-        element_fileAddPopupContainer.style.display = 'none'
+    }
 }
