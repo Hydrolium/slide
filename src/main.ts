@@ -137,6 +137,16 @@ addFooterButton('순서수정', 'imgs/footer_icons/resort_slides.svg',
     updateSong()
 })
 
+addFooterButton('추가하기', 'imgs/footer_icons/add_slide.svg', 
+  () => {
+console.log(31)
+})
+
+addFooterButton('삭제하기', 'imgs/footer_icons/delete_slide.svg', 
+  () => {
+    console.log(13)
+})
+
 addFooterButton('내보내기', 'imgs/footer_icons/export_slides.svg',
   async () => {
 

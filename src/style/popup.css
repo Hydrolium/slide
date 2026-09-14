@@ -86,9 +86,8 @@
       align-items: center;
 
       background-position: center;
-      background-size: contain;
+      background-size: cover;
       background-repeat: no-repeat;
-
 
       input, textarea {
         width: 100%;
