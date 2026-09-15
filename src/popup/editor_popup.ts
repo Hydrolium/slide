@@ -7,24 +7,13 @@ interface SplitedColor {
     readonly opacityPercent: string
 }
 
-interface ModifiableSongData {
-    readonly id: number
-    title: string
-    text: string
-    readonly textIdx: number
-    background: string
-    titleColor: string
-    titleStroke: string
-    titleShadow: string
-    textColor: string
-    textStroke: string
-    textShadow: string
+type Mutable<T> = {
+    -readonly [K in keyof T]: T[K];
 }
-
 
 export class EditorPopup extends PopupGenerator<ModifiedSongData> {
 
-    private songData: ModifiableSongData
+    private songData: Mutable<ModifiedSongData>
 
     constructor(songData: ModifiedSongData) {
         super()
