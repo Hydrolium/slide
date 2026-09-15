@@ -77,7 +77,7 @@ const updateSong = () => {
       slide.addEventListener("contextmenu", async (event: MouseEvent) => {
         event.preventDefault()
 
-        const result = await new EditorPopup({...context, id: id, textIdx: idx}).run()
+        const result = await EditorPopup.show({...context, id: id, textIdx: idx})
 
         if(result) songSetting.modifySong(result)
 
@@ -107,7 +107,8 @@ const resizeText = (pixel: string) => {
 
 addFooterButton('파일추가', 'imgs/footer_icons/add_file.svg',
   async () => {
-    const result = await new FileAdderPopup().run()
+    const result = await FileAdderPopup.show()
+
     if(result) await songSetting.loadFiles(result)
 
     sendToPopup({type: 'UPDATE_BACKGROUND', data: songSetting.imgUrls})
@@ -122,7 +123,7 @@ addFooterButton('파일관리', 'imgs/footer_icons/manage_file.svg',
       aboutJsonFile[fileName] = `${data.map(d => d.title).join(', ')}`
     })
     
-    const result = await new FileManagerPopup(aboutJsonFile, songSetting.imgUrls).run()
+    const result = await FileManagerPopup.show(aboutJsonFile, songSetting.imgUrls)
     if(result) songSetting.manageFile(Object.keys(result.jsonCandidates), Object.keys(result.imgCandidates));
 
     updateSong()
@@ -131,7 +132,7 @@ addFooterButton('파일관리', 'imgs/footer_icons/manage_file.svg',
 addFooterButton('순서수정', 'imgs/footer_icons/resort_slides.svg', 
   async () => {
   
-    const result = await new SlideSorterPopup(songSetting.order, songSetting.songs).run()
+    const result = await SlideSorterPopup.show(songSetting.order, songSetting.songs)
     if(result) songSetting.resortOrder(result)
 
     updateSong()
@@ -170,7 +171,7 @@ addFooterButton('전체화면', 'imgs/footer_icons/open_viewer.svg',
 
 addFooterButton('설정변경', 'imgs/footer_icons/edit_setting.svg', 
   () => {
-    new SettingEditorPopup(titleFontSize, textFontSize, resizeTitle, resizeText).run()
+    SettingEditorPopup.show(titleFontSize, textFontSize, resizeTitle, resizeText)
   })
 
 window.addEventListener('keydown', (event: KeyboardEvent) => {

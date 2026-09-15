@@ -24,7 +24,7 @@ export abstract class PopupGenerator<T> {
         this.buttonList.push(created_button)
     }
 
-    public run(): Promise<T | null> {
+    private run(): Promise<T | null> {
         
         return new Promise<T | null>((resolve) => {
             this.buttonList = []
@@ -57,5 +57,14 @@ export abstract class PopupGenerator<T> {
             this.created_popupContainer.remove()
             this.created_popupContainer = null
         }
+    }
+
+    public static async show<T, Args extends any[]>(
+        this: new (...args: Args) => PopupGenerator<T>,
+        ...args: Args
+    ): Promise<T | null> {
+        // TypeScript 컴파일을 위해 단언(as any) 추가
+        const instance = new (this as any)(...args) as PopupGenerator<T>;
+        return instance.run();
     }
 }
