@@ -63,8 +63,6 @@ export abstract class PopupGenerator<T> {
         this: new (...args: Args) => PopupGenerator<T>,
         ...args: Args
     ): Promise<T | null> {
-        // TypeScript 컴파일을 위해 단언(as any) 추가
-        const instance = new (this as any)(...args) as PopupGenerator<T>;
-        return instance.run();
+        return (new (this as any)(...args) as PopupGenerator<T>).run();
     }
 }
