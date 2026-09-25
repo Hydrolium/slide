@@ -1,5 +1,6 @@
 import { $createDiv } from './main'
 import type { ImageInfo, SongContext } from './song_settingt'
+
 import './style/slide_style.css'
 
 const element_slideLayerContainer = document.querySelector<HTMLDivElement>("#slide-layer-container")

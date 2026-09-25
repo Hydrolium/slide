@@ -1,0 +1,69 @@
+.sort-slide-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  margin-bottom: 20px;
+
+  .sort-item {
+    display: flex;
+    gap: 20px;
+
+    justify-content: flex-start;
+    align-items: center;
+
+    .sort-up-down-buttons {
+      display: flex;
+      gap: 5px;
+
+      button {
+        cursor: pointer;
+
+        padding: 4px;
+
+        width: 30px;
+        height: 30px;
+
+        border: none;
+        border-radius: 2px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &.sort-up-button, &.sort-down-button {
+          background: url('/imgs/up.svg') #f1f3f5;
+          background-size: contain;
+          background-repeat: no-repeat;
+        }
+
+        &.sort-remove-button {
+          background-color: #f1f3f5;
+          color: #495057;
+          font-size: 20px;
+          &::after {
+            content: '-';
+          }
+        }
+
+        &:hover {
+          transform: translateY(-3px);
+          background-color: #fee2e2;
+          color: #d83a27;
+        }
+
+        &:active {
+          transform: translateY(0);
+          background-color: #fecaca;
+          color: #b91c1c;
+        }
+        
+        &.sort-down-button {
+          rotate: 180deg;
+        }
+      }
+    }
+    .sort-item-text {
+      user-select: none;
+      font-size: 20px;
+    }
+  }
+}

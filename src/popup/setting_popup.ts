@@ -1,6 +1,8 @@
 import { $create, $createDiv } from "../main"
 import { PopupGenerator } from "./popup"
 
+import '../style/popup/setting_editor.css'
+
 export class SettingEditorPopup extends PopupGenerator<null> {
 
     private readonly initialTitleFontSize: string

@@ -5,6 +5,19 @@
     font-display: swap;
 }
 
+:root {
+  --color-light-light-red: #fee2e2;
+  --color-light-red: #fecaca;
+  --color-red: #d83a27;
+  --color-dark-red: #b91c1c;        
+
+  --color-white: #fff;
+  --color-cool-white: #f1f3f5;
+
+  --color-cool-gray: #495057;
+  --color-dark-gray: #212529;
+}
+
 * {
   margin: 0;
   padding: 0;

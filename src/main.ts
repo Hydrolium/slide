@@ -1,13 +1,15 @@
 import { Slide } from './slide'
-import './style/slide_style.css'
-import './style/style.css'
 import { SlideSorterPopup } from './popup/sort_popup'
 import { songSetting, type SongContext } from './song_settingt'
 import { FileManagerPopup } from './popup/manage_file'
 import { addFooterButton } from './footer'
-import { FileAdderPopup } from './popup/add_file_popup'
+import { FileAdderPopup } from './popup/file_adder'
 import { SettingEditorPopup } from './popup/setting_popup'
 import { EditorPopup } from './popup/editor_popup'
+import { SlideAddingOptionSetterPopup } from './popup/select_slide_adding_option_popup'
+
+import './style/slide_style.css'
+import './style/slide_list.css'
 
 export const $createDiv = (text: string, ...classes: string[]) => {
     const element_div: HTMLDivElement = document.createElement('div')
@@ -139,8 +141,8 @@ addFooterButton('순서수정', 'imgs/footer_icons/resort_slides.svg',
 })
 
 addFooterButton('추가하기', 'imgs/footer_icons/add_slide.svg', 
-  () => {
-console.log(31)
+  async () => {
+    const result = await SlideAddingOptionSetterPopup.show()
 })
 
 addFooterButton('삭제하기', 'imgs/footer_icons/delete_slide.svg', 

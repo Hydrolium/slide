@@ -1,5 +1,5 @@
 import { $create } from "../main";
-import '../style/popup.css'
+import '../style/popup/popup.css'
 
 const element_app = document.querySelector<HTMLDivElement>('#app')
 

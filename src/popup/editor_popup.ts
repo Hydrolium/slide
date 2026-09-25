@@ -2,6 +2,8 @@ import { $create, $createDiv } from "../main"
 import type { ModifiedSongData } from "../song_settingt"
 import { PopupGenerator } from "./popup"
 
+import '../style/popup/slide_editor.css'
+
 interface SplitedColor {
     readonly color: string
     readonly opacityPercent: string

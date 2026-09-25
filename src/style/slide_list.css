@@ -1,0 +1,23 @@
+.app {
+  position: relative;
+
+  padding: 10px;
+}
+
+#slide-box {
+  
+  display: flex;
+  flex-direction: column;
+
+  gap: 20px;
+
+  .slide-li {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    
+    & > * {
+      flex-shrink: 0;
+    }
+  }
+}

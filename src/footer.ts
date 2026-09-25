@@ -1,5 +1,7 @@
 import { $create, $createDiv } from "./main"
 
+import './style/footer.css'
+
 const element_footer = document.querySelector<HTMLDivElement>('#footer')
 
 const createFooterButton = (label: string, svgSrc: string,  onclick: (e: Event) => void) => {

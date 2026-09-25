@@ -1,6 +1,8 @@
 import { $create, $createDiv } from "../main"
 import { PopupGenerator } from "./popup"
 
+import '../style/popup/file_resetter.css'
+
 export class FileAdderPopup extends PopupGenerator<File[]> {
 
     private candidates: File[] = []

@@ -2,6 +2,8 @@ import { $create, $createDiv } from "../main"
 import type { SongInfo } from "../song_settingt"
 import { PopupGenerator } from "./popup"
 
+import '../style/popup/file_resetter.css'
+
 export class SlideSorterPopup extends PopupGenerator<number[]> {
 
     private idList: number[] = []
