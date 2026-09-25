@@ -30,6 +30,8 @@ export class SettingEditorPopup extends PopupGenerator<null> {
         const created_input = $create('input', 'setting-input')
         created_input.type = 'number'
         created_input.value = initialValue
+        created_input.min = '0'
+        created_input.step = '0.1'
         created_input.onchange = onchange
 
         created_settingItem.appendChild(created_input)

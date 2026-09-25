@@ -51,8 +51,8 @@ const openShow = () => {
   slideShowWindow = window.open('slide_show.html', 'MyPopup', 'width=500,height=600')
 }
 
-let titleFontSize = '90'
-let textFontSize = '80'
+let titleFontSize = '5.5'
+let textFontSize = '4.5'
 
 const updateSong = () => {
 
@@ -100,10 +100,9 @@ const updateSong = () => {
 
     element_slideBox?.appendChild(created_slide_li)
     
-
   })
 
-  sendToPopup({type: 'CHANGE', context: songSetting.currentContext})
+  sendToPopup({type: 'CHANGE', data: songSetting.currentContext})
 }
 
 const resizeTitle = (pixel: string) => {
@@ -253,7 +252,9 @@ window.addEventListener('message', (event: MessageEvent) => {
 
       if(songSetting.isEmpty()) return
 
-      sendToPopup({type: 'CHANGE', context: songSetting.currentContext })
+      sendToPopup({type: 'RESIZE_TITLE', data: titleFontSize})
+      sendToPopup({type: 'RESIZE_TEXT', data: textFontSize})
+      sendToPopup({type: 'CHANGE', data: songSetting.currentContext})
       break
   }
 

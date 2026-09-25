@@ -143,13 +143,5 @@
   &.full-screen {
     width: 100vw;
     height: 100vh;
-
-    .slide-title {
-      font-size: 90px;
-     }
-
-    .slide-text {
-      font-size: 80px;
-    }
   }
 }

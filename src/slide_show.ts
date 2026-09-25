@@ -43,17 +43,17 @@ window.addEventListener('message', (event: MessageEvent) => {
 
   const data = event.data
 
-  if(data.type == 'CHANGE' && data.context) {
-    update(data.context)
+  if(data.type == 'CHANGE' && data.data) {
+    update(data.data)
   }
   else if(data.type == 'CLOSE') {
     window.close()
   }
   else if(data.type == "RESIZE_TITLE") {
-    if(element_slideTitle) element_slideTitle.style.fontSize = data.data + 'px'
+    if(element_slideTitle) element_slideTitle.style.fontSize = data.data + 'vw'
   }
   else if(data.type == "RESIZE_TEXT") {
-    if(element_slideText) element_slideText.style.fontSize = data.data + 'px'
+    if(element_slideText) element_slideText.style.fontSize = data.data + 'vw'
   }
   else if(data.type == "UPDATE_BACKGROUND") {
 
