@@ -311,12 +311,13 @@ class SongSetting {
     }
 
     public async getExportLink() {
-        const export_list: SongInfo[] = []
+        const exportList: SongInfo[] = []
+        const usedImgs = new Set<string>()
         
         this._order.forEach(id => {
             const song = this._songs[id]
             
-            export_list.push({ // id가 남아있는 경우도 있어서 이렇게 해야함
+            exportList.push({ // id가 남아있는 경우도 있어서 이렇게 해야함
                 title: song.title,
                 texts: song.texts,
                 background: song.background,
@@ -327,15 +328,16 @@ class SongSetting {
                 textStroke: song.textStroke,
                 textShadow: song.textShadow
             })
+            usedImgs.add(song.background)
         })
     
         const zip = new JSZip()
     
-        const jsonString = JSON.stringify(export_list, null, 2)
+        const jsonString = JSON.stringify(exportList, null, 2)
         zip.file('data.json', jsonString)
-    
-        Object.values(this._imgUrls).forEach(({file}) => {
-            zip.file(file.name, file)
+        
+        Object.entries(this._imgUrls).forEach(([name, {file}]) => {
+            if(usedImgs.has(name)) zip.file(name, file)
         })
     
         const zipBlob = await zip.generateAsync({type: 'blob'})
