@@ -16,7 +16,7 @@ export interface SongFrame {
   readonly textShadow: string
 }
 
-export interface SongContext extends SongFrame{
+export interface SongContext extends SongFrame {
   readonly text: string
 }
 
@@ -79,6 +79,11 @@ class SongSetting {
         
     }
 
+    get currentSongOrder(): number {
+        if(this.isEmpty()) return 0;
+        return this._order.indexOf(this._currentSongId)
+    }
+
     get currentTextIndex(): number {
 
         if(!this._songs[this.currentSongId]?.texts) this._currentTextIndex = 0
@@ -103,6 +108,10 @@ class SongSetting {
             text: song.texts[this.currentTextIndex],
             background: song.background
         }
+    }
+
+    get defaultSongInfo(): SongInfo {
+        return {title: "제목을 입력하세요", texts: ["가사를 입력하세요"], background: "", titleColor: "#fff", titleStroke: "#000", titleShadow: "#0000", textColor: "#fff", textStroke: "#000", textShadow: "#0000"}
     }
 
     public getSongWithId(id: number): SongInfo {
@@ -233,6 +242,28 @@ class SongSetting {
             if(info.url === url) return name
 
        return ""
+    }
+
+    public insertNewSongAt(index: number, select: boolean = true) {
+        const id = this.nextId
+
+        this._order = this._order.toSpliced(index, 0, id)
+        this._songs[id] = {...this.defaultSongInfo}
+
+        if(select){
+            this._currentSongId = id
+            this._currentTextIndex = 0
+        }
+    }
+
+    public insertNewTextAt(index: number, select: boolean = true) {
+        if(this.isEmpty()) return
+
+        const song = this.currentSong
+
+        this._songs[this._currentSongId] = {...song, texts: song.texts.toSpliced(index, 0, "가사를 입력하세요")}
+
+        if(select) this._currentTextIndex = index
     }
 
     public modifySong(modified: ModifiedSongData) { // background 속성은 url로 들어와서 name으로 변환 필요

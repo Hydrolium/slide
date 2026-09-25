@@ -55,6 +55,7 @@
       border: 1.5px solid var(--color-cool-light-gray);
       border-radius: 10px;
 
+      background-color: var(--color-cool-white);
 
       transition: all 0.2s ease;
 

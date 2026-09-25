@@ -19,6 +19,14 @@ export const $createDiv = (text: string, ...classes: string[]) => {
     return element_div
 }
 
+export const $createSpan = (text: string, ...classes: string[]) => {
+    const element_div: HTMLSpanElement = document.createElement('span')
+    element_div.textContent = text
+    element_div.classList.add(...classes)
+
+    return element_div
+}
+
 export const $create = <K extends keyof HTMLElementTagNameMap>(tag: K, ...classes: string[]): HTMLElementTagNameMap[K] => {
     const created = document.createElement(tag)
     if(classes.length > 0) created.classList.add(...classes)
@@ -138,17 +146,41 @@ addFooterButton('순서수정', 'imgs/footer_icons/resort_slides.svg',
     if(result) songSetting.resortOrder(result)
 
     updateSong()
-})
+  })
 
 addFooterButton('추가하기', 'imgs/footer_icons/add_slide.svg', 
   async () => {
+
+    if(songSetting.isEmpty()) { // 아무 노래도 없으면 그냥 노래 하나 추가
+      songSetting.insertNewSongAt(0)
+      updateSong()
+      return
+    }
+
     const result = await SlideAddingOptionSetterPopup.show()
-})
+
+    switch (result) {
+      case 'INSERT_LYRICS_BEFORE':
+        songSetting.insertNewTextAt(songSetting.currentTextIndex)
+        break
+      case 'INSERT_LYRICS_AFTER':
+        songSetting.insertNewTextAt(songSetting.currentTextIndex + 1)
+        break
+      case 'INSERT_SONG_BEFORE':
+        songSetting.insertNewSongAt(songSetting.currentSongOrder)
+        break
+      case 'INSERT_SONG_AFTER':
+        songSetting.insertNewSongAt(songSetting.currentSongOrder + 1)
+        break
+    }
+
+    updateSong()
+  })
 
 addFooterButton('삭제하기', 'imgs/footer_icons/delete_slide.svg', 
   () => {
     console.log(13)
-})
+  })
 
 addFooterButton('내보내기', 'imgs/footer_icons/export_slides.svg',
   async () => {
