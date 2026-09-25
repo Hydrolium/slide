@@ -1,0 +1,36 @@
+.img-box-list {
+  position: relative;
+
+  width: 100%;
+  max-height: 400px;
+  overflow: auto scroll;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  row-gap: 10px;
+  column-gap: 5px;
+
+  .img-box {
+    width: 100%;
+
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    img {
+      width: 100%;
+      cursor: pointer;
+    }
+
+    div {
+      font-size: 15px;
+    }
+  }
+
+}

@@ -1,6 +1,8 @@
 .app {
   position: relative;
 
+  height: 100vh;
+
   padding: 10px;
 }
 
@@ -8,6 +10,10 @@
   
   display: flex;
   flex-direction: column;
+
+  height: 100%;
+
+  overflow: auto scroll;
 
   gap: 20px;
 

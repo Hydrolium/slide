@@ -83,3 +83,42 @@
     font-size: 33px;
   }
 }
+
+.background-change-button {
+  width: 100%;
+  height: 30px;
+
+  font-size: 15px;
+
+  cursor: pointer;
+
+  color: var(--color-dark-gray);
+
+  border: 1.5px solid var(--color-cool-light-gray);
+  border-radius: 8px;
+
+  background-color: var(--color-cool-white);
+
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    background-color: var(--color-cool-light-gray);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  span {
+
+    font-size: 18px;
+
+    &.highlight {
+      font-size: 20px;
+      color: var(--color-red);
+      text-decoration: underline var(--color-dark-red) 2px;
+      text-underline-offset: 3px;
+    }
+  }
+}

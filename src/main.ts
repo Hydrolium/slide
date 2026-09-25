@@ -87,7 +87,7 @@ const updateSong = () => {
       slide.addEventListener("contextmenu", async (event: MouseEvent) => {
         event.preventDefault()
 
-        const result = await EditorPopup.show({...context, id: id, textIdx: idx})
+        const result = await EditorPopup.show({...context, id: id, textIdx: idx}, songSetting.imgUrls)
 
         if(result) songSetting.modifySong(result)
 

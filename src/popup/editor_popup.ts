@@ -1,8 +1,9 @@
 import { $create, $createDiv } from "../main"
-import type { ModifiedSongData } from "../song_settingt"
+import type { ImageInfo, ModifiedSongData } from "../song_settingt"
 import { PopupGenerator } from "./popup"
 
 import '../style/popup/slide_editor.css'
+import { ImgSelectorPopup } from "./select_img_popup"
 
 interface SplitedColor {
     readonly color: string
@@ -16,10 +17,12 @@ type Mutable<T> = {
 export class EditorPopup extends PopupGenerator<ModifiedSongData> {
 
     private songData: Mutable<ModifiedSongData>
+    private readonly imgs: Record<string, ImageInfo>
 
-    constructor(songData: ModifiedSongData) {
+    constructor(songData: ModifiedSongData, imgs: Record<string, ImageInfo>) {
         super()
         this.songData = {...songData}
+        this.imgs = imgs
     }
 
     private static createColorInput(color: string): HTMLInputElement {
@@ -29,7 +32,7 @@ export class EditorPopup extends PopupGenerator<ModifiedSongData> {
         return created_input
     }
 
-    private static  createRangeInput(value: string, min: string = '0', max: string = '100', step: string = '1'): HTMLInputElement {
+    private static createRangeInput(value: string, min: string = '0', max: string = '100', step: string = '1'): HTMLInputElement {
         const created_rangeInput = $create('input')
         created_rangeInput.type = 'range'
         created_rangeInput.value = value
@@ -88,7 +91,6 @@ export class EditorPopup extends PopupGenerator<ModifiedSongData> {
     private static hexToPercent(hex: string): string {
         return Math.round(100 - (parseInt(hex, 16) / 255) * 100).toString()
     }
-
 
     private static withOpacity(color: string, opacityPercent: string): string {
         return `${color}${this.percentToHex(opacityPercent)}`
@@ -227,6 +229,24 @@ export class EditorPopup extends PopupGenerator<ModifiedSongData> {
                     this.songData.textShadow = color
                 }
             )
+        )
+
+        const created_backgroundChangeButton =  element_popup.appendChild(
+            $create('button')
+        )
+        created_backgroundChangeButton.textContent = '배경 변경'
+        created_backgroundChangeButton.classList.add('background-change-button')
+        created_backgroundChangeButton.onclick = async () => {
+            const result = await ImgSelectorPopup.show(this.imgs);
+            if(result) {
+                const url = this.imgs[result].url
+                created_textInputs.style.backgroundImage = `url(${url})`
+                this.songData.background = url
+            }
+        }
+    
+        element_popup.appendChild(
+            $createDiv('색상, 배경, 제목은 변경시 같은 노래가 전부 변경됩니다.', 'tip')
         )
 
         this.addNegativeButton('취소', () => {
