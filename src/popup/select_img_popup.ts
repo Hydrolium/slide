@@ -26,7 +26,7 @@ export class ImgSelectorPopup extends PopupGenerator<string> {
             created_imgBox.appendChild($createDiv(name))
         })
 
-        element_popup.appendChild($createDiv('새로운 이미지를 추가하려면 메인화면의 파일추가를 선택하세요', 'tip'))
+        element_popup.appendChild($createDiv('새로운 이미지를 추가하려면 메인화면의 [파일추가]를 선택하세요', 'tip'))
 
         this.addNegativeButton('취소', () => {
             resolve(null)

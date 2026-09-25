@@ -84,7 +84,7 @@ export class FileManagerPopup extends PopupGenerator<Candidates> {
         const created_existingFileList = $create('ul', 'file-list')
         element_popup.appendChild(created_existingFileList)
         
-        const created_tip = $createDiv('*저장 시 모든 변경사항이 초기화됩니다. 변경 내용은 [내보내기]로 저장하세요.', 'tip')
+        const created_tip = $createDiv('*저장 시 모든 변경사항이 초기화됩니다. 변경 내용은 메인화면의 [내보내기]로 저장하세요.', 'tip')
         element_popup.appendChild(created_tip)
 
         this.renderFileList(created_existingFileList)
