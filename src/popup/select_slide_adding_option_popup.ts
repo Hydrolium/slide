@@ -1,7 +1,7 @@
-import { $create, $createDiv, $createSpan } from "../main"
+import { $create, $createSpan } from "../main"
 import { PopupGenerator } from "./popup"
 
-import '../style/popup/slide_adding_option_selector.css'
+import '../style/popup/slide_option_selector.css'
 
 export type SlideAddingOption = 'INSERT_LYRICS_BEFORE' | 'INSERT_LYRICS_AFTER' | 'INSERT_SONG_BEFORE' | 'INSERT_SONG_AFTER'
 
@@ -23,7 +23,7 @@ export class SlideAddingOptionSetterPopup extends PopupGenerator<SlideAddingOpti
 
     protected draw(element_popup: HTMLDivElement, resolve: (value: SlideAddingOption | null) => void): void {
 
-        const created_options = element_popup.appendChild($create('ul', 'slide-adding-options'))
+        const created_options = element_popup.appendChild($create('ul', 'slide-options'))
         created_options.append(
             SlideAddingOptionSetterPopup.createButton('앞', '가사', () => resolve('INSERT_LYRICS_BEFORE')),
             SlideAddingOptionSetterPopup.createButton('뒤', '가사', () => resolve('INSERT_LYRICS_AFTER')),

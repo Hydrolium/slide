@@ -244,7 +244,7 @@ class SongSetting {
        return ""
     }
 
-    public insertNewSongAt(index: number, select: boolean = true) {
+    private insertNewSongAt(index: number, select: boolean = true) {
         const id = this.nextId
 
         this._order = this._order.toSpliced(index, 0, id)
@@ -256,14 +256,69 @@ class SongSetting {
         }
     }
 
-    public insertNewTextAt(index: number, select: boolean = true) {
-        if(this.isEmpty()) return
+    public insertNewSongBeforeCurrent() {
+        this.insertNewSongAt(this.currentSongOrder, true)
+    }
 
-        const song = this.currentSong
+    public insertNewSongAfterCurrent() {
+        this.insertNewSongAt(this.currentSongOrder + 1, true)
+    }
 
-        this._songs[this._currentSongId] = {...song, texts: song.texts.toSpliced(index, 0, "가사를 입력하세요")}
+    private insertNewTextAt(songId: number, textIndex: number, select: boolean = true) {
+        const song = this._songs[songId]
 
-        if(select) this._currentTextIndex = index
+        if(!song) return
+
+        if(textIndex < 0) textIndex = 0
+        else if(textIndex >= song.texts.length) textIndex = song.texts.length
+
+        this._songs[songId] = {...song, texts: song.texts.toSpliced(textIndex, 0, "가사를 입력하세요")}
+
+        if(select) this._currentTextIndex = textIndex
+    }
+
+    public insertNewTextBeforeCurrent() {
+        this.insertNewTextAt(this._currentSongId, songSetting._currentTextIndex)
+    }
+    public insertNewTextAfterCurrent() {
+        this.insertNewTextAt(this._currentSongId, songSetting._currentTextIndex + 1)
+    }
+
+    private deleteSong(id: number, select: boolean = true) {
+        const index = this._order.indexOf(id)
+
+        if(index == -1) return
+
+        delete this._songs[id]
+        this._order = this._order.filter(v => v != id)
+
+        if(select) this._currentSongId = this._order[index] ?? this._order[index -1] ?? -1
+    }
+
+    public deleteCurrentSong() {
+        this.deleteSong(this.currentSongId)
+    }
+
+    private deleteText(songId: number, textIndex: number, select: boolean = true) {
+        const song = this._songs[songId]
+
+        if(!song) return
+        if(textIndex < 0 || textIndex >= song.texts.length) return
+
+        if(song.texts.length <= 1) { // 길이가 1이면 그냥 노래 삭제
+            this.deleteSong(songId, select)
+            return
+        }
+
+        const newTexts = song.texts.toSpliced(textIndex, 1)
+
+        this._songs[songId] = {...song, texts: newTexts}
+
+        if(select) this._currentTextIndex = (textIndex >= newTexts.length) ? newTexts.length -1 : textIndex
+    }
+
+    public deleteCurrentText() {
+        this.deleteText(this.currentSongId, this.currentTextIndex)
     }
 
     public modifySong(modified: ModifiedSongData) { // background 속성은 url로 들어와서 name으로 변환 필요

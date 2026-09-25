@@ -10,6 +10,7 @@ import { SlideAddingOptionSetterPopup } from './popup/select_slide_adding_option
 
 import './style/slide_style.css'
 import './style/slide_list.css'
+import { SlideDeletingOptionSetterPopup } from './popup/select_slide_deleting_option_popup'
 
 export const $createDiv = (text: string, ...classes: string[]) => {
     const element_div: HTMLDivElement = document.createElement('div')
@@ -152,7 +153,7 @@ addFooterButton('추가하기', 'imgs/footer_icons/add_slide.svg',
   async () => {
 
     if(songSetting.isEmpty()) { // 아무 노래도 없으면 그냥 노래 하나 추가
-      songSetting.insertNewSongAt(0)
+      songSetting.insertNewSongBeforeCurrent()
       updateSong()
       return
     }
@@ -161,16 +162,16 @@ addFooterButton('추가하기', 'imgs/footer_icons/add_slide.svg',
 
     switch (result) {
       case 'INSERT_LYRICS_BEFORE':
-        songSetting.insertNewTextAt(songSetting.currentTextIndex)
+        songSetting.insertNewTextBeforeCurrent()
         break
       case 'INSERT_LYRICS_AFTER':
-        songSetting.insertNewTextAt(songSetting.currentTextIndex + 1)
+        songSetting.insertNewTextAfterCurrent()
         break
       case 'INSERT_SONG_BEFORE':
-        songSetting.insertNewSongAt(songSetting.currentSongOrder)
+        songSetting.insertNewSongBeforeCurrent()
         break
       case 'INSERT_SONG_AFTER':
-        songSetting.insertNewSongAt(songSetting.currentSongOrder + 1)
+        songSetting.insertNewSongAfterCurrent()
         break
     }
 
@@ -178,8 +179,20 @@ addFooterButton('추가하기', 'imgs/footer_icons/add_slide.svg',
   })
 
 addFooterButton('삭제하기', 'imgs/footer_icons/delete_slide.svg', 
-  () => {
-    console.log(13)
+  async () => {
+    if(songSetting.isEmpty()) return // 아무 노래도 없으면 삭제 x
+
+    const result = await SlideDeletingOptionSetterPopup.show()
+    switch(result) {
+      case "ALL":
+        songSetting.deleteCurrentSong()
+        break
+      case "SELECTED_ONLY":
+        songSetting.deleteCurrentText()
+        break
+    }
+
+    updateSong()
   })
 
 addFooterButton('내보내기', 'imgs/footer_icons/export_slides.svg',
