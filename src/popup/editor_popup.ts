@@ -246,7 +246,7 @@ export class EditorPopup extends PopupGenerator<ModifiedSongData> {
         }
     
         element_popup.appendChild(
-            $createDiv('색상, 배경, 제목은 변경시 같은 노래가 전부 변경됩니다.', 'tip')
+            $createDiv('색상, 제목, 배경은 변경시 같은 노래가 전부 변경됩니다.', 'tip')
         )
 
         this.addNegativeButton('취소', () => {
