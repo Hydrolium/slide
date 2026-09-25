@@ -2,9 +2,9 @@
   width: 100%;
   height: 100px;
 
-  border: 1.5px solid #e2e8f0;
+  border: 1.5px solid var(--color-cool-light-gray);
   border-radius: 10px;
-  background-color: #f8fafc;
+  background-color: var(--color-cool-white);
 
   display: flex;
   justify-content: center;
@@ -14,8 +14,8 @@
   font-size: 20px;
 
   &.dragover {
-    background-color: #ffffff;
-    border-color: #d83a27;
+    background-color: var(--color-white);
+    border-color: var(--color-red);
     box-shadow: 0 0 0 3px rgba(216, 58, 39, 0.15);
   }
 }
@@ -71,19 +71,19 @@
 
       &:hover {
       transform: translateY(-3px);
-      background-color: #fee2e2;
-      color: #d83a27;
+      background-color: var(--color-light-light-red);
+      color: var(--color-red);
       }
 
       &:active {
       transform: translateY(0);
-      background-color: #fecaca;
-      color: #b91c1c;
+      background-color: var(--color-light-red);
+      color: var(--color-dark-red);
       }
     }
 
     .remove-file-button:hover ~ div {
-      color: #b91c1c;
+      color: var(--color-dark-red);
     }
 
     .file-item-img {

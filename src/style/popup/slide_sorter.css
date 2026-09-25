@@ -30,15 +30,16 @@
         transition: all 0.2s ease;
 
         &.sort-up-button, &.sort-down-button {
-          background: url('/imgs/up.svg') #f1f3f5;
+          background: url('/imgs/up.svg') var(--color-cool-white);
           background-size: contain;
           background-repeat: no-repeat;
         }
 
         &.sort-remove-button {
-          background-color: #f1f3f5;
-          color: #495057;
+          background-color: var(--color-cool-white);
+          color: var(--color-cool-gray);
           font-size: 20px;
+
           &::after {
             content: '-';
           }
@@ -46,14 +47,14 @@
 
         &:hover {
           transform: translateY(-3px);
-          background-color: #fee2e2;
-          color: #d83a27;
+          background-color: var(--color-light-light-red);
+          color: var(--color-red);
         }
 
         &:active {
           transform: translateY(0);
-          background-color: #fecaca;
-          color: #b91c1c;
+          background-color: var(--color-light-red);
+          color: var(--color-dark-red);
         }
         
         &.sort-down-button {

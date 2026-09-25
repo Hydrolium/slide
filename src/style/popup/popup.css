@@ -18,7 +18,7 @@
 
   width: 650px;
 
-  background-color: #ffffff;
+  background-color: var(--color-white);
   padding: 28px 24px;
 
   border-radius: 16px;
@@ -30,7 +30,7 @@
   gap: 20px;
   
   .tip {
-    color: #555;
+    color: var(--color-cool-gray);
     user-select: none;
   }
 
@@ -50,9 +50,9 @@
       cursor: pointer;
 
       font-size: 20px;
-      color: #333;
+      color: var(--color-dark-cool-gray);
 
-      border: 1.5px solid #e2e8f0;
+      border: 1.5px solid var(--color-cool-light-gray);
       border-radius: 10px;
 
 
@@ -69,14 +69,14 @@
       &.cancel-popup {
 
         &:hover {
-          background-color: #fecaca;
+          background-color: var(--color-light-red);
         }
       }
 
       &.save-popup {
 
         &:hover {
-          background-color: #b7dfb5;
+          background-color: var(--color-light-green);
         }
       }
     }

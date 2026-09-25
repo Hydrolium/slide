@@ -2,7 +2,7 @@ import { $create, $createDiv } from "../main"
 import type { SongInfo } from "../song_settingt"
 import { PopupGenerator } from "./popup"
 
-import '../style/popup/file_resetter.css'
+import '../style/popup/slide_sorter.css'
 
 export class SlideSorterPopup extends PopupGenerator<number[]> {
 

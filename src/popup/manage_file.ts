@@ -2,6 +2,8 @@ import { $create, $createDiv } from "../main"
 import type { ImageInfo } from "../song_settingt"
 import { PopupGenerator } from "./popup"
 
+import '../style/popup/file_resetter.css'
+
 interface Candidates {
     readonly jsonCandidates: Record<string, string>
     readonly imgCandidates: Record<string, ImageInfo>
