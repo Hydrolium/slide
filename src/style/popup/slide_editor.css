@@ -7,10 +7,11 @@
   gap: 10px;
 
   .input-editors {
-    display: flex;
     width: 100%;
 
+    display: flex;
     justify-content: space-between;
+    align-items: center;
 
     padding: 0 5px;
 
@@ -21,6 +22,7 @@
     .input-editor {
       display: flex;
       align-items: center;
+
       gap: 5px;
 
       .input-editor-label {
@@ -31,14 +33,22 @@
       input[type="color"] {
         width: 30px;
         height: 30px;
+        cursor: pointer;
       }
       input[type="range"] {
         width: 70px;
         height: 30px;
+        cursor: e-resize;
       }
       input[type="number"] {
         width: 50px;
         height: 30px;
+
+        padding: 0 4px;
+
+        border: 1px solid var(--color-dark-gray);
+        border-radius: 5px;
+
       }
     }
   }
@@ -94,8 +104,8 @@
 
   color: var(--color-dark-gray);
 
-  border: 1.5px solid var(--color-cool-light-gray);
-  border-radius: 8px;
+  border: 1px solid var(--color-cool-gray);
+  border-radius: 5px;
 
   background-color: var(--color-cool-white);
 
@@ -103,7 +113,6 @@
 
   &:hover {
     transform: translateY(-1px);
-    background-color: var(--color-cool-light-gray);
   }
 
   &:active {
