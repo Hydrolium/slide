@@ -190,7 +190,7 @@ export class EditorPopup extends PopupGenerator<ModifiedSongData> {
         created_textInputs.style.backgroundImage = `url(${this.songData.background})`
 
         const created_titleInput = created_textInputs.appendChild(EditorPopup.createTextInput(''))
-        created_titleInput.value = this.songData.title
+        created_titleInput.value = this.songData.texts[this.songData.textIdx].title
         created_titleInput.onchange = () => {
             this.songData.texts[this.songData.textIdx].title = created_titleInput.value
         }
