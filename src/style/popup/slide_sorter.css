@@ -6,6 +6,8 @@
   max-height: 400px;
   overflow-y: auto;
 
+  padding-bottom: 10px;
+
   .sort-item {
     display: flex;
     gap: 20px;
