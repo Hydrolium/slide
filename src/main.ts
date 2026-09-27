@@ -134,7 +134,7 @@ addFooterButton('파일관리', 'imgs/footer_icons/manage_file.svg',
     })
     
     const result = await FileManagerPopup.show(aboutJsonFile, songSetting.imgUrls)
-    if(result) songSetting.manageFile(result);
+    if(result) songSetting.manageFile(result)
 
     updateSong()
   })

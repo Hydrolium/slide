@@ -38,22 +38,10 @@ export type FileDeletingOption = 'ONLY_FILE' | 'CASCADE'
 export interface ManagementResult {
     readonly removedImgs: string[] // 삭제된 이미지 이름 배열
     readonly removedJsons: Record<string, FileDeletingOption> // key: 삭제된 json 파일 이름, value: 삭제 옵션
-    readonly refreshedJsons: string[] // 새로고침된 json 파일 이름 배열
+    readonly refreshedJsons: Set<string> // 새로고침된 json 파일 이름 set
 }
 
 class SongSetting {
-
-    /*
-        파일 추가/삭제 시 json 파일을 추가/삭제할 수 있음.
-
-        [기능 개발] 파일관리에서 json 파일 삭제 시 메뉴 팝업 뛰우기 기능 추가 필요
-            - 파일만 지우기(슬라이드에 영향 x)
-            - 파일과 관련된 모든 곡 지우기
-
-        [기능 개발] 파일 관리에서 파일 리로드 기능 추가 필요
-            - 파일 리로드: _songs에 이 파일에 있던 모든 곡들을 지우고, 다시 추가 
-
-    */
 
     private _jsonFiles: Record<string, SongData[]> = {} // 파일 이름: 곡 정보 리스트
 
@@ -357,7 +345,6 @@ class SongSetting {
     public manageFile(managementResult: ManagementResult) {
 
         managementResult.removedImgs.forEach(imgName => {this.removeImg(imgName)}) // 이미지 삭제
-
 
         Object.entries(managementResult.removedJsons).forEach(([fileName, option]) => {
             const json = this._jsonFiles[fileName]
