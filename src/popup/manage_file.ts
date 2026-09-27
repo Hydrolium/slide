@@ -52,13 +52,12 @@ export class FileManagerPopup extends PopupGenerator<Candidates> {
             element_existingFileList?.removeChild(created_fileItem)
         })
 
+        const created_img = created_fileItem.appendChild($create('img', 'file-item-img'))
+        created_img.src = imgUrl
+
         created_fileItem.appendChild(
             $createDiv(fileName, 'file-item-text')
         )
-
-        const created_img = $create('img', 'file-item-img')
-        created_img.src = imgUrl
-        created_fileItem.appendChild(created_img)
 
         return created_fileItem
     }
