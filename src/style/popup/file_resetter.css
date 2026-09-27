@@ -39,15 +39,13 @@
     grid-template-columns: 30px auto 1fr;
     flex-shrink: 0;
     
-    cursor: pointer;
-
     min-height: 30px;
     
     gap: 15px;
 
     border: none;
     border-radius: 2px;
-    cursor: pointer;
+
     transition: all 0.2s ease;
 
     transition: all .2s ease;
@@ -70,15 +68,15 @@
       }
 
       &:hover {
-      transform: translateY(-3px);
-      background-color: var(--color-light-light-red);
-      color: var(--color-red);
+        transform: translateY(-3px);
+        background-color: var(--color-light-light-red);
+        color: var(--color-red);
       }
 
       &:active {
-      transform: translateY(0);
-      background-color: var(--color-light-red);
-      color: var(--color-dark-red);
+        transform: translateY(0);
+        background-color: var(--color-light-red);
+        color: var(--color-dark-red);
       }
     }
 

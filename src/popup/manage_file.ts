@@ -1,9 +1,9 @@
 import { $create, $createDiv } from "../main"
 import type { ImageInfo, ManagementResult } from "../song_settingt"
 import { PopupGenerator } from "./popup"
+import { FileDeletingOptionSetterPopup } from "./select_file_deleting_option_popup"
 
 import '../style/popup/file_resetter.css'
-import { FileDeletingOptionSetterPopup } from "./select_file_deleting_option_popup"
 
 interface ExistingFiles {
     readonly jsonFiles: Readonly<Record<string, string>>
