@@ -1,6 +1,6 @@
 import { Slide } from './slide'
 import { SlideSorterPopup } from './popup/sort_popup'
-import { songSetting, type SongContext } from './song_settingt'
+import { songSetting, type SongContext } from './song_setting'
 import { FileManagerPopup } from './popup/manage_file'
 import { addFooterButton } from './footer'
 import { FileAdderPopup } from './popup/file_adder'

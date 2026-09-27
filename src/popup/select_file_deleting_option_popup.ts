@@ -2,7 +2,7 @@ import { $create, $createDiv, $createSpan } from "../main"
 import { PopupGenerator } from "./popup"
 
 import '../style/popup/slide_option_selector.css'
-import type { FileDeletingOption } from "../song_settingt"
+import type { FileDeletingOption } from "../song_setting"
 
 
 export class FileDeletingOptionSetterPopup extends PopupGenerator<FileDeletingOption> {

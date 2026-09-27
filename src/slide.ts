@@ -1,5 +1,5 @@
 import { $createDiv } from "./main"
-import type { SongContext } from "./song_settingt"
+import type { SongContext } from "./song_setting"
 
 export class Slide {
 

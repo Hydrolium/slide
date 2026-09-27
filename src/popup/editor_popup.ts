@@ -1,5 +1,5 @@
 import { $create, $createDiv } from "../main"
-import type { ImageInfo, ModifiedSongData } from "../song_settingt"
+import type { ImageInfo, ModifiedSongData } from "../song_setting"
 import { PopupGenerator } from "./popup"
 
 import '../style/popup/slide_editor.css'
