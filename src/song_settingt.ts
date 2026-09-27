@@ -33,10 +33,29 @@ export interface ModifiedSongData extends SongContext {
     readonly id: number
 }
 
+export type FileDeletingOption = 'ONLY_FILE' | 'CASCADE'
+
+export interface ManagementResult {
+    readonly removedImgs: string[] // 삭제된 이미지 이름 배열
+    readonly removedJsons: Record<string, FileDeletingOption> // key: 삭제된 json 파일 이름, value: 삭제 옵션
+    readonly refreshedJsons: string[] // 새로고침된 json 파일 이름 배열
+}
+
 class SongSetting {
 
+    /*
+        파일 추가/삭제 시 json 파일을 추가/삭제할 수 있음.
+
+        [기능 개발] 파일관리에서 json 파일 삭제 시 메뉴 팝업 뛰우기 기능 추가 필요
+            - 파일만 지우기(슬라이드에 영향 x)
+            - 파일과 관련된 모든 곡 지우기
+
+        [기능 개발] 파일 관리에서 파일 리로드 기능 추가 필요
+            - 파일 리로드: _songs에 이 파일에 있던 모든 곡들을 지우고, 다시 추가 
+
+    */
+
     private _jsonFiles: Record<string, SongData[]> = {} // 파일 이름: 곡 정보 리스트
-    private _jsonFileOrder: string[] = [] // 파일 이름 리스트(순서)
 
     private _songs: Record<number, SongInfo> = {} // 노래 ID: 정보
     private _order: number[] = [] // 노래 ID 리스트(순서)
@@ -53,10 +72,6 @@ class SongSetting {
 
     get jsonFiles(): Record<string, SongData[]> {
         return this._jsonFiles
-    }
-
-    get jsonFileOrder(): string[] {
-        return this._jsonFileOrder
     }
 
     get songs(): Record<number, SongInfo> {
@@ -215,8 +230,6 @@ class SongSetting {
             else if (file.type.startsWith('image/')) this.loadImage(file)
         }
 
-        this.load()
-
     }
 
     private loadImage(file: File) {
@@ -225,16 +238,24 @@ class SongSetting {
         this._imgUrls[file.name] = {file: file, url: URL.createObjectURL(file)}
     }
 
-    private loadJson(fileName: string, data: SongInfo[]) {
+    private loadJson(fileName: string, songInfos: SongInfo[]) {
+        const songDatas: SongData[] = []
+        songInfos.forEach(songInfo => {
+            const idAdded = {...songInfo, id: this.nextId}
+            this.addSong(idAdded)
+            songDatas.push(idAdded)
+        })
+        this._jsonFiles[fileName] = songDatas
+    }
 
-        if(!this._jsonFiles[fileName]) this._jsonFileOrder.push(fileName)
-        
-        this._jsonFiles[fileName] = data.map(j => {return {...j, id: this.nextId}})
+    private removeImg(imgName: string) {
+        URL.revokeObjectURL(this._imgUrls[imgName]?.url)
+        delete this._imgUrls[imgName]
     }
 
     private addSong(song: SongData) {
         if(!this._songs[song.id]) this._order.push(song.id)
-        this._songs[song.id] = song
+        this._songs[song.id] = {...song}
     }
 
     private getImgName(url: string): string {
@@ -280,6 +301,7 @@ class SongSetting {
     public insertNewTextBeforeCurrent() {
         this.insertNewTextAt(this._currentSongId, songSetting._currentTextIndex)
     }
+
     public insertNewTextAfterCurrent() {
         this.insertNewTextAt(this._currentSongId, songSetting._currentTextIndex + 1)
     }
@@ -332,36 +354,27 @@ class SongSetting {
 
     }
 
-    public manageFile(jsonFiles: string[], imgFiles: string[]) {
+    public manageFile(managementResult: ManagementResult) {
 
-        const jsonSet = new Set(jsonFiles)
-        const imgSet = new Set(imgFiles)
+        managementResult.removedImgs.forEach(imgName => {this.removeImg(imgName)}) // 이미지 삭제
 
-        Object.keys(this._jsonFiles).forEach(name => {
-            if(!jsonSet.has(name)) {
-                delete this._jsonFiles[name]
-            }
+
+        Object.entries(managementResult.removedJsons).forEach(([fileName, option]) => {
+            const json = this._jsonFiles[fileName]
+            if(!json) return
+            
+            if(option == "CASCADE") json.forEach(songData => this.deleteSong(songData.id, false)) // CASCADE 옵션으로 삭제 시 파일 내 모든 곡들도 삭제함.
+
+            delete this._jsonFiles[fileName]
         })
-        
-        this._jsonFileOrder = this._jsonFileOrder.filter(n => jsonSet.has(n))
 
-        Object.keys(this._imgUrls).forEach(name => {
-            if(!imgSet.has(name)) {
-                URL.revokeObjectURL(this._imgUrls[name].url)
-                delete this._imgUrls[name]
-            }
-        })
-        
-        this.load()
-    }
-
-    public load() {
-        this._songs = {}
-        this._order = []
-
-        this._jsonFileOrder.forEach(fileName => {
-            const songList = this._jsonFiles[fileName]
-            songList.forEach(song => this.addSong(song))
+        managementResult.refreshedJsons.forEach(fileName => {
+            const json = this._jsonFiles[fileName]
+            if(!json) return
+            json.forEach(songData => {
+                this.deleteSong(songData.id, false)
+                this.addSong(songData)
+            }) // 파일 새로고침 시 파일 내 노래 모두 삭제 후 다시 추가함.
         })
     }
 
