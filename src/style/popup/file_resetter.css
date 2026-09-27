@@ -96,6 +96,82 @@
       }
     }
 
+    .remove-file-label {
+      width: 30px;
+      height: 30px;
+
+      position: relative;
+
+      cursor: pointer;
+
+      background-color: var(--color-cool-white);
+
+      border: none;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:has(.remove-file-checkbox:checked) {
+        transform: translateY(0);
+        background-color: var(--color-light-red);
+        color: var(--color-dark-red);
+      }
+
+      .remove-file-checkbox {
+        display: none;
+      }
+
+      &::after {
+        content: '';
+        width: 15px;
+        height: 15px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+
+        transform: translate(-50%, -50%);
+
+        background-color: currentColor;
+
+        -webkit-mask: url('/imgs/remove.svg') no-repeat center / contain;
+        mask: url('/imgs/remove.svg') no-repeat center / contain;
+      }
+
+      &.only-file::after {
+        -webkit-mask: url('/imgs/remove_file.svg') no-repeat center / contain;
+        mask: url('/imgs/remove_file.svg') no-repeat center / contain;
+      }
+
+      &.cascade::after {
+        -webkit-mask: url('/imgs/remove_cascade.svg') no-repeat center / contain;
+        mask: url('/imgs/remove_cascade.svg') no-repeat center / contain;
+      }
+
+      &:hover {
+        transform: translateY(-3px);
+        background-color: var(--color-light-light-red);
+        color: var(--color-red);
+      }
+
+      &:active {
+        transform: translateY(0);
+        background-color: var(--color-light-red);
+        color: var(--color-dark-red);
+      }
+    }
+
+    &:has(.remove-file-label:hover) {
+      .file-item-detail, .file-item-text {
+        color: var(--color-dark-red);
+      }
+    }
+
+    &:has(.remove-file-checkbox:checked) {
+      .file-item-detail, .file-item-text {
+        color: var(--color-dark-red);
+      }
+    }
+
     .refresh-file-label {
       width: 30px;
       height: 30px;

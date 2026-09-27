@@ -36,7 +36,7 @@ export interface ModifiedSongData extends SongContext {
 export type FileDeletingOption = 'ONLY_FILE' | 'CASCADE'
 
 export interface ManagementResult {
-    readonly removedImgs: string[] // 삭제된 이미지 이름 배열
+    readonly removedImgs: Set<string> // 삭제된 이미지 이름 set
     readonly removedJsons: Record<string, FileDeletingOption> // key: 삭제된 json 파일 이름, value: 삭제 옵션
     readonly refreshedJsons: Set<string> // 새로고침된 json 파일 이름 set
 }
