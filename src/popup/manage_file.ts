@@ -126,10 +126,13 @@ export class FileManagerPopup extends PopupGenerator<ManagementResult> {
         const created_existingFileList = $create('ul', 'file-list')
         element_popup.appendChild(created_existingFileList)
         
-        const created_tip = $createDiv('json 파일 새로고침 시 파일 내 모든 노래 슬라이드가 삭제 후 다시 추가됩니다.', 'tip')
-        element_popup.appendChild(created_tip)
 
-        this.renderFileList(created_existingFileList)
+        if(Object.keys(this.imgFiles).length === 0 && Object.keys(this.jsonFiles).length === 0)
+            element_popup.appendChild($createDiv('추가된 파일이 없습니다. 메인화면의 [파일추가]에서 파일을 업로드하세요.', 'tip'))
+        else this.renderFileList(created_existingFileList)
+
+        element_popup.appendChild($createDiv('json 파일 새로고침 시 파일 내 모든 노래 슬라이드가 삭제 후 다시 추가됩니다.', 'tip'))
+
 
         this.addNegativeButton('취소', () => {
             resolve(null)

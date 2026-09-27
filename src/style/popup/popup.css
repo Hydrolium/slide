@@ -34,6 +34,8 @@
   .tip {
     color: var(--color-cool-gray);
     user-select: none;
+    white-space: pre-line;
+    line-height: 1.6;
   }
 
   .popup-button-box {

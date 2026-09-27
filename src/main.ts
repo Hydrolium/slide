@@ -71,11 +71,11 @@ const updateSong = () => {
 
     const song = songSetting.getSongWithId(id)
 
-    song.texts.forEach((text, idx) => {
+    song.texts.forEach((_text, idx) => {
 
       const context: SongContext = {
           ...song,
-          text: text,
+          textIdx: idx,
           background: songSetting.imgUrls[song.background]?.url
         }
 

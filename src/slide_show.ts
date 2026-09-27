@@ -28,12 +28,12 @@ const update = (context: SongContext) => {
 
   updateBackground(context.background)
 
-  element_slideTitle.textContent = context.title
+  element_slideTitle.textContent = context.texts[context.textIdx].title
   element_slideTitle.style.color = context.titleColor
   element_slideTitle.style.webkitTextStroke = `4px ${context.titleStroke}`
   element_slideTitle.style.textShadow = `8px 8px 0 ${context.titleShadow}`
 
-  element_slideText.textContent = context.text
+  element_slideText.textContent = context.texts[context.textIdx].text
   element_slideText.style.color = context.textColor
   element_slideText.style.webkitTextStroke = `3px ${context.textStroke}`
   element_slideText.style.textShadow = `7px 7px 0 ${context.textShadow}`

@@ -1,27 +1,47 @@
 import JSZip from "jszip"
 
 export interface ImageInfo {
-  readonly file: File
-  url: string
+    readonly file: File
+    url: string
 }
 
 export interface SongFrame {
-  readonly title: string
-  readonly background: string
-  readonly titleColor: string
-  readonly titleStroke: string
-  readonly titleShadow: string
-  readonly textColor: string
-  readonly textStroke: string
-  readonly textShadow: string
+    readonly title: string
+    readonly background: string
+    readonly titleColor: string
+    readonly titleStroke: string
+    readonly titleShadow: string
+    readonly textColor: string
+    readonly textStroke: string
+    readonly textShadow: string
 }
 
-export interface SongContext extends SongFrame {
-  readonly text: string
+export interface TitltedText {
+    readonly title: string
+    readonly text: string
 }
 
 export interface SongInfo extends SongFrame {
-  readonly texts: string[]
+    readonly texts: readonly TitltedText[]
+}
+
+export interface SongInfoOnJSON extends SongFrame {
+    readonly texts: readonly (string | TitltedText)[]
+}
+
+const convertJSONtoSongInfo = (songInfoOnJson: SongInfoOnJSON) => {
+    return {
+        ...songInfoOnJson,
+        texts: songInfoOnJson.texts.map(
+                v => {
+                    if(typeof v === 'string') return {title: songInfoOnJson.title, text: v}
+                    return {...v}
+                }
+        )} as SongInfo
+}
+
+export interface SongContext extends SongInfo {
+    readonly textIdx: number
 }
 
 export interface SongData extends SongInfo {
@@ -108,13 +128,22 @@ class SongSetting {
 
         return {
             ...song,
-            text: song.texts[this.currentTextIndex],
+            textIdx: this.currentTextIndex,
             background: song.background
         }
     }
 
     get defaultSongInfo(): SongInfo {
-        return {title: "제목을 입력하세요", texts: ["가사를 입력하세요"], background: "", titleColor: "#fff", titleStroke: "#000", titleShadow: "#0000", textColor: "#fff", textStroke: "#000", textShadow: "#0000"}
+        return {
+            title: "제목을 입력하세요",
+            texts: [{"title": "제목을 입력하세요", "text": "가사를 입력하세요"}],
+            background: "",
+            titleColor: "#fff",
+            titleStroke: "#000",
+            titleShadow: "#0000",
+            textColor: "#fff",
+            textStroke: "#000",
+            textShadow: "#0000"}
     }
 
     public getSongWithId(id: number): SongInfo {
@@ -205,7 +234,6 @@ class SongSetting {
         
         if (!files || files.length === 0) return
             
-
         for(const file of files) {
             if(file.type.includes('json')) {
 
@@ -226,10 +254,18 @@ class SongSetting {
         this._imgUrls[file.name] = {file: file, url: URL.createObjectURL(file)}
     }
 
-    private loadJson(fileName: string, songInfos: SongInfo[]) {
+    private loadJson(fileName: string, songInfos: SongInfoOnJSON[]) {
         const songDatas: SongData[] = []
+
+        // const original = this._jsonFiles[fileName]
+        // if(original) original.forEach(songData => this.deleteSong(songData.id, false))
+        // // 이미 한번 로드된 파일 이름이면 기존 파일 내 노래 전부 삭제
+        // 삭제 안하고 그냥 유령 슬라이드 남기는걸로 변경
+
         songInfos.forEach(songInfo => {
-            const idAdded = {...songInfo, id: this.nextId}
+            
+            const idAdded = {...convertJSONtoSongInfo(songInfo), id: this.nextId}
+
             this.addSong(idAdded)
             songDatas.push(idAdded)
         })
@@ -281,7 +317,7 @@ class SongSetting {
         if(textIndex < 0) textIndex = 0
         else if(textIndex >= song.texts.length) textIndex = song.texts.length
 
-        this._songs[songId] = {...song, texts: song.texts.toSpliced(textIndex, 0, "가사를 입력하세요")}
+        this._songs[songId] = {...song, texts: song.texts.toSpliced(textIndex, 0, {"title": song.title, "text": "가사를 입력하세요"})}
 
         if(select) this._currentTextIndex = textIndex
     }
@@ -335,11 +371,12 @@ class SongSetting {
         const original = this._songs[modified.id]
         if(!original) return
 
-        original.texts[modified.textIdx] = modified.text
-
-
-        this._songs[modified.id] = {...original, ...modified, background: this.getImgName(modified.background)}
-
+        this._songs[modified.id] = {
+            ...original,
+            ...modified,
+            texts: [...modified.texts],
+            background: this.getImgName(modified.background)
+        }
     }
 
     public manageFile(managementResult: ManagementResult) {

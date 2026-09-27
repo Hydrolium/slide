@@ -15,13 +15,12 @@ export class Slide {
         created_slideLayer.style.backgroundImage = `url(${context.background})`
         created_slideLayerContainer.appendChild(created_slideLayer)
 
-        const created_slideTitle = $createDiv(context.title, 'slide-title')
+        const created_slideTitle = $createDiv(context.texts[context.textIdx].title, 'slide-title')
         created_slideTitle.style.color = context.titleColor
         created_slideTitle.style.webkitTextStroke = `1px ${context.titleStroke}`
         created_slideTitle.style.textShadow = `3px 3px 0 ${context.titleShadow}`
 
-
-        const created_slideText = $createDiv(context.text, 'slide-text')
+        const created_slideText = $createDiv(context.texts[context.textIdx].text, 'slide-text')
         created_slideText.style.color = context.textColor
         created_slideText.style.webkitTextStroke = `1px ${context.textStroke}`
         created_slideText.style.textShadow = `2px 2px 0 ${context.textShadow}`

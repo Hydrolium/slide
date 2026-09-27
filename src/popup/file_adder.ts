@@ -77,6 +77,11 @@ export class FileAdderPopup extends PopupGenerator<File[]> {
         element_popup.appendChild(created_dropFileBox)
         element_popup.appendChild(created_addedFileList)
 
+        element_popup.appendChild(
+            $createDiv('기존에 추가한 동명의 파일 업로드 시 기존 파일은 삭제됩니다.\n기존 json 파일 내 노래와 관련된 슬라이드는 삭제되지 않습니다.', 'tip'),
+
+        )
+
         this.addNegativeButton('취소', () => {
             resolve(null)
         })

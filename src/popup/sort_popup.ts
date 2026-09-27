@@ -72,6 +72,8 @@ export class SlideSorterPopup extends PopupGenerator<number[]> {
         element_sortSlideBox.replaceChildren(
             ...this.idList.map(id => this.createItem(element_sortSlideBox, id))
         )
+
+        if(this.idList.length === 0) element_sortSlideBox.appendChild($createDiv('슬라이드가 없습니다.\n메인화면의 [추가하기]로 새 슬라이드를 생성하거나 [파일추가]로 파일을 업로드하세요.', 'tip'))
     }
 
     protected draw(element_popup: HTMLDivElement, resolve: (value: number[] | null) => void): void {

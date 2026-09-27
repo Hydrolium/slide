@@ -11,8 +11,12 @@ interface SplitedColor {
 }
 
 type Mutable<T> = {
-    -readonly [K in keyof T]: T[K];
-}
+  -readonly [K in keyof T]: T[K] extends readonly (infer U)[]
+    ? Mutable<U>[]
+    : T[K] extends object
+    ? Mutable<T[K]>
+    : T[K];
+} // readonly 속성 전부 삭제(재귀형식)
 
 export class EditorPopup extends PopupGenerator<ModifiedSongData> {
 
@@ -21,7 +25,7 @@ export class EditorPopup extends PopupGenerator<ModifiedSongData> {
 
     constructor(songData: ModifiedSongData, imgs: Record<string, ImageInfo>) {
         super()
-        this.songData = {...songData}
+        this.songData = {...songData, texts: [...songData.texts]}
         this.imgs = imgs
     }
 
@@ -187,11 +191,15 @@ export class EditorPopup extends PopupGenerator<ModifiedSongData> {
 
         const created_titleInput = created_textInputs.appendChild(EditorPopup.createTextInput(''))
         created_titleInput.value = this.songData.title
-        created_titleInput.onchange = () => this.songData.title = created_titleInput.value
+        created_titleInput.onchange = () => {
+            this.songData.texts[this.songData.textIdx].title = created_titleInput.value
+        }
 
         const created_textArea = created_textInputs.appendChild(EditorPopup.createTextArea(''))
-        created_textArea.value = this.songData.text
-        created_textArea.onchange = () => this.songData.text = created_textArea.value
+        created_textArea.value = this.songData.texts[this.songData.textIdx].text
+        created_textArea.onchange = () => {
+            this.songData.texts[this.songData.textIdx].text = created_textArea.value
+        }
 
         created_editorInputsBox.append(
             EditorPopup.createdColorEditorBox(
@@ -246,7 +254,7 @@ export class EditorPopup extends PopupGenerator<ModifiedSongData> {
         }
     
         element_popup.appendChild(
-            $createDiv('색상, 제목, 배경은 변경시 같은 노래가 전부 변경됩니다.', 'tip')
+            $createDiv('색상, 배경은 변경시 같은 노래가 전부 변경됩니다.', 'tip')
         )
 
         this.addNegativeButton('취소', () => {
