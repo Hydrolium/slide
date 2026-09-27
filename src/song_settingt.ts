@@ -365,7 +365,34 @@ class SongSetting {
         })
     }
 
-    public async getExportLink() {
+    public async getExportSongLink(id: number) {
+        const song = this._songs[id]
+            
+        const exportedSong = { // id가 남아있는 경우도 있어서 이렇게 해야함
+            title: song.title,
+            texts: song.texts,
+            background: song.background,
+            titleColor: song.titleColor,
+            titleStroke: song.titleStroke,
+            titleShadow: song.titleShadow,
+            textColor: song.textColor,
+            textStroke: song.textStroke,
+            textShadow: song.textShadow
+        }
+
+        const zip = new JSZip()
+    
+        const jsonString = JSON.stringify(exportedSong, null, 2)
+        zip.file(`${song.title}.json`, jsonString)
+
+        const img = this._imgUrls[song.background]
+        if(img) zip.file(song.background, img.url)
+        
+        const zipBlob = await zip.generateAsync({type: 'blob'})
+        return URL.createObjectURL(zipBlob)
+    }
+
+    public async getExportAllLink() {
         const exportList: SongInfo[] = []
         const usedImgs = new Set<string>()
         

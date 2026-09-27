@@ -7,10 +7,11 @@ import { FileAdderPopup } from './popup/file_adder'
 import { SettingEditorPopup } from './popup/setting_popup'
 import { EditorPopup } from './popup/editor_popup'
 import { SlideAddingOptionSetterPopup } from './popup/select_slide_adding_option_popup'
+import { SlideDeletingOptionSetterPopup } from './popup/select_slide_deleting_option_popup'
+import { FileExportingOptionSetterPopup } from './popup/select_file_exporting_option_popup'
 
 import './style/slide_style.css'
 import './style/slide_list.css'
-import { SlideDeletingOptionSetterPopup } from './popup/select_slide_deleting_option_popup'
 
 export const $createDiv = (text: string, ...classes: string[]) => {
     const element_div: HTMLDivElement = document.createElement('div')
@@ -197,16 +198,31 @@ addFooterButton('삭제하기', 'imgs/footer_icons/delete_slide.svg',
 addFooterButton('내보내기', 'imgs/footer_icons/export_slides.svg',
   async () => {
 
-    const downloadUrl = await songSetting.getExportLink()
+    const m = new Map<number, string>()
+    songSetting.order.forEach(id => m.set(id, songSetting.songs[id].title))
 
+    const result = await FileExportingOptionSetterPopup.show(m)
+
+    if(result == null) return
+
+    let downloadUrl
     const link = document.createElement('a')
-    link.href = downloadUrl
-    link.download = 'settings'
-    document.body.appendChild(link)
+
+    if(result == FileExportingOptionSetterPopup.EXPORT_ALL) {
+      downloadUrl = await songSetting.getExportAllLink()
+      link.href = downloadUrl
+      link.download = new Intl.DateTimeFormat('ko-KR', {year: 'numeric', month: '2-digit', day: '2-digit'}).format(new Date()).replace(/\.$/, '') + '.zip'
+    } else {
+      downloadUrl = await songSetting.getExportSongLink(result)
+      link.href = downloadUrl
+      link.download = songSetting.songs[result].title ?? 'UNKNOWN'
+    }
+    
     link.click()
 
-    document.body.removeChild(link)
-    URL.revokeObjectURL(downloadUrl)
+    setTimeout(() => {
+      URL.revokeObjectURL(downloadUrl)
+    }, 100)
 
   })
 

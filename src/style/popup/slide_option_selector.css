@@ -45,4 +45,22 @@
       }
     }
   }
+
+  .button-box {
+    width: 100%;
+    max-height: 250px;
+
+    padding-top: 20px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    overflow: auto auto;
+
+    > button {
+
+      flex-shrink: 0;
+    }
+  }
 }
