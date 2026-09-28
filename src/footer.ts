@@ -8,7 +8,6 @@ const createFooterButton = (label: string, svgSrc: string,  onclick: (e: Event) 
     const created_menuButton = $create('div', 'menu-button')
 
     const created_button = $create('button')
-    // created_button.style.backgroundImage = `url(${svgSrc})`
 
     const created_iconBackground = $create('span', 'icon-background')
 
