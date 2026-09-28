@@ -289,15 +289,15 @@ export class SongSetting {
     }
 
     public insertNewSongBeforeCurrent(): void {
-        if(this._currentSongId === null) return
-        const idx = this._order.indexOf(this._currentSongId)
-        if(idx !== null) this.insertNewSongAt(idx, true)
+
+        const idx = (this._currentSongId !== null) ? this._order.indexOf(this._currentSongId) : 0
+        if(idx !== -1) this.insertNewSongAt(idx, true)
     }
 
     public insertNewSongAfterCurrent(): void {
         if(this._currentSongId === null) return
         const idx = this._order.indexOf(this._currentSongId)
-        if(idx !== null) this.insertNewSongAt(idx + 1, true)
+        if(idx !== -1) this.insertNewSongAt(idx + 1, true)
     }
 
     private insertNewTextAt(songId: number, textIndex: number, select: boolean = true): void {
