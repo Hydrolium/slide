@@ -9,7 +9,7 @@ export class SlideSorterPopup extends PopupGenerator<number[]> {
     private idList: number[] = []
     private infoMap: Record<number, SongInfo> = {}
 
-    constructor(idList: number[], infoMap: Record<number, SongInfo>) {
+    constructor(idList: readonly number[], infoMap: Readonly<Record<number, SongInfo>>) {
         super()
 
         this.idList = [...idList]

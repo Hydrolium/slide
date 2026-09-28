@@ -187,7 +187,7 @@ export class EditorPopup extends PopupGenerator<ModifiedSongData> {
         const created_editorInputsBox = element_popup.appendChild($create('div', 'editor-inputs-box'))
 
         const created_textInputs = $create('div', 'text-inputs')
-        created_textInputs.style.backgroundImage = `url(${this.songData.background})`
+        created_textInputs.style.backgroundImage = `url(${this.imgs[this.songData.background].url})`
 
         const created_titleInput = created_textInputs.appendChild(EditorPopup.createTextInput(''))
         created_titleInput.value = this.songData.texts[this.songData.textIdx].title
@@ -249,7 +249,7 @@ export class EditorPopup extends PopupGenerator<ModifiedSongData> {
             if(result) {
                 const url = this.imgs[result].url
                 created_textInputs.style.backgroundImage = `url(${url})`
-                this.songData.background = url
+                this.songData.background = result
             }
         }
     

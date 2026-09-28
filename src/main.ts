@@ -1,6 +1,6 @@
 import { Slide } from './slide'
 import { SlideSorterPopup } from './popup/sort_popup'
-import { songSetting, type SongContext } from './song_setting'
+import { SongSetting, type SongContext } from './song_setting'
 import { FileManagerPopup } from './popup/manage_file'
 import { addFooterButton } from './footer'
 import { FileAdderPopup } from './popup/file_adder'
@@ -36,6 +36,7 @@ export const $create = <K extends keyof HTMLElementTagNameMap>(tag: K, ...classe
     return created
 }
 
+const songSetting = new SongSetting()
 let slideShowWindow: Window | null = null;
 
 const element_slideBox = document.querySelector<HTMLUListElement>("#slide-box")
@@ -71,15 +72,16 @@ const updateSong = () => {
 
     const song = songSetting.getSongWithId(id)
 
+    if(!song) return
+
     song.texts.forEach((_text, idx) => {
 
       const context: SongContext = {
           ...song,
-          textIdx: idx,
-          background: songSetting.imgUrls[song.background]?.url
+          textIdx: idx
         }
 
-      const slide = new Slide(context, id === songSetting.currentSongId && idx === songSetting.currentTextIndex).render()
+      const slide = new Slide(context, songSetting.imgUrls[song.background]?.url, id === songSetting.currentSongId && idx === songSetting.currentTextIdx).render()
 
       slide.addEventListener("click", () => {
         songSetting.goto(id, idx)
@@ -274,4 +276,4 @@ window.addEventListener('message', (event: MessageEvent) => {
       break
   }
 
-});
+})

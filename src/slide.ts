@@ -5,14 +5,14 @@ export class Slide {
 
     private element_frame: HTMLDivElement = $createDiv('', 'slide-frame', 'small-box')
 
-    constructor(context: SongContext, isSelected: boolean) {
+    constructor(context: SongContext, backgroundUrl: string, isSelected: boolean) {
 
         if(isSelected) this.element_frame.classList.add('selected')
 
         const created_slideLayerContainer = $createDiv('', 'slide-layer-container')
 
         const created_slideLayer = $createDiv('', 'slide-layer', 'visible')
-        created_slideLayer.style.backgroundImage = `url(${context.background})`
+        created_slideLayer.style.backgroundImage = `url(${backgroundUrl})`
         created_slideLayerContainer.appendChild(created_slideLayer)
 
         const created_slideTitle = $createDiv(context.texts[context.textIdx].title, 'slide-title')

@@ -5,9 +5,9 @@ import '../style/popup/img_selector.css'
 import { $create, $createDiv } from "../main"
 
 export class ImgSelectorPopup extends PopupGenerator<string> {
-    private readonly imgs: Record<string, ImageInfo>
+    private readonly imgs: Readonly<Record<string, ImageInfo>>
 
-    constructor(imgs: Record<string, ImageInfo>) {
+    constructor(imgs: Readonly<Record<string, ImageInfo>>) {
         super()
         this.imgs = imgs
     }

@@ -2,7 +2,7 @@ import JSZip from "jszip"
 
 export interface ImageInfo {
     readonly file: File
-    url: string
+    readonly url: string
 }
 
 export interface SongFrame {
@@ -61,79 +61,66 @@ export interface ManagementResult {
     readonly refreshedJsons: Set<string> // 새로고침된 json 파일 이름 set
 }
 
-class SongSetting {
+export class SongSetting {
 
     private _jsonFiles: Record<string, SongData[]> = {} // 파일 이름: 곡 정보 리스트
 
     private _songs: Record<number, SongInfo> = {} // 노래 ID: 정보
     private _order: number[] = [] // 노래 ID 리스트(순서)
-    private _currentSongId: number = -1 // 현재 노래 ID
-    private _currentTextIndex: number = 0 // 현재 노래 가사 인덱스
+    private _currentSongId: number | null = null // 현재 노래 ID
+    private _currentTextIdx: number | null = null // 현재 노래 가사 인덱스
 
     private _lastID = 0
 
     private _imgUrls: Record<string, ImageInfo> = {}
 
-    get nextId(): number {
+    private get nextId(): number {
         return this._lastID++
     }
 
-    get jsonFiles(): Record<string, SongData[]> {
+    get jsonFiles(): Readonly<Record<string, readonly SongData[]>> {
         return this._jsonFiles
     }
 
-    get songs(): Record<number, SongInfo> {
+    get songs(): Readonly<Record<number, SongInfo>> {
         return this._songs
     }
 
-    get order(): number[] {
+    get order(): readonly number[] {
         return this._order
     }
 
-    get currentSongId(): number {
-        
-        if(!this._songs[this._currentSongId]) {
-            if(this.isEmpty()) this._currentSongId = -1
-            else this._currentSongId = Number(Object.keys(this._songs)[0])
-        }
-        if(this.isEmpty()) this._currentSongId = -1        
-
+    get currentSongId(): number | null {
         return this._currentSongId
-        
     }
 
-    get currentSongOrder(): number {
-        if(this.isEmpty()) return 0;
-        return this._order.indexOf(this._currentSongId)
-    }
-
-    get currentTextIndex(): number {
-
-        if(!this._songs[this.currentSongId]?.texts) this._currentTextIndex = 0
-
-        return this._currentTextIndex
-    }
-
-    get imgUrls(): Record<string, ImageInfo> {
+    get imgUrls(): Readonly<Record<string, ImageInfo>> {
         return this._imgUrls
     }
 
-    get currentSong(): SongInfo {
-        return this._songs[this._currentSongId]
+    private get currentSong(): SongInfo | null {
+        return (this._currentSongId === null) ? null : (this._songs[this._currentSongId] ?? null)
     }
 
-    get currentContext(): SongContext {
-
-        const song = this._songs[this.currentSongId]
-
-        return {
-            ...song,
-            textIdx: this.currentTextIndex,
-            background: song.background
-        }
+    get currentTextIdx(): number | null {
+        return this._currentTextIdx
     }
 
-    get defaultSongInfo(): SongInfo {
+    get currentContext(): SongContext | null {
+
+        const song = this.currentSong
+
+        if(song && this.currentTextIdx !== null)
+            return {
+                ...song,
+                textIdx: this.currentTextIdx,
+                background: song.background
+            }
+
+        return null
+    }
+
+    private get _defaultSongInfo(): SongInfo {
         return {
             title: "제목을 입력하세요",
             texts: [{"title": "제목을 입력하세요", "text": "가사를 입력하세요"}],
@@ -146,19 +133,13 @@ class SongSetting {
             textShadow: "#0000"}
     }
 
-    public getSongWithId(id: number): SongInfo {
+    public getSongWithId(id: number): SongInfo | null {
         const song = this._songs[id]
+        if(!song) return null
         return {
             ...song,
             background: song.background
         }
-    }
-
-    public resetSetting() {
-        this._songs = {}
-        this._order = []
-        this._currentSongId = -1
-        this._currentTextIndex = -1
     }
 
     public isEmpty() {
@@ -166,22 +147,22 @@ class SongSetting {
     }
 
     public previous(): SongContext | null {
-        if(this.isEmpty()) return null
+        if(this._currentSongId === null || this._currentTextIdx === null || this.isEmpty()) return null
         
-        this._currentTextIndex--;
+        this._currentTextIdx--;
 
-        if(this.currentTextIndex < 0 ) {
-            const songIdx = this.order.indexOf(this.currentSongId) - 1
+        if(this._currentTextIdx < 0 ) { // 이전 가사가 없으면 이전 노래 마지막 가사로 이동
+            const currentSongIdx = this._order.indexOf(this._currentSongId)
 
-            if(songIdx < 0) {
-                this._currentTextIndex = 0
+            if(currentSongIdx <= 0) { // 현재 노래를 찾을수 없거나(indexOf: -1) 첫번째 노래였다면(indexOf: 0)
+                this._currentTextIdx = 0 // 원상복구
                 return null
             }
 
-            const songTitle = this.order[songIdx]
+            const songId = this._order[currentSongIdx -1] // 이전 노래 id
 
-            this._currentSongId = songTitle
-            this._currentTextIndex = songSetting.songs[songTitle].texts.length - 1
+            this._currentSongId = songId
+            this._currentTextIdx = this._songs[songId].texts.length - 1
         }
 
         return this.currentContext
@@ -189,22 +170,22 @@ class SongSetting {
 
     public next(): SongContext | null {
 
-        if(this.isEmpty()) return null
+        if(this._currentSongId === null || this._currentTextIdx === null || this.isEmpty()) return null
         
         const song = this._songs[this._currentSongId]
 
-        this._currentTextIndex++;
+        this._currentTextIdx++;
 
-        if(this._currentTextIndex >= song.texts.length) {
-            const songIdx = this._order.indexOf(this._currentSongId) + 1
+        if(this._currentTextIdx >= song.texts.length) { // 다음 가사가 없으면 다음 노래 첫번째 가사로 이동
+            const currentSongIdx = this._order.indexOf(this._currentSongId) // 현재 노래 인덱스
 
-            if(songIdx >= this._order.length) {
-                this._currentTextIndex = song.texts.length -1
+            if(currentSongIdx === -1 || currentSongIdx >= this._order.length - 1) { // 현재 노래가 없거나 마지막 노래였으면
+                this._currentTextIdx = song.texts.length -1 // 원상복구
                 return null
             }
 
-            this._currentSongId = this.order[songIdx]
-            this._currentTextIndex = 0
+            this._currentSongId = this._order[currentSongIdx + 1]
+            this._currentTextIdx = 0
         }
 
 
@@ -212,21 +193,29 @@ class SongSetting {
     }
     
     public goto(id: number, textIdx: number) {
+        const song = this._songs[id]
+        if(!song || textIdx < 0 || textIdx >= song.texts.length) return
+
         this._currentSongId = id
-        this._currentTextIndex = textIdx
+        this._currentTextIdx = textIdx
     }
 
     public resortOrder (ids: number[]) {
     
         const nts = new Set(ids)
 
-        songSetting.order.forEach(t => {
+        this._order.forEach(t => {
             if(!nts.has(t)) {
-                delete songSetting.songs[t]
+                delete this._songs[t]
             }
         })
 
-        songSetting._order = [...ids]
+        this._order = [...ids]
+
+        if(this._currentSongId !== null && !nts.has(this._currentSongId)) {
+            this._currentSongId = this._order[0] ?? null
+            this._currentTextIdx = (this._currentSongId !== null) ? 0 : null 
+        }
 
     }
 
@@ -282,31 +271,28 @@ class SongSetting {
         this._songs[song.id] = {...song}
     }
 
-    private getImgName(url: string): string {
-        for(const [name, info] of Object.entries(this._imgUrls)) 
-            if(info.url === url) return name
-
-       return ""
-    }
-
     private insertNewSongAt(index: number, select: boolean = true) {
         const id = this.nextId
 
         this._order = this._order.toSpliced(index, 0, id)
-        this._songs[id] = {...this.defaultSongInfo}
+        this._songs[id] = {...this._defaultSongInfo}
 
         if(select){
             this._currentSongId = id
-            this._currentTextIndex = 0
+            this._currentTextIdx = 0
         }
     }
 
     public insertNewSongBeforeCurrent() {
-        this.insertNewSongAt(this.currentSongOrder, true)
+        if(this._currentSongId === null) return
+        const idx = this._order.indexOf(this._currentSongId)
+        if(idx !== null) this.insertNewSongAt(idx, true)
     }
 
     public insertNewSongAfterCurrent() {
-        this.insertNewSongAt(this.currentSongOrder + 1, true)
+        if(this._currentSongId === null) return
+        const idx = this._order.indexOf(this._currentSongId)
+        if(idx !== null) this.insertNewSongAt(idx + 1, true)
     }
 
     private insertNewTextAt(songId: number, textIndex: number, select: boolean = true) {
@@ -319,15 +305,17 @@ class SongSetting {
 
         this._songs[songId] = {...song, texts: song.texts.toSpliced(textIndex, 0, {"title": song.title, "text": "가사를 입력하세요"})}
 
-        if(select) this._currentTextIndex = textIndex
+        if(select) this._currentTextIdx = textIndex
     }
 
     public insertNewTextBeforeCurrent() {
-        this.insertNewTextAt(this._currentSongId, songSetting._currentTextIndex)
+        if(this._currentSongId !== null && this._currentTextIdx !== null)
+            this.insertNewTextAt(this._currentSongId, this._currentTextIdx)
     }
 
     public insertNewTextAfterCurrent() {
-        this.insertNewTextAt(this._currentSongId, songSetting._currentTextIndex + 1)
+        if(this._currentSongId !== null && this._currentTextIdx !== null)
+            this.insertNewTextAt(this._currentSongId, this._currentTextIdx + 1)
     }
 
     private deleteSong(id: number, select: boolean = true) {
@@ -338,11 +326,14 @@ class SongSetting {
         delete this._songs[id]
         this._order = this._order.filter(v => v != id)
 
-        if(select) this._currentSongId = this._order[index] ?? this._order[index -1] ?? -1
+        if(select) {
+            this._currentSongId = this._order[index] ?? this._order[index -1] ?? null
+            if(this._currentSongId === null) this._currentTextIdx = null
+        }
     }
 
     public deleteCurrentSong() {
-        this.deleteSong(this.currentSongId)
+        if(this._currentSongId) this.deleteSong(this._currentSongId)
     }
 
     private deleteText(songId: number, textIndex: number, select: boolean = true) {
@@ -360,22 +351,21 @@ class SongSetting {
 
         this._songs[songId] = {...song, texts: newTexts}
 
-        if(select) this._currentTextIndex = (textIndex >= newTexts.length) ? newTexts.length -1 : textIndex
+        if(select) this._currentTextIdx = (textIndex >= newTexts.length) ? newTexts.length -1 : textIndex
     }
 
     public deleteCurrentText() {
-        this.deleteText(this.currentSongId, this.currentTextIndex)
+        if(this._currentSongId && this._currentTextIdx !== null) this.deleteText(this._currentSongId, this._currentTextIdx)
     }
 
-    public modifySong(modified: ModifiedSongData) { // background 속성은 url로 들어와서 name으로 변환 필요
+    public modifySong(modified: ModifiedSongData) {
         const original = this._songs[modified.id]
         if(!original) return
 
         this._songs[modified.id] = {
             ...original,
             ...modified,
-            texts: [...modified.texts],
-            background: this.getImgName(modified.background)
+            texts: [...modified.texts]
         }
     }
 
@@ -402,20 +392,10 @@ class SongSetting {
         })
     }
 
-    public async getExportSongLink(id: number) {
-        const song = this._songs[id]
-            
-        const exportedSong = { // id가 남아있는 경우도 있어서 이렇게 해야함
-            title: song.title,
-            texts: song.texts,
-            background: song.background,
-            titleColor: song.titleColor,
-            titleStroke: song.titleStroke,
-            titleShadow: song.titleShadow,
-            textColor: song.textColor,
-            textStroke: song.textStroke,
-            textShadow: song.textShadow
-        }
+    public async getExportSongLink(exportedId: number) {
+        const song = this._songs[exportedId]
+
+        const {id, ...exportedSong} = song as SongData
 
         const zip = new JSZip()
     
@@ -423,7 +403,7 @@ class SongSetting {
         zip.file(`${song.title}.json`, jsonString)
 
         const img = this._imgUrls[song.background]
-        if(img) zip.file(song.background, img.url)
+        if(img) zip.file(song.background, img.file)
         
         const zipBlob = await zip.generateAsync({type: 'blob'})
         return URL.createObjectURL(zipBlob)
@@ -433,20 +413,12 @@ class SongSetting {
         const exportList: SongInfo[] = []
         const usedImgs = new Set<string>()
         
-        this._order.forEach(id => {
-            const song = this._songs[id]
+        this._order.forEach(targetId => {
+            const song = this._songs[targetId]
+
+            const {id, ...exportedSong} = song as SongData
             
-            exportList.push({ // id가 남아있는 경우도 있어서 이렇게 해야함
-                title: song.title,
-                texts: song.texts,
-                background: song.background,
-                titleColor: song.titleColor,
-                titleStroke: song.titleStroke,
-                titleShadow: song.titleShadow,
-                textColor: song.textColor,
-                textStroke: song.textStroke,
-                textShadow: song.textShadow
-            })
+            exportList.push(exportedSong)
             usedImgs.add(song.background)
         })
     
@@ -463,5 +435,3 @@ class SongSetting {
         return URL.createObjectURL(zipBlob)
     }
 }
-
-export const songSetting = new SongSetting()
