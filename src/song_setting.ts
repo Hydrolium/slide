@@ -332,8 +332,7 @@ export class SongSetting {
 
     private deleteSong(id: number, select: boolean = true): void {
         const index = this._order.indexOf(id)
-        console.log(index)
-        if(index == -1) return
+        if(index === -1) return
 
         delete this._songs[id]
         this._order = this._order.filter(v => v != id)
@@ -389,7 +388,7 @@ export class SongSetting {
             const json = this._jsonFiles[fileName]
             if(!json) return
             
-            if(option == "CASCADE") json.forEach(songData => this.deleteSong(songData.id, false)) // CASCADE 옵션으로 삭제 시 파일 내 모든 곡들도 삭제함.
+            if(option === "CASCADE") json.forEach(songData => this.deleteSong(songData.id, false)) // CASCADE 옵션으로 삭제 시 파일 내 모든 곡들도 삭제함.
 
             delete this._jsonFiles[fileName]
         })

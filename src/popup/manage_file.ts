@@ -41,7 +41,7 @@ export class FileManagerPopup extends PopupGenerator<ManagementResult> {
                 created_refreshLabel.style.display = 'none'
 
                 this.managementResult.refreshedJsons.delete(fileName) // 혹시 모를 중복 제거
-                created_removeLabel.classList.add((result == "CASCADE") ? 'cascade' : 'only-file')
+                created_removeLabel.classList.add((result === "CASCADE") ? 'cascade' : 'only-file')
                 this.managementResult.removedJsons[fileName] = result
             }
             else {

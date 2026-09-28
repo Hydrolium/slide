@@ -211,12 +211,12 @@ addFooterButton('내보내기', 'imgs/footer_icons/export_slides.svg',
 
     const result = await FileExportingOptionSetterPopup.show(m)
 
-    if(result == null) return
+    if(result === null) return
 
     let downloadUrl
     const link = document.createElement('a')
 
-    if(result == FileExportingOptionSetterPopup.EXPORT_ALL) {
+    if(result === FileExportingOptionSetterPopup.EXPORT_ALL) {
       downloadUrl = await songSetting.getExportAllLink()
       link.href = downloadUrl
       link.download = new Intl.DateTimeFormat('ko-KR', {year: 'numeric', month: '2-digit', day: '2-digit'}).format(new Date()).replace(/\.$/, '') + '.zip'

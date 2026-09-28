@@ -27,7 +27,7 @@ export class SlideSorterPopup extends PopupGenerator<readonly number[]> {
 
     private moveDown(element_sortSlideBox: HTMLUListElement, targetId: number): void {
         const targetIdx = this.idList.indexOf(targetId)
-        if(targetIdx == -1 || targetIdx >= this.idList.length - 1) return
+        if(targetIdx === -1 || targetIdx >= this.idList.length - 1) return
 
         [this.idList[targetIdx], this.idList[targetIdx + 1]] = [this.idList[targetIdx + 1], this.idList[targetIdx]]
 
