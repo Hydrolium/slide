@@ -19,5 +19,11 @@
   },
   "dependencies": {
     "jszip": "^3.10.2"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "semi": true,
+    "tabWidth": 2,
+    "trailingComma": "all"
   }
 }

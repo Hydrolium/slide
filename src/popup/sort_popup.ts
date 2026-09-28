@@ -1,96 +1,119 @@
-import { $create, $createDiv } from "../main"
-import type { SongInfo } from "../song_setting"
-import { PopupGenerator } from "./popup"
+import { $create, $createDiv } from '../main';
+import type { SongInfo } from '../song_setting';
+import { PopupGenerator } from './popup';
 
-import '../style/popup/slide_sorter.css'
+import '../style/popup/slide_sorter.css';
 
 export class SlideSorterPopup extends PopupGenerator<readonly number[]> {
+  private idList: number[] = [];
+  private infoMap: Record<number, SongInfo> = {};
 
-    private idList: number[] = []
-    private infoMap: Record<number, SongInfo> = {}
+  constructor(
+    idList: readonly number[],
+    infoMap: Readonly<Record<number, SongInfo>>,
+  ) {
+    super();
 
-    constructor(idList: readonly number[], infoMap: Readonly<Record<number, SongInfo>>) {
-        super()
+    this.idList = [...idList];
+    this.infoMap = { ...infoMap };
+  }
 
-        this.idList = [...idList]
-        this.infoMap = {...infoMap}
-    }
+  private moveUp(
+    element_sortSlideBox: HTMLUListElement,
+    targetId: number,
+  ): void {
+    const targetIdx = this.idList.indexOf(targetId);
+    if (targetIdx <= 0) return;
 
-    private moveUp(element_sortSlideBox: HTMLUListElement, targetId: number): void {
-        const targetIdx = this.idList.indexOf(targetId)
-        if(targetIdx <= 0) return
+    [this.idList[targetIdx], this.idList[targetIdx - 1]] = [
+      this.idList[targetIdx - 1],
+      this.idList[targetIdx],
+    ];
 
-        [this.idList[targetIdx], this.idList[targetIdx - 1]] = [this.idList[targetIdx - 1], this.idList[targetIdx]]
+    this.renderSlideBox(element_sortSlideBox);
+  }
 
-        this.renderSlideBox(element_sortSlideBox)
-    }
+  private moveDown(
+    element_sortSlideBox: HTMLUListElement,
+    targetId: number,
+  ): void {
+    const targetIdx = this.idList.indexOf(targetId);
+    if (targetIdx === -1 || targetIdx >= this.idList.length - 1) return;
 
-    private moveDown(element_sortSlideBox: HTMLUListElement, targetId: number): void {
-        const targetIdx = this.idList.indexOf(targetId)
-        if(targetIdx === -1 || targetIdx >= this.idList.length - 1) return
+    [this.idList[targetIdx], this.idList[targetIdx + 1]] = [
+      this.idList[targetIdx + 1],
+      this.idList[targetIdx],
+    ];
 
-        [this.idList[targetIdx], this.idList[targetIdx + 1]] = [this.idList[targetIdx + 1], this.idList[targetIdx]]
+    this.renderSlideBox(element_sortSlideBox);
+  }
 
-        this.renderSlideBox(element_sortSlideBox)
-    }
-    
-    private createItem(element_sortSlideBox: HTMLUListElement, id: number): HTMLLIElement {
-        const created_li = $create('li', 'sort-item')
+  private createItem(
+    element_sortSlideBox: HTMLUListElement,
+    id: number,
+  ): HTMLLIElement {
+    const created_li = $create('li', 'sort-item');
 
-        const created_buttonBox = $create('div', "sort-up-down-buttons")
+    const created_buttonBox = $create('div', 'sort-up-down-buttons');
 
+    const created_upButton = $create('button', 'sort-up-button');
+    created_upButton.addEventListener('click', () => {
+      this.moveUp(element_sortSlideBox, id);
+    });
+    created_buttonBox.appendChild(created_upButton);
 
-        const created_upButton = $create('button', 'sort-up-button')
-        created_upButton.addEventListener('click', () => {
-            this.moveUp(element_sortSlideBox, id)
-        })
-        created_buttonBox.appendChild(created_upButton)
+    const created_downButton = $create('button', 'sort-down-button');
+    created_downButton.addEventListener('click', () => {
+      this.moveDown(element_sortSlideBox, id);
+    });
+    created_buttonBox.appendChild(created_downButton);
 
-        const created_downButton = $create('button', 'sort-down-button')
-        created_downButton.addEventListener('click', () => {
-            this.moveDown(element_sortSlideBox, id)
-        })
-        created_buttonBox.appendChild(created_downButton)
+    const created_removeButton = $create('button', 'sort-remove-button');
+    created_removeButton.addEventListener('click', () => {
+      this.idList = this.idList.filter((i) => i != id);
+      this.renderSlideBox(element_sortSlideBox);
+    });
+    created_buttonBox.appendChild(created_removeButton);
 
-        const created_removeButton = $create('button', 'sort-remove-button')
-        created_removeButton.addEventListener('click', () => {
-            this.idList = this.idList.filter(i => i != id)
-            this.renderSlideBox(element_sortSlideBox)
-        }
-            
-        )
-        created_buttonBox.appendChild(created_removeButton)
+    created_li.appendChild(created_buttonBox);
 
-        created_li.appendChild(created_buttonBox)
+    created_li.appendChild(
+      $createDiv(this.infoMap[id].title, 'sort-item-text'),
+    );
 
-        created_li.appendChild($createDiv(this.infoMap[id].title, 'sort-item-text'))
+    return created_li;
+  }
 
-        return created_li
-    }
+  private renderSlideBox(element_sortSlideBox: HTMLUListElement): void {
+    element_sortSlideBox.replaceChildren(
+      ...this.idList.map((id) => this.createItem(element_sortSlideBox, id)),
+    );
 
-    private renderSlideBox(element_sortSlideBox: HTMLUListElement): void {
-        element_sortSlideBox.replaceChildren(
-            ...this.idList.map(id => this.createItem(element_sortSlideBox, id))
-        )
+    if (this.idList.length === 0)
+      element_sortSlideBox.appendChild(
+        $createDiv(
+          '슬라이드가 없습니다.\n메인화면의 [추가하기]로 새 슬라이드를 생성하거나 [파일추가]로 파일을 업로드하세요.',
+          'tip',
+        ),
+      );
+  }
 
-        if(this.idList.length === 0) element_sortSlideBox.appendChild($createDiv('슬라이드가 없습니다.\n메인화면의 [추가하기]로 새 슬라이드를 생성하거나 [파일추가]로 파일을 업로드하세요.', 'tip'))
-    }
+  protected draw(
+    element_popup: HTMLDivElement,
+    resolve: (value: readonly number[] | null) => void,
+  ): void {
+    const created_sortSlideBox = $create('ul', 'sort-slide-box');
 
-    protected draw(element_popup: HTMLDivElement, resolve: (value: readonly number[] | null) => void): void {
+    element_popup.appendChild(created_sortSlideBox);
 
-        const created_sortSlideBox = $create('ul', 'sort-slide-box')
+    this.renderSlideBox(created_sortSlideBox);
 
-        element_popup.appendChild(created_sortSlideBox)
+    this.addNegativeButton('취소', () => {
+      resolve(null);
+    });
 
-        this.renderSlideBox(created_sortSlideBox)
-
-        this.addNegativeButton('취소', () => {
-            resolve(null)
-        })
-
-        this.addPositiveButton('저장', () => {
-            resolve(this.idList)
-        })
-
-    }
+    this.addPositiveButton('저장', () => {
+      resolve(this.idList);
+    });
+  }
 }
