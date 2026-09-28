@@ -7,7 +7,7 @@ import type { FileDeletingOption } from "../song_setting"
 
 export class FileDeletingOptionSetterPopup extends PopupGenerator<FileDeletingOption> {
 
-    private static createButton(what: string, onclick: () => void) {
+    private static createButton(what: string, onclick: () => void): HTMLButtonElement {
         const created_button: HTMLButtonElement = document.createElement('button')
 
         created_button.append(

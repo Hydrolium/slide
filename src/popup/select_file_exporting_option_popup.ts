@@ -14,7 +14,7 @@ export class FileExportingOptionSetterPopup extends PopupGenerator<number> {
         this.idToTitle = idToTitle
     }
 
-    private static createButton(what: string, onclick: () => void) {
+    private static createButton(what: string, onclick: () => void): HTMLButtonElement {
         const created_button = $create('button')
 
         created_button.append(

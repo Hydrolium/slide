@@ -7,7 +7,7 @@ export type SlideDeletingOption = 'ALL' | 'SELECTED_ONLY'
 
 export class SlideDeletingOptionSetterPopup extends PopupGenerator<SlideDeletingOption> {
 
-    private static createButton(what: string, onclick: () => void) {
+    private static createButton(what: string, onclick: () => void): HTMLButtonElement {
         const created_button: HTMLButtonElement = document.createElement('button')
 
         created_button.append(

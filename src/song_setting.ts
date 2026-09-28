@@ -142,7 +142,7 @@ export class SongSetting {
         }
     }
 
-    public isEmpty() {
+    public isEmpty(): boolean {
         return this._order.length === 0
     }
 
@@ -192,7 +192,7 @@ export class SongSetting {
         return this.currentContext
     }
     
-    public goto(id: number, textIdx: number) {
+    public goto(id: number, textIdx: number): void {
         const song = this._songs[id]
         if(!song || textIdx < 0 || textIdx >= song.texts.length) return
 
@@ -200,7 +200,7 @@ export class SongSetting {
         this._currentTextIdx = textIdx
     }
 
-    public resortOrder (ids: readonly number[]) {
+    public resortOrder (ids: readonly number[]): void {
     
         const nts = new Set(ids)
 
@@ -219,7 +219,7 @@ export class SongSetting {
 
     }
 
-    public async loadFiles(files: readonly File[]) {
+    public async loadFiles(files: readonly File[]): Promise<void> {
         
         if (!files || files.length === 0) return
             
@@ -237,19 +237,14 @@ export class SongSetting {
 
     }
 
-    private loadImage(file: File) {
+    private loadImage(file: File): void {
         if(file.name in this._imgUrls) URL.revokeObjectURL(this._imgUrls[file.name].url)
 
         this._imgUrls[file.name] = {file: file, url: URL.createObjectURL(file)}
     }
 
-    private loadJson(fileName: string, songInfos: SongInfoOnJSON[]) {
+    private loadJson(fileName: string, songInfos: SongInfoOnJSON[]): void {
         const songDatas: SongData[] = []
-
-        // const original = this._jsonFiles[fileName]
-        // if(original) original.forEach(songData => this.deleteSong(songData.id, false))
-        // // 이미 한번 로드된 파일 이름이면 기존 파일 내 노래 전부 삭제
-        // 삭제 안하고 그냥 유령 슬라이드 남기는걸로 변경
 
         songInfos.forEach(songInfo => {
             
@@ -261,17 +256,17 @@ export class SongSetting {
         this._jsonFiles[fileName] = songDatas
     }
 
-    private removeImg(imgName: string) {
+    private removeImg(imgName: string): void {
         URL.revokeObjectURL(this._imgUrls[imgName]?.url)
         delete this._imgUrls[imgName]
     }
 
-    private addSong(song: SongData) {
+    private addSong(song: SongData): void {
         if(!this._songs[song.id]) this._order.push(song.id)
         this._songs[song.id] = {...song}
     }
 
-    private insertNewSongAt(index: number, select: boolean = true) {
+    private insertNewSongAt(index: number, select: boolean = true): void {
         const id = this.nextId
 
         this._order = this._order.toSpliced(index, 0, id)
@@ -283,19 +278,19 @@ export class SongSetting {
         }
     }
 
-    public insertNewSongBeforeCurrent() {
+    public insertNewSongBeforeCurrent(): void {
         if(this._currentSongId === null) return
         const idx = this._order.indexOf(this._currentSongId)
         if(idx !== null) this.insertNewSongAt(idx, true)
     }
 
-    public insertNewSongAfterCurrent() {
+    public insertNewSongAfterCurrent(): void {
         if(this._currentSongId === null) return
         const idx = this._order.indexOf(this._currentSongId)
         if(idx !== null) this.insertNewSongAt(idx + 1, true)
     }
 
-    private insertNewTextAt(songId: number, textIndex: number, select: boolean = true) {
+    private insertNewTextAt(songId: number, textIndex: number, select: boolean = true): void {
         const song = this._songs[songId]
 
         if(!song) return
@@ -308,17 +303,17 @@ export class SongSetting {
         if(select) this._currentTextIdx = textIndex
     }
 
-    public insertNewTextBeforeCurrent() {
+    public insertNewTextBeforeCurrent(): void {
         if(this._currentSongId !== null && this._currentTextIdx !== null)
             this.insertNewTextAt(this._currentSongId, this._currentTextIdx)
     }
 
-    public insertNewTextAfterCurrent() {
+    public insertNewTextAfterCurrent(): void {
         if(this._currentSongId !== null && this._currentTextIdx !== null)
             this.insertNewTextAt(this._currentSongId, this._currentTextIdx + 1)
     }
 
-    private deleteSong(id: number, select: boolean = true) {
+    private deleteSong(id: number, select: boolean = true): void {
         const index = this._order.indexOf(id)
 
         if(index == -1) return
@@ -332,11 +327,11 @@ export class SongSetting {
         }
     }
 
-    public deleteCurrentSong() {
+    public deleteCurrentSong(): void {
         if(this._currentSongId) this.deleteSong(this._currentSongId)
     }
 
-    private deleteText(songId: number, textIndex: number, select: boolean = true) {
+    private deleteText(songId: number, textIndex: number, select: boolean = true): void {
         const song = this._songs[songId]
 
         if(!song) return
@@ -354,11 +349,11 @@ export class SongSetting {
         if(select) this._currentTextIdx = (textIndex >= newTexts.length) ? newTexts.length -1 : textIndex
     }
 
-    public deleteCurrentText() {
+    public deleteCurrentText(): void {
         if(this._currentSongId && this._currentTextIdx !== null) this.deleteText(this._currentSongId, this._currentTextIdx)
     }
 
-    public modifySong(modified: ModifiedSongData) {
+    public modifySong(modified: ModifiedSongData): void {
         const original = this._songs[modified.id]
         if(!original) return
 
@@ -369,7 +364,7 @@ export class SongSetting {
         }
     }
 
-    public manageFile(managementResult: ManagementResult) {
+    public manageFile(managementResult: ManagementResult): void {
 
         managementResult.removedImgs.forEach(imgName => {this.removeImg(imgName)}) // 이미지 삭제
 
@@ -392,7 +387,7 @@ export class SongSetting {
         })
     }
 
-    public async getExportSongLink(exportedId: number) {
+    public async getExportSongLink(exportedId: number): Promise<string> {
         const song = this._songs[exportedId]
 
         const {id, ...exportedSong} = song as SongData
@@ -409,7 +404,7 @@ export class SongSetting {
         return URL.createObjectURL(zipBlob)
     }
 
-    public async getExportAllLink() {
+    public async getExportAllLink(): Promise<string> {
         const exportList: SongInfo[] = []
         const usedImgs = new Set<string>()
         
