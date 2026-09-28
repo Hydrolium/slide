@@ -146,6 +146,16 @@ export class SongSetting {
         return this._order.length === 0
     }
 
+    public normalize() {
+        if(this.isEmpty()) {
+            this._currentSongId = null
+            this._currentTextIdx = null
+            return
+        }
+        if(this.currentSong === null) this._currentSongId = this._order[0]
+        if(this._currentTextIdx === null) this._currentTextIdx = 0
+    }
+
     public previous(): SongContext | null {
         if(this._currentSongId === null || this._currentTextIdx === null || this.isEmpty()) return null
         
@@ -313,9 +323,16 @@ export class SongSetting {
             this.insertNewTextAt(this._currentSongId, this._currentTextIdx + 1)
     }
 
+    public initSong(): void {
+        this._currentSongId = null
+        this._currentTextIdx = null
+        this._songs = {}
+        this._order = []
+    }
+
     private deleteSong(id: number, select: boolean = true): void {
         const index = this._order.indexOf(id)
-
+        console.log(index)
         if(index == -1) return
 
         delete this._songs[id]
@@ -328,7 +345,7 @@ export class SongSetting {
     }
 
     public deleteCurrentSong(): void {
-        if(this._currentSongId) this.deleteSong(this._currentSongId)
+        if(this._currentSongId !== null) this.deleteSong(this._currentSongId)
     }
 
     private deleteText(songId: number, textIndex: number, select: boolean = true): void {

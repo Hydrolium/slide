@@ -65,6 +65,8 @@ const updateSong = () => {
     return
   }
 
+  songSetting.normalize()
+
   songSetting.order.forEach(id => {
 
     const created_slide_li = document.createElement('li')
@@ -185,12 +187,16 @@ addFooterButton('삭제하기', 'imgs/footer_icons/delete_slide.svg',
     if(songSetting.isEmpty()) return // 아무 노래도 없으면 삭제 x
 
     const result = await SlideDeletingOptionSetterPopup.show()
+    console.log(result)
     switch(result) {
-      case "ALL":
+      case 'SELCTED_SONG':
         songSetting.deleteCurrentSong()
         break
-      case "SELECTED_ONLY":
+      case 'SELECTED_TEXT':
         songSetting.deleteCurrentText()
+        break
+      case 'ALL':
+        songSetting.initSong()
         break
     }
 
