@@ -4,7 +4,7 @@ import { PopupGenerator } from "./popup"
 
 import '../style/popup/slide_sorter.css'
 
-export class SlideSorterPopup extends PopupGenerator<number[]> {
+export class SlideSorterPopup extends PopupGenerator<readonly number[]> {
 
     private idList: number[] = []
     private infoMap: Record<number, SongInfo> = {}
@@ -76,7 +76,7 @@ export class SlideSorterPopup extends PopupGenerator<number[]> {
         if(this.idList.length === 0) element_sortSlideBox.appendChild($createDiv('슬라이드가 없습니다.\n메인화면의 [추가하기]로 새 슬라이드를 생성하거나 [파일추가]로 파일을 업로드하세요.', 'tip'))
     }
 
-    protected draw(element_popup: HTMLDivElement, resolve: (value: number[] | null) => void): void {
+    protected draw(element_popup: HTMLDivElement, resolve: (value: readonly number[] | null) => void): void {
 
         const created_sortSlideBox = $create('ul', 'sort-slide-box')
 

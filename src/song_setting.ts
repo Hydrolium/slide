@@ -200,7 +200,7 @@ export class SongSetting {
         this._currentTextIdx = textIdx
     }
 
-    public resortOrder (ids: number[]) {
+    public resortOrder (ids: readonly number[]) {
     
         const nts = new Set(ids)
 
@@ -219,7 +219,7 @@ export class SongSetting {
 
     }
 
-    public async loadFiles(files: File[]) {
+    public async loadFiles(files: readonly File[]) {
         
         if (!files || files.length === 0) return
             

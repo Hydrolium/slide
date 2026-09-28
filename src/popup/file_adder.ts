@@ -3,7 +3,7 @@ import { PopupGenerator } from "./popup"
 
 import '../style/popup/file_resetter.css'
 
-export class FileAdderPopup extends PopupGenerator<File[]> {
+export class FileAdderPopup extends PopupGenerator<readonly File[]> {
 
     private candidates: File[] = []
 
@@ -64,7 +64,7 @@ export class FileAdderPopup extends PopupGenerator<File[]> {
                 this.createFileItem(file.name, element_fileList)))
     }
 
-    protected draw(element_popup: HTMLDivElement, resolve: (value: File[] | null) => void): void {
+    protected draw(element_popup: HTMLDivElement, resolve: (value: readonly File[] | null) => void): void {
         const created_dropFileBox = $create('div', 'drop-file-box')
         
         const created_dropFileText = $createDiv('파일을 드래그하여 추가하세요', 'drop-file-text')

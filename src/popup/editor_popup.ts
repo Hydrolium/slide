@@ -20,10 +20,10 @@ type Mutable<T> = {
 
 export class EditorPopup extends PopupGenerator<ModifiedSongData> {
 
-    private songData: Mutable<ModifiedSongData>
-    private readonly imgs: Record<string, ImageInfo>
+    private readonly songData: Mutable<ModifiedSongData>
+    private readonly imgs: Readonly<Record<string, ImageInfo>>
 
-    constructor(songData: ModifiedSongData, imgs: Record<string, ImageInfo>) {
+    constructor(songData: ModifiedSongData, imgs: Readonly<Record<string, ImageInfo>>) {
         super()
         this.songData = {...songData, texts: [...songData.texts]}
         this.imgs = imgs
