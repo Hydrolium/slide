@@ -12,6 +12,7 @@ import { FileExportingOptionSetterPopup } from './popup/select_file_exporting_op
 
 import './style/slide_style.css';
 import './style/slide_list.css';
+import { WindowManager } from './window_manager';
 
 export const $createDiv = (text: string, ...classes: string[]) => {
   const element_div: HTMLDivElement = document.createElement('div');
@@ -40,25 +41,9 @@ export const $create = <K extends keyof HTMLElementTagNameMap>(
 };
 
 const songSetting = new SongSetting();
-let slideShowWindow: Window | null = null;
+const windowManager = new WindowManager();
 
 const element_slideBox = document.querySelector<HTMLUListElement>('#slide-box');
-
-const sendToPopup = (data: any) => {
-  if (slideShowWindow && !slideShowWindow.closed) {
-    slideShowWindow.postMessage(data, window.location.origin);
-  }
-};
-
-const openShow = () => {
-  if (slideShowWindow) slideShowWindow.close();
-
-  slideShowWindow = window.open(
-    'slide_show.html',
-    'MyPopup',
-    'width=500,height=600',
-  );
-};
 
 let titleFontSize = '5.5';
 let textFontSize = '4.5';
@@ -67,7 +52,7 @@ const updateSong = () => {
   element_slideBox?.replaceChildren();
 
   if (songSetting.isEmpty()) {
-    sendToPopup({ type: 'CLOSE' });
+    windowManager.sendToPopup('CLOSE');
     return;
   }
 
@@ -117,17 +102,17 @@ const updateSong = () => {
     element_slideBox?.appendChild(created_slide_li);
   });
 
-  sendToPopup({ type: 'CHANGE', data: songSetting.currentContext });
+  windowManager.sendToPopup('CHANGE', songSetting.currentContext);
 };
 
 const resizeTitle = (pixel: string) => {
   titleFontSize = pixel;
-  sendToPopup({ type: 'RESIZE_TITLE', data: pixel });
+  windowManager.sendToPopup('RESIZE_TITLE', pixel);
 };
 
 const resizeText = (pixel: string) => {
   textFontSize = pixel;
-  sendToPopup({ type: 'RESIZE_TEXT', data: pixel });
+  windowManager.sendToPopup('RESIZE_TEXT', pixel);
 };
 
 addFooterButton('파일추가', 'imgs/footer_icons/add_file.svg', async () => {
@@ -135,7 +120,7 @@ addFooterButton('파일추가', 'imgs/footer_icons/add_file.svg', async () => {
 
   if (result) await songSetting.loadFiles(result);
 
-  sendToPopup({ type: 'UPDATE_BACKGROUND', data: songSetting.imgUrls });
+  windowManager.sendToPopup('UPDATE_BACKGROUND', songSetting.imgUrls);
 
   updateSong();
 });
@@ -249,7 +234,7 @@ addFooterButton('내보내기', 'imgs/footer_icons/export_slides.svg', async () 
 });
 
 addFooterButton('전체화면', 'imgs/footer_icons/open_viewer.svg', () => {
-  openShow();
+  windowManager.openShow();
 });
 
 addFooterButton('설정변경', 'imgs/footer_icons/edit_setting.svg', () => {
@@ -288,13 +273,13 @@ window.addEventListener('message', (event: MessageEvent) => {
       updateSong();
       break;
     case 'REQUEST_INITIALIZATION':
-      sendToPopup({ type: 'UPDATE_BACKGROUND', data: songSetting.imgUrls });
+      windowManager.sendToPopup('UPDATE_BACKGROUND', songSetting.imgUrls);
 
       if (songSetting.isEmpty()) return;
 
-      sendToPopup({ type: 'RESIZE_TITLE', data: titleFontSize });
-      sendToPopup({ type: 'RESIZE_TEXT', data: textFontSize });
-      sendToPopup({ type: 'CHANGE', data: songSetting.currentContext });
+      windowManager.sendToPopup('RESIZE_TITLE', titleFontSize);
+      windowManager.sendToPopup('RESIZE_TEXT', textFontSize);
+      windowManager.sendToPopup('CHANGE', songSetting.currentContext);
       break;
   }
 });
