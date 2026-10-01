@@ -1,6 +1,6 @@
 import { $create, $createDiv } from '../other/utils';
 import { PopupGenerator } from './popup';
-import type { SongInfo, SongRecord } from '../types/song';
+import type { SongRecord } from '../types/song';
 
 import '../style/popup/slide_sorter.css';
 
@@ -8,10 +8,7 @@ export class SlideSorterPopup extends PopupGenerator<readonly number[]> {
   private idList: number[] = [];
   private infoMap: SongRecord = {};
 
-  constructor(
-    idList: readonly number[],
-    infoMap: Readonly<SongRecord>,
-  ) {
+  constructor(idList: readonly number[], infoMap: Readonly<SongRecord>) {
     super();
 
     this.idList = [...idList];
