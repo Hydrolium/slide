@@ -7,12 +7,12 @@ interface ClosingContext {
 
 interface ResizingTitleContext {
   type: 'RESIZE_TITLE';
-  data: string;
+  data: number;
 }
 
 interface ResizingTextContext {
   type: 'RESIZE_TEXT';
-  data: string;
+  data: number;
 }
 
 interface UpdatingBackgroundContext {

@@ -10,15 +10,15 @@ export class SettingEditorPopup extends PopupGenerator<null> {
   private readonly textSizeController: (size: string) => void;
 
   constructor(
-    titleFontSize: string,
-    textFontSize: string,
+    titleFontSize: number,
+    textFontSize: number,
     titleSizeController: (size: string) => void,
     textSizeController: (size: string) => void,
   ) {
     super();
 
-    this.initialTitleFontSize = titleFontSize;
-    this.initialTextFontSize = textFontSize;
+    this.initialTitleFontSize = titleFontSize.toString();
+    this.initialTextFontSize = textFontSize.toString();
     this.titleSizeController = titleSizeController;
     this.textSizeController = textSizeController;
   }

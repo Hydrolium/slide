@@ -45,9 +45,6 @@ const windowManager = new WindowManager();
 
 const element_slideBox = document.querySelector<HTMLUListElement>('#slide-box');
 
-let titleFontSize = '5.5';
-let textFontSize = '4.5';
-
 const updateSong = () => {
   element_slideBox?.replaceChildren();
 
@@ -106,13 +103,15 @@ const updateSong = () => {
 };
 
 const resizeTitle = (pixel: string) => {
-  titleFontSize = pixel;
-  windowManager.sendToPopup('RESIZE_TITLE', pixel);
+  const conv = Number(pixel);
+  songSetting.titleFontSize = conv;
+  windowManager.sendToPopup('RESIZE_TITLE', conv);
 };
 
 const resizeText = (pixel: string) => {
-  textFontSize = pixel;
-  windowManager.sendToPopup('RESIZE_TEXT', pixel);
+  const conv = Number(pixel);
+  songSetting.textFontSize = conv;
+  windowManager.sendToPopup('RESIZE_TEXT', conv);
 };
 
 addFooterButton('파일추가', 'imgs/footer_icons/add_file.svg', async () => {
@@ -238,7 +237,12 @@ addFooterButton('전체화면', 'imgs/footer_icons/open_viewer.svg', () => {
 });
 
 addFooterButton('설정변경', 'imgs/footer_icons/edit_setting.svg', () => {
-  SettingEditorPopup.show(titleFontSize, textFontSize, resizeTitle, resizeText);
+  SettingEditorPopup.show(
+    songSetting.titleFontSize,
+    songSetting.textFontSize,
+    resizeTitle,
+    resizeText,
+  );
 });
 
 window.addEventListener('keydown', (event: KeyboardEvent) => {
@@ -277,8 +281,8 @@ window.addEventListener('message', (event: MessageEvent) => {
 
       if (songSetting.isEmpty()) return;
 
-      windowManager.sendToPopup('RESIZE_TITLE', titleFontSize);
-      windowManager.sendToPopup('RESIZE_TEXT', textFontSize);
+      windowManager.sendToPopup('RESIZE_TITLE', songSetting.titleFontSize);
+      windowManager.sendToPopup('RESIZE_TEXT', songSetting.textFontSize);
       windowManager.sendToPopup('CHANGE', songSetting.currentContext);
       break;
   }

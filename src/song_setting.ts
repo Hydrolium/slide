@@ -73,8 +73,26 @@ export class SongSetting {
 
   private _imgUrls: Record<string, ImageInfo> = {};
 
+  private _titleFontSize = 5.5;
+  private _textFontSize = 4.5;
+
   private get nextId(): number {
     return this._lastID++;
+  }
+
+  get titleFontSize(): number {
+    return this._titleFontSize;
+  }
+  set titleFontSize(value: number) {
+    if (value > 0) this._titleFontSize = value;
+  }
+
+  get textFontSize(): number {
+    return this._textFontSize;
+  }
+
+  set textFontSize(value: number) {
+    if (value > 0) this._textFontSize = value;
   }
 
   get jsonFiles(): Readonly<Record<string, readonly SongData[]>> {

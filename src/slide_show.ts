@@ -51,9 +51,9 @@ window.addEventListener('message', (event: MessageEvent) => {
     window.close();
   } else if (data.type == 'RESIZE_TITLE') {
     if (element_slideTitle)
-      element_slideTitle.style.fontSize = data.data + 'vw';
+      element_slideTitle.style.fontSize = `${data.data}vw`;
   } else if (data.type == 'RESIZE_TEXT') {
-    if (element_slideText) element_slideText.style.fontSize = data.data + 'vw';
+    if (element_slideText) element_slideText.style.fontSize = `${data.data}vw`;
   } else if (data.type == 'UPDATE_BACKGROUND') {
     element_slideLayerContainer?.replaceChildren();
     cachedLayers = {};
