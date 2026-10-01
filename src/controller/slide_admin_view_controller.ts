@@ -15,7 +15,7 @@ import './style/slide_style.css';
 import './style/slide_list.css';
 import type { SongContext } from '../types/song';
 
-export class SlideController {
+export class SlideAdminViewController {
   private readonly songManager = new SongManager();
   private readonly windowManager = new WindowManager();
   private readonly footerManager = new FooterManager();
@@ -27,7 +27,7 @@ export class SlideController {
   public static init() {
     if (this.isInitialized) return;
     this.isInitialized = true;
-    new SlideController().init();
+    new SlideAdminViewController().init();
   }
 
   private element_slideBox =

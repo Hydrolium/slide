@@ -1,3 +1,3 @@
-import { SlideController } from './controller/slide_controller';
+import { SlideAdminViewController } from './controller/slide_admin_view_controller';
 
-SlideController.init();
+SlideAdminViewController.init();
