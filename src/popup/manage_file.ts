@@ -1,4 +1,4 @@
-import { $create, $createDiv } from '../main';
+import { $create, $createDiv } from '../utils';
 import type { ImageInfo, ManagementResult } from '../song_setting';
 import { PopupGenerator } from './popup';
 import { FileDeletingOptionSetterPopup } from './select_file_deleting_option_popup';

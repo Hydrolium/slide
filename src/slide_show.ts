@@ -1,4 +1,4 @@
-import { $createDiv } from './main';
+import { $createDiv } from './utils';
 import type { ImageInfo, SongContext } from './song_setting';
 
 import './style/slide_style.css';

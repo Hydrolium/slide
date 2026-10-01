@@ -1,4 +1,4 @@
-import { $create, $createDiv } from '../main';
+import { $create, $createDiv } from '../utils';
 import { PopupGenerator } from './popup';
 
 import '../style/popup/file_resetter.css';

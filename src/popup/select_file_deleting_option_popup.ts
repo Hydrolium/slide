@@ -1,4 +1,4 @@
-import { $create, $createDiv, $createSpan } from '../main';
+import { $create, $createDiv, $createSpan } from '../utils';
 import { PopupGenerator } from './popup';
 import type { FileDeletingOption } from '../song_setting';
 

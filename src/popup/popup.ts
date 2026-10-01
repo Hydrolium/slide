@@ -1,4 +1,4 @@
-import { $create } from '../main';
+import { $create } from '../utils';
 
 import '../style/popup/popup.css';
 
