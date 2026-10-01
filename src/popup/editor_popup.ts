@@ -1,22 +1,10 @@
 import { $create, $createDiv } from '../other/utils';
-import type { ImageInfo, ModifiedSongData } from '../manager/song_manager';
 import { PopupGenerator } from './popup';
+import { ImgSelectorPopup } from './select_img_popup';
+import type { ImageInfo, ModifiedSongData } from '../types/song';
+import type { SplitedColor } from '../types/popup_data';
 
 import '../style/popup/slide_editor.css';
-import { ImgSelectorPopup } from './select_img_popup';
-
-interface SplitedColor {
-  readonly color: string;
-  readonly opacityPercent: string;
-}
-
-type Mutable<T> = {
-  -readonly [K in keyof T]: T[K] extends readonly (infer U)[]
-    ? Mutable<U>[]
-    : T[K] extends object
-      ? Mutable<T[K]>
-      : T[K];
-}; // readonly 속성 전부 삭제(재귀형식)
 
 export class EditorPopup extends PopupGenerator<ModifiedSongData> {
   private readonly songData: Mutable<ModifiedSongData>;

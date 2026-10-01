@@ -1,5 +1,5 @@
+import type { SongContext } from '../types/song';
 import { $createDiv } from './utils';
-import type { SongContext } from '../manager/song_manager';
 
 export class Slide {
   private element_frame: HTMLDivElement = $createDiv(

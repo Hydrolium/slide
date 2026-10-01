@@ -1,9 +1,8 @@
 import { $create, $createSpan } from '../other/utils';
 import { PopupGenerator } from './popup';
+import type { SlideDeletingOption } from '../types/popup_data';
 
 import '../style/popup/slide_option_selector.css';
-
-export type SlideDeletingOption = 'SELCTED_SONG' | 'SELECTED_TEXT' | 'ALL';
 
 export class SlideDeletingOptionSetterPopup extends PopupGenerator<SlideDeletingOption> {
   private static createButton(

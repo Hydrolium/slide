@@ -1,7 +1,8 @@
 import { $create, $createDiv } from '../other/utils';
-import type { ImageInfo, ManagementResult } from '../manager/song_manager';
 import { PopupGenerator } from './popup';
 import { FileDeletingOptionSetterPopup } from './select_file_deleting_option_popup';
+import type { ImageInfo } from '../types/song';
+import type { ManagementResult } from '../types/popup_data';
 
 import '../style/popup/file_resetter.css';
 

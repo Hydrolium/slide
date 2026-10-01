@@ -1,65 +1,7 @@
 import JSZip from 'jszip';
-
-export interface ImageInfo {
-  readonly file: File;
-  readonly url: string;
-}
-
-export interface SongFrame {
-  readonly title: string;
-  readonly background: string;
-  readonly titleColor: string;
-  readonly titleStroke: string;
-  readonly titleShadow: string;
-  readonly textColor: string;
-  readonly textStroke: string;
-  readonly textShadow: string;
-}
-
-export interface TitltedText {
-  readonly title: string;
-  readonly text: string;
-}
-
-export interface SongInfo extends SongFrame {
-  readonly texts: readonly TitltedText[];
-}
-
-export interface SongInfoOnJSON extends SongFrame {
-  readonly texts: readonly (string | TitltedText)[];
-}
-
-const convertJSONtoSongInfo = (songInfoOnJson: SongInfoOnJSON) => {
-  return {
-    ...songInfoOnJson,
-    texts: songInfoOnJson.texts.map((v) => {
-      if (typeof v === 'string')
-        return { title: songInfoOnJson.title, text: v };
-      return { ...v };
-    }),
-  } as SongInfo;
-};
-
-export interface SongContext extends SongInfo {
-  readonly textIdx: number;
-}
-
-export interface SongData extends SongInfo {
-  readonly id: number;
-}
-
-export interface ModifiedSongData extends SongContext {
-  readonly textIdx: number;
-  readonly id: number;
-}
-
-export type FileDeletingOption = 'ONLY_FILE' | 'CASCADE';
-
-export interface ManagementResult {
-  readonly removedImgs: Set<string>; // 삭제된 이미지 이름 set
-  readonly removedJsons: Record<string, FileDeletingOption>; // key: 삭제된 json 파일 이름, value: 삭제 옵션
-  readonly refreshedJsons: Set<string>; // 새로고침된 json 파일 이름 set
-}
+import type { ImageInfo, ModifiedSongData, SongContext, SongData, SongInfo, SongInfoOnJSON } from '../types/song';
+import { convertJSONtoSongInfo } from '../other/utils';
+import type { ManagementResult } from '../types/popup_data';
 
 export class SongManager {
   private _jsonFiles: Record<string, SongData[]> = {}; // 파일 이름: 곡 정보 리스트

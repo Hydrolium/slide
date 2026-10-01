@@ -1,13 +1,8 @@
 import { $create, $createSpan } from '../other/utils';
 import { PopupGenerator } from './popup';
+import type { SlideAddingOption } from '../types/popup_data';
 
 import '../style/popup/slide_option_selector.css';
-
-export type SlideAddingOption =
-  | 'INSERT_LYRICS_BEFORE'
-  | 'INSERT_LYRICS_AFTER'
-  | 'INSERT_SONG_BEFORE'
-  | 'INSERT_SONG_AFTER';
 
 export class SlideAddingOptionSetterPopup extends PopupGenerator<SlideAddingOption> {
   private static createButton(pos: string, what: string, onclick: () => void) {

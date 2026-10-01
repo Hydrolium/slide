@@ -1,6 +1,6 @@
 import { $create, $createDiv } from '../other/utils';
-import type { SongInfo } from '../manager/song_manager';
 import { PopupGenerator } from './popup';
+import type { SongInfo } from '../types/song';
 
 import '../style/popup/slide_sorter.css';
 

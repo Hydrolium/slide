@@ -7,12 +7,13 @@ import { SlideDeletingOptionSetterPopup } from '../popup/select_slide_deleting_o
 import { SettingEditorPopup } from '../popup/setting_popup';
 import { SlideSorterPopup } from '../popup/sort_popup';
 import { Slide } from '../other/slide';
-import { SongManager, type SongContext } from '../manager/song_manager';
 import { WindowManager } from '../manager/window_manager';
 import { FooterManager } from '../manager/footer_manager';
+import { SongManager } from '../manager/song_manager';
 
 import './style/slide_style.css';
 import './style/slide_list.css';
+import type { SongContext } from '../types/song';
 
 export class SlideController {
   private readonly songManager = new SongManager();
