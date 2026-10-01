@@ -1,6 +1,6 @@
 import { $create, $createDiv } from '../other/utils';
 
-import './style/footer.css';
+import '../style/footer.css';
 
 export class FooterManager {
   private readonly element_footer =

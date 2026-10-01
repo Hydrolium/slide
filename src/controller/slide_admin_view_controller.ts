@@ -10,10 +10,10 @@ import { Slide } from '../other/slide';
 import { WindowManager } from '../manager/window_manager';
 import { FooterManager } from '../manager/footer_manager';
 import { SongManager } from '../manager/song_manager';
-
-import './style/slide_style.css';
-import './style/slide_list.css';
 import type { SongContext } from '../types/song';
+
+import '../style/slide_style.css';
+import '../style/slide_list.css';
 
 export class SlideAdminViewController {
   private readonly songManager = new SongManager();
