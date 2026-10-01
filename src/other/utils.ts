@@ -1,4 +1,4 @@
-import type { SongInfo, SongInfoOnJSON } from "../types/song";
+import type { SongInfo, SongInfoOnJSON } from '../types/song';
 
 export const $createDiv = (text: string, ...classes: string[]) => {
   const element_div: HTMLDivElement = document.createElement('div');

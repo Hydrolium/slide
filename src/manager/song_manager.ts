@@ -1,5 +1,12 @@
 import JSZip from 'jszip';
-import type { ImageInfo, ModifiedSongData, SongContext, SongData, SongInfo, SongInfoOnJSON } from '../types/song';
+import type {
+  ImageInfo,
+  ModifiedSongData,
+  SongContext,
+  SongData,
+  SongInfo,
+  SongInfoOnJSON,
+} from '../types/song';
 import { convertJSONtoSongInfo } from '../other/utils';
 import type { ManagementResult } from '../types/popup_data';
 

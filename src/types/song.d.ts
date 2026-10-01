@@ -1,4 +1,3 @@
-
 export interface ImageInfo {
   readonly file: File;
   readonly url: string;
@@ -27,7 +26,6 @@ export interface SongInfo extends SongFrame {
 export interface SongInfoOnJSON extends SongFrame {
   readonly texts: readonly (string | TitltedText)[];
 }
-
 
 export interface SongContext extends SongInfo {
   readonly textIdx: number;

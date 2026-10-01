@@ -1,4 +1,4 @@
-import type { ImageInfo, SongContext } from "../types/song";
+import type { ImageInfo, SongContext } from '../types/song';
 
 interface ClosingContext {
   type: 'CLOSE';
