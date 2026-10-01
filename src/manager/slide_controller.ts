@@ -19,6 +19,16 @@ export class SlideController {
   private readonly windowManager = new WindowManager();
   private readonly footerManager = new FooterManager();
 
+  private static isInitialized = false;
+
+  private constructor() {}
+
+  public static init() {
+    if (this.isInitialized) return;
+    this.isInitialized = true;
+    new SlideController().init();
+  }
+
   private element_slideBox =
     document.querySelector<HTMLUListElement>('#slide-box');
 
