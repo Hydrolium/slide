@@ -1,41 +1,4 @@
-import type { ImgRecord, SongContext } from '../types/song';
-
-interface ClosingContext {
-  type: 'CLOSE';
-  data: null;
-}
-
-interface ResizingTitleContext {
-  type: 'RESIZE_TITLE';
-  data: number;
-}
-
-interface ResizingTextContext {
-  type: 'RESIZE_TEXT';
-  data: number;
-}
-
-interface UpdatingBackgroundContext {
-  type: 'UPDATE_BACKGROUND';
-  data: Readonly<ImgRecord>;
-}
-
-interface ChangingContext {
-  type: 'CHANGE';
-  data: SongContext | null;
-}
-
-type ContextType =
-  | ClosingContext
-  | ResizingTitleContext
-  | ResizingTextContext
-  | UpdatingBackgroundContext
-  | ChangingContext;
-
-type ExtractedContext<K extends ContextType['type']> = Extract<
-  ContextType,
-  { type: K }
->;
+import type { ContextType, ExtractedContext } from '../types/context';
 
 export class WindowManager {
   private slideShowWindow: Window | null = null;
