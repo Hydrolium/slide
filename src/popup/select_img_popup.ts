@@ -1,6 +1,6 @@
 import { $create, $createDiv } from '../utils';
 import { PopupGenerator } from './popup';
-import type { ImageInfo } from '../song_setting';
+import type { ImageInfo } from '../manager/song_setting';
 
 import '../style/popup/img_selector.css';
 
