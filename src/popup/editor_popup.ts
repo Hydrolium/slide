@@ -1,18 +1,18 @@
 import { $create, $createDiv } from '../other/utils';
 import { PopupGenerator } from './popup';
 import { ImgSelectorPopup } from './select_img_popup';
-import type { ImageInfo, ModifiedSongData } from '../types/song';
+import type { ImageInfo, ImgRecord, ModifiedSongData } from '../types/song';
 import type { SplitedColor } from '../types/popup_data';
 
 import '../style/popup/slide_editor.css';
 
 export class EditorPopup extends PopupGenerator<ModifiedSongData> {
   private readonly songData: Mutable<ModifiedSongData>;
-  private readonly imgs: Readonly<Record<string, ImageInfo>>;
+  private readonly imgs: Readonly<ImgRecord>;
 
   constructor(
     songData: ModifiedSongData,
-    imgs: Readonly<Record<string, ImageInfo>>,
+    imgs: Readonly<ImgRecord>,
   ) {
     super();
     this.songData = { ...songData, texts: [...songData.texts] };

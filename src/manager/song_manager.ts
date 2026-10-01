@@ -1,11 +1,14 @@
 import JSZip from 'jszip';
 import type {
-  ImageInfo,
+  ImgName,
+  ImgRecord,
   ModifiedSongData,
   SongContext,
   SongData,
+  SongId,
   SongInfo,
   SongInfoOnJSON,
+  SongRecord,
 } from '../types/song';
 import { convertJSONtoSongInfo } from '../other/utils';
 import type { ManagementResult } from '../types/popup_data';
@@ -13,19 +16,19 @@ import type { ManagementResult } from '../types/popup_data';
 export class SongManager {
   private _jsonFiles: Record<string, SongData[]> = {}; // 파일 이름: 곡 정보 리스트
 
-  private _songs: Record<number, SongInfo> = {}; // 노래 ID: 정보
-  private _order: number[] = []; // 노래 ID 리스트(순서)
+  private _songs: SongRecord = {}; // 노래 ID: 정보
+  private _order: SongId[] = []; // 노래 ID 리스트(순서)
   private _currentSongId: number | null = null; // 현재 노래 ID
   private _currentTextIdx: number | null = null; // 현재 노래 가사 인덱스
 
   private _lastID = 0;
 
-  private _imgUrls: Record<string, ImageInfo> = {};
+  private _imgUrls: ImgRecord = {};
 
   private _titleFontSize = 5.5;
   private _textFontSize = 4.5;
 
-  private get nextId(): number {
+  private get nextId(): SongId {
     return this._lastID++;
   }
 
@@ -48,19 +51,19 @@ export class SongManager {
     return this._jsonFiles;
   }
 
-  get songs(): Readonly<Record<number, SongInfo>> {
+  get songs(): Readonly<SongRecord> {
     return this._songs;
   }
 
-  get order(): readonly number[] {
+  get order(): readonly SongId[] {
     return this._order;
   }
 
-  get currentSongId(): number | null {
+  get currentSongId(): SongId | null {
     return this._currentSongId;
   }
 
-  get imgUrls(): Readonly<Record<string, ImageInfo>> {
+  get imgUrls(): Readonly<ImgRecord> {
     return this._imgUrls;
   }
 
@@ -182,7 +185,7 @@ export class SongManager {
     return this.currentContext;
   }
 
-  public goto(id: number, textIdx: number): void {
+  public goto(id: SongId, textIdx: number): void {
     const song = this._songs[id];
     if (!song || textIdx < 0 || textIdx >= song.texts.length) return;
 
@@ -190,7 +193,7 @@ export class SongManager {
     this._currentTextIdx = textIdx;
   }
 
-  public resortOrder(ids: readonly number[]): void {
+  public resortOrder(ids: readonly SongId[]): void {
     const nts = new Set(ids);
 
     this._order.forEach((t) => {
@@ -239,7 +242,7 @@ export class SongManager {
     this._jsonFiles[fileName] = songDatas;
   }
 
-  private removeImg(imgName: string): void {
+  private removeImg(imgName: ImgName): void {
     URL.revokeObjectURL(this._imgUrls[imgName]?.url);
     delete this._imgUrls[imgName];
   }
@@ -276,7 +279,7 @@ export class SongManager {
   }
 
   private insertNewTextAt(
-    songId: number,
+    songId: SongId,
     textIndex: number,
     select: boolean = true,
   ): void {
@@ -315,7 +318,7 @@ export class SongManager {
     this._order = [];
   }
 
-  private deleteSong(id: number, select: boolean = true): void {
+  private deleteSong(id: SongId, select: boolean = true): void {
     const index = this._order.indexOf(id);
     if (index === -1) return;
 
@@ -334,7 +337,7 @@ export class SongManager {
   }
 
   private deleteText(
-    songId: number,
+    songId: SongId,
     textIndex: number,
     select: boolean = true,
   ): void {
@@ -401,7 +404,7 @@ export class SongManager {
     });
   }
 
-  public async getExportSongLink(exportedId: number): Promise<string> {
+  public async getExportSongLink(exportedId: SongId): Promise<string> {
     const song = this._songs[exportedId];
 
     const { id, ...exportedSong } = song as SongData;

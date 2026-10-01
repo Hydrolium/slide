@@ -1,13 +1,13 @@
 import { $create, $createDiv } from '../other/utils';
 import { PopupGenerator } from './popup';
-import type { ImageInfo } from '../types/song';
+import type { ImageInfo, ImgRecord } from '../types/song';
 
 import '../style/popup/img_selector.css';
 
 export class ImgSelectorPopup extends PopupGenerator<string> {
-  private readonly imgs: Readonly<Record<string, ImageInfo>>;
+  private readonly imgs: Readonly<ImgRecord>;
 
-  constructor(imgs: Readonly<Record<string, ImageInfo>>) {
+  constructor(imgs: Readonly<ImgRecord>) {
     super();
     this.imgs = imgs;
   }

@@ -1,4 +1,4 @@
-import type { ImageInfo, SongContext } from '../types/song';
+import type { ImgRecord, SongContext } from '../types/song';
 
 interface ClosingContext {
   type: 'CLOSE';
@@ -17,7 +17,7 @@ interface ResizingTextContext {
 
 interface UpdatingBackgroundContext {
   type: 'UPDATE_BACKGROUND';
-  data: Readonly<Record<string, ImageInfo>>;
+  data: Readonly<ImgRecord>;
 }
 
 interface ChangingContext {

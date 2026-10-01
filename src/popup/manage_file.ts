@@ -1,14 +1,14 @@
 import { $create, $createDiv } from '../other/utils';
 import { PopupGenerator } from './popup';
 import { FileDeletingOptionSetterPopup } from './select_file_deleting_option_popup';
-import type { ImageInfo } from '../types/song';
+import type { ImgRecord } from '../types/song';
 import type { ManagementResult } from '../types/popup_data';
 
 import '../style/popup/file_resetter.css';
 
 export class FileManagerPopup extends PopupGenerator<ManagementResult> {
   readonly jsonFiles: Readonly<Record<string, string>>;
-  readonly imgFiles: Readonly<Record<string, ImageInfo>>;
+  readonly imgFiles: Readonly<ImgRecord>;
 
   private readonly managementResult: ManagementResult = {
     removedImgs: new Set(),
@@ -18,7 +18,7 @@ export class FileManagerPopup extends PopupGenerator<ManagementResult> {
 
   constructor(
     jsonCandidates: Record<string, string>,
-    imgCandidates: Record<string, ImageInfo>,
+    imgCandidates: ImgRecord,
   ) {
     super();
 

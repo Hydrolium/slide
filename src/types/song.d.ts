@@ -1,3 +1,8 @@
+export type SongId = number;
+export type SongRecord = Record<SongId, SongInfo>;
+export type ImgName = string;
+export type ImgRecord = Record<ImgName, ImageInfo>;
+
 export interface ImageInfo {
   readonly file: File;
   readonly url: string;
@@ -32,10 +37,10 @@ export interface SongContext extends SongInfo {
 }
 
 export interface SongData extends SongInfo {
-  readonly id: number;
+  readonly id: SongId;
 }
 
 export interface ModifiedSongData extends SongContext {
   readonly textIdx: number;
-  readonly id: number;
+  readonly id: SongId;
 }
