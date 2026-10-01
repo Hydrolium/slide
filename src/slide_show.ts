@@ -1,5 +1,5 @@
-import { $createDiv } from './utils';
-import type { ImageInfo, SongContext } from './manager/song_setting';
+import { $createDiv } from './other/utils';
+import type { ImageInfo, SongContext } from './manager/song_manager';
 
 import './style/slide_style.css';
 

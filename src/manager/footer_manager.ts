@@ -1,4 +1,4 @@
-import { $create, $createDiv } from '../utils';
+import { $create, $createDiv } from '../other/utils';
 
 import './style/footer.css';
 

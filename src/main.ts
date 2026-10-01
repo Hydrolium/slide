@@ -1,3 +1,3 @@
-import { SlideController } from './manager/slide_controller';
+import { SlideController } from './controller/slide_controller';
 
 SlideController.init();

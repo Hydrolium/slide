@@ -1,4 +1,4 @@
-import { $create, $createSpan } from '../utils';
+import { $create, $createSpan } from '../other/utils';
 import { PopupGenerator } from './popup';
 
 import '../style/popup/slide_option_selector.css';

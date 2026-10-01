@@ -6,16 +6,16 @@ import { SlideAddingOptionSetterPopup } from '../popup/select_slide_adding_optio
 import { SlideDeletingOptionSetterPopup } from '../popup/select_slide_deleting_option_popup';
 import { SettingEditorPopup } from '../popup/setting_popup';
 import { SlideSorterPopup } from '../popup/sort_popup';
-import { Slide } from '../slide';
-import { SongSetting, type SongContext } from './song_setting';
-import { WindowManager } from './window_manager';
-import { FooterManager } from './footer_manager';
+import { Slide } from '../other/slide';
+import { SongManager, type SongContext } from '../manager/song_manager';
+import { WindowManager } from '../manager/window_manager';
+import { FooterManager } from '../manager/footer_manager';
 
 import './style/slide_style.css';
 import './style/slide_list.css';
 
 export class SlideController {
-  private readonly songSetting = new SongSetting();
+  private readonly songManager = new SongManager();
   private readonly windowManager = new WindowManager();
   private readonly footerManager = new FooterManager();
 
@@ -35,18 +35,18 @@ export class SlideController {
   private updateSong() {
     this.element_slideBox?.replaceChildren();
 
-    if (this.songSetting.isEmpty()) {
+    if (this.songManager.isEmpty()) {
       this.windowManager.sendToPopup('CLOSE');
       return;
     }
 
-    this.songSetting.normalize();
+    this.songManager.normalize();
 
-    this.songSetting.order.forEach((id) => {
+    this.songManager.order.forEach((id) => {
       const created_slide_li = document.createElement('li');
       created_slide_li.classList.add('slide-li');
 
-      const song = this.songSetting.getSongWithId(id);
+      const song = this.songManager.getSongWithId(id);
 
       if (!song) return;
 
@@ -58,13 +58,13 @@ export class SlideController {
 
         const slide = new Slide(
           context,
-          this.songSetting.imgUrls[song.background]?.url,
-          id === this.songSetting.currentSongId &&
-            idx === this.songSetting.currentTextIdx,
+          this.songManager.imgUrls[song.background]?.url,
+          id === this.songManager.currentSongId &&
+            idx === this.songManager.currentTextIdx,
         ).render();
 
         slide.addEventListener('click', () => {
-          this.songSetting.goto(id, idx);
+          this.songManager.goto(id, idx);
           this.updateSong();
         });
 
@@ -73,10 +73,10 @@ export class SlideController {
 
           const result = await EditorPopup.show(
             { ...context, id: id, textIdx: idx },
-            this.songSetting.imgUrls,
+            this.songManager.imgUrls,
           );
 
-          if (result) this.songSetting.modifySong(result);
+          if (result) this.songManager.modifySong(result);
 
           this.updateSong();
         });
@@ -87,7 +87,7 @@ export class SlideController {
       this.element_slideBox?.appendChild(created_slide_li);
     });
 
-    this.windowManager.sendToPopup('CHANGE', this.songSetting.currentContext);
+    this.windowManager.sendToPopup('CHANGE', this.songManager.currentContext);
   }
 
   private initFooter() {
@@ -98,11 +98,11 @@ export class SlideController {
       async () => {
         const result = await FileAdderPopup.show();
 
-        if (result) await this.songSetting.loadFiles(result);
+        if (result) await this.songManager.loadFiles(result);
 
         this.windowManager.sendToPopup(
           'UPDATE_BACKGROUND',
-          this.songSetting.imgUrls,
+          this.songManager.imgUrls,
         );
 
         this.updateSong();
@@ -114,7 +114,7 @@ export class SlideController {
       'imgs/footer_icons/manage_file.svg',
       async () => {
         const aboutJsonFile: Record<string, string> = {};
-        Object.entries(this.songSetting.jsonFiles).forEach(
+        Object.entries(this.songManager.jsonFiles).forEach(
           ([fileName, data]) => {
             aboutJsonFile[fileName] = `${data.map((d) => d.title).join(', ')}`;
           },
@@ -122,9 +122,9 @@ export class SlideController {
 
         const result = await FileManagerPopup.show(
           aboutJsonFile,
-          this.songSetting.imgUrls,
+          this.songManager.imgUrls,
         );
-        if (result) this.songSetting.manageFile(result);
+        if (result) this.songManager.manageFile(result);
 
         this.updateSong();
       },
@@ -135,10 +135,10 @@ export class SlideController {
       'imgs/footer_icons/resort_slides.svg',
       async () => {
         const result = await SlideSorterPopup.show(
-          this.songSetting.order,
-          this.songSetting.songs,
+          this.songManager.order,
+          this.songManager.songs,
         );
-        if (result) this.songSetting.resortOrder(result);
+        if (result) this.songManager.resortOrder(result);
 
         this.updateSong();
       },
@@ -148,9 +148,9 @@ export class SlideController {
       '추가하기',
       'imgs/footer_icons/add_slide.svg',
       async () => {
-        if (this.songSetting.isEmpty()) {
+        if (this.songManager.isEmpty()) {
           // 아무 노래도 없으면 그냥 노래 하나 추가
-          this.songSetting.insertNewSongBeforeCurrent();
+          this.songManager.insertNewSongBeforeCurrent();
           this.updateSong();
           return;
         }
@@ -159,16 +159,16 @@ export class SlideController {
 
         switch (result) {
           case 'INSERT_LYRICS_BEFORE':
-            this.songSetting.insertNewTextBeforeCurrent();
+            this.songManager.insertNewTextBeforeCurrent();
             break;
           case 'INSERT_LYRICS_AFTER':
-            this.songSetting.insertNewTextAfterCurrent();
+            this.songManager.insertNewTextAfterCurrent();
             break;
           case 'INSERT_SONG_BEFORE':
-            this.songSetting.insertNewSongBeforeCurrent();
+            this.songManager.insertNewSongBeforeCurrent();
             break;
           case 'INSERT_SONG_AFTER':
-            this.songSetting.insertNewSongAfterCurrent();
+            this.songManager.insertNewSongAfterCurrent();
             break;
         }
 
@@ -180,19 +180,19 @@ export class SlideController {
       '삭제하기',
       'imgs/footer_icons/delete_slide.svg',
       async () => {
-        if (this.songSetting.isEmpty()) return; // 아무 노래도 없으면 삭제 x
+        if (this.songManager.isEmpty()) return; // 아무 노래도 없으면 삭제 x
 
         const result = await SlideDeletingOptionSetterPopup.show();
         console.log(result);
         switch (result) {
           case 'SELCTED_SONG':
-            this.songSetting.deleteCurrentSong();
+            this.songManager.deleteCurrentSong();
             break;
           case 'SELECTED_TEXT':
-            this.songSetting.deleteCurrentText();
+            this.songManager.deleteCurrentText();
             break;
           case 'ALL':
-            this.songSetting.initSong();
+            this.songManager.initSong();
             break;
         }
 
@@ -205,8 +205,8 @@ export class SlideController {
       'imgs/footer_icons/export_slides.svg',
       async () => {
         const m = new Map<number, string>();
-        this.songSetting.order.forEach((id) =>
-          m.set(id, this.songSetting.songs[id].title),
+        this.songManager.order.forEach((id) =>
+          m.set(id, this.songManager.songs[id].title),
         );
 
         const result = await FileExportingOptionSetterPopup.show(m);
@@ -217,7 +217,7 @@ export class SlideController {
         const link = document.createElement('a');
 
         if (result === FileExportingOptionSetterPopup.EXPORT_ALL) {
-          downloadUrl = await this.songSetting.getExportAllLink();
+          downloadUrl = await this.songManager.getExportAllLink();
           link.href = downloadUrl;
           link.download =
             new Intl.DateTimeFormat('ko-KR', {
@@ -228,9 +228,9 @@ export class SlideController {
               .format(new Date())
               .replace(/\.$/, '') + '.zip';
         } else {
-          downloadUrl = await this.songSetting.getExportSongLink(result);
+          downloadUrl = await this.songManager.getExportSongLink(result);
           link.href = downloadUrl;
-          link.download = this.songSetting.songs[result].title ?? 'UNKNOWN';
+          link.download = this.songManager.songs[result].title ?? 'UNKNOWN';
         }
 
         link.click();
@@ -254,16 +254,16 @@ export class SlideController {
       'imgs/footer_icons/edit_setting.svg',
       () => {
         SettingEditorPopup.show(
-          this.songSetting.titleFontSize,
-          this.songSetting.textFontSize,
+          this.songManager.titleFontSize,
+          this.songManager.textFontSize,
           (size: string) => {
             const conv = Number(size);
-            this.songSetting.titleFontSize = conv;
+            this.songManager.titleFontSize = conv;
             this.windowManager.sendToPopup('RESIZE_TITLE', conv);
           },
           (size: string) => {
             const conv = Number(size);
-            this.songSetting.textFontSize = conv;
+            this.songManager.textFontSize = conv;
             this.windowManager.sendToPopup('RESIZE_TEXT', conv);
           },
         );
@@ -281,11 +281,11 @@ export class SlideController {
 
       switch (event.key) {
         case 'ArrowLeft':
-          this.songSetting.previous();
+          this.songManager.previous();
           this.updateSong();
           break;
         case 'ArrowRight':
-          this.songSetting.next();
+          this.songManager.next();
           this.updateSong();
           break;
       }
@@ -296,32 +296,32 @@ export class SlideController {
 
       switch (event.data) {
         case 'REQUEST_PREVIOUS':
-          this.songSetting.previous();
+          this.songManager.previous();
           this.updateSong();
           break;
         case 'REQUEST_NEXT':
-          this.songSetting.next();
+          this.songManager.next();
           this.updateSong();
           break;
         case 'REQUEST_INITIALIZATION':
           this.windowManager.sendToPopup(
             'UPDATE_BACKGROUND',
-            this.songSetting.imgUrls,
+            this.songManager.imgUrls,
           );
 
-          if (this.songSetting.isEmpty()) return;
+          if (this.songManager.isEmpty()) return;
 
           this.windowManager.sendToPopup(
             'RESIZE_TITLE',
-            this.songSetting.titleFontSize,
+            this.songManager.titleFontSize,
           );
           this.windowManager.sendToPopup(
             'RESIZE_TEXT',
-            this.songSetting.textFontSize,
+            this.songManager.textFontSize,
           );
           this.windowManager.sendToPopup(
             'CHANGE',
-            this.songSetting.currentContext,
+            this.songManager.currentContext,
           );
           break;
       }

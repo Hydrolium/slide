@@ -61,7 +61,7 @@ export interface ManagementResult {
   readonly refreshedJsons: Set<string>; // 새로고침된 json 파일 이름 set
 }
 
-export class SongSetting {
+export class SongManager {
   private _jsonFiles: Record<string, SongData[]> = {}; // 파일 이름: 곡 정보 리스트
 
   private _songs: Record<number, SongInfo> = {}; // 노래 ID: 정보

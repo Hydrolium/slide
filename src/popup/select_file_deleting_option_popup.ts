@@ -1,6 +1,6 @@
-import { $create, $createDiv, $createSpan } from '../utils';
+import { $create, $createDiv, $createSpan } from '../other/utils';
 import { PopupGenerator } from './popup';
-import type { FileDeletingOption } from '../manager/song_setting';
+import type { FileDeletingOption } from '../manager/song_manager';
 
 import '../style/popup/slide_option_selector.css';
 
