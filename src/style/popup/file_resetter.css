@@ -142,9 +142,9 @@
         mask: url('/imgs/remove_file.svg') no-repeat center / contain;
       }
 
-      &.cascade::after {
-        -webkit-mask: url('/imgs/remove_cascade.svg') no-repeat center / contain;
-        mask: url('/imgs/remove_cascade.svg') no-repeat center / contain;
+      &.file-and-songs::after {
+        -webkit-mask: url('/imgs/remove_file_and_songs.svg') no-repeat center / contain;
+        mask: url('/imgs/remove_file_and_songs.svg') no-repeat center / contain;
       }
 
       &:hover {

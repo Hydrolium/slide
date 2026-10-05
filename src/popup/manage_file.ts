@@ -58,7 +58,7 @@ export class FileManagerPopup extends PopupGenerator<ManagementResult> {
 
         this.managementResult.refreshedJsons.delete(fileName); // 혹시 모를 중복 제거
         created_removeLabel.classList.add(
-          result === 'CASCADE' ? 'cascade' : 'only-file',
+          result === 'FILE_AND_SONGS' ? 'file-and-songs' : 'only-file',
         );
         this.managementResult.removedJsons[fileName] = result;
       } else {

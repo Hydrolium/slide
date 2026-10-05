@@ -387,8 +387,8 @@ export class SongManager {
         const json = this._jsonFiles[fileName];
         if (!json) return;
 
-        if (option === 'CASCADE')
-          json.forEach((songData) => this.deleteSong(songData.id, false)); // CASCADE 옵션으로 삭제 시 파일 내 모든 곡들도 삭제함.
+        if (option === 'FILE_AND_SONGS')
+          json.forEach((songData) => this.deleteSong(songData.id, false)); // FILE_AND_SONGS 옵션으로 삭제 시 파일 내 모든 곡들도 삭제함.
 
         delete this._jsonFiles[fileName];
       },

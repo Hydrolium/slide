@@ -29,7 +29,7 @@ export class FileDeletingOptionSetterPopup extends PopupGenerator<FileDeletingOp
       ),
       FileDeletingOptionSetterPopup.createButton(
         '파일 및 파일 내 노래 일괄',
-        () => resolve('CASCADE'),
+        () => resolve('FILE_AND_SONGS'),
       ),
     );
 

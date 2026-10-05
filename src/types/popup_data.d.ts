@@ -5,7 +5,7 @@ export type SlideAddingOption =
   | 'INSERT_SONG_BEFORE'
   | 'INSERT_SONG_AFTER';
 
-export type FileDeletingOption = 'ONLY_FILE' | 'CASCADE';
+export type FileDeletingOption = 'ONLY_FILE' | 'FILE_AND_SONGS';
 
 export interface ManagementResult {
   readonly removedImgs: Set<string>; // 삭제된 이미지 이름 set
