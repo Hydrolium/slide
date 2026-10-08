@@ -88,7 +88,7 @@ export class SlideAdminViewController {
 
         created_slide_li.classList.add('slide-li');
 
-        created_slide_li.replaceChildren(
+        created_slide_li.append(
           ...mapNotNull(song.texts, (_text, idx) =>
             this.makeSongSlideBox(song, id, idx),
           ),
