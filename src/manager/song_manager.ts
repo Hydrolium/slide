@@ -193,16 +193,12 @@ export class SongManager {
     this._currentTextIdx = textIdx;
   }
 
-  public resortOrder(ids: readonly SongId[]): void {
-    const nts = new Set(ids);
+  public resortOrder(newOrder: readonly SongId[]): void {
+    const nts = new Set(newOrder);
 
-    this._order.forEach((t) => {
-      if (!nts.has(t)) {
-        delete this._songs[t];
-      }
-    });
+    for (const id of this._order) if (!nts.has(id)) delete this._songs[id];
 
-    this._order = [...ids];
+    this._order = [...newOrder];
 
     if (this._currentSongId !== null && !nts.has(this._currentSongId)) {
       this._currentSongId = this._order[0] ?? null;
@@ -233,12 +229,13 @@ export class SongManager {
   private loadJson(fileName: string, songInfos: SongInfoOnJSON[]): void {
     const songDatas: SongData[] = [];
 
-    songInfos.forEach((songInfo) => {
+    for (const songInfo of songInfos) {
       const idAdded = { ...convertJSONtoSongInfo(songInfo), id: this.nextId };
 
       this.addSong(idAdded);
       songDatas.push(idAdded);
-    });
+    }
+
     this._jsonFiles[fileName] = songDatas;
   }
 
@@ -378,30 +375,30 @@ export class SongManager {
   }
 
   public manageFile(managementResult: ManagementResult): void {
-    managementResult.removedImgs.forEach((imgName) => {
-      this.removeImg(imgName);
-    }); // 이미지 삭제
+    for (const imgName of managementResult.removedImgs) this.removeImg(imgName); // 이미지 삭제
 
-    Object.entries(managementResult.removedJsons).forEach(
-      ([fileName, option]) => {
-        const json = this._jsonFiles[fileName];
-        if (!json) return;
-
-        if (option === 'FILE_AND_SONGS')
-          json.forEach((songData) => this.deleteSong(songData.id, false)); // FILE_AND_SONGS 옵션으로 삭제 시 파일 내 모든 곡들도 삭제함.
-
-        delete this._jsonFiles[fileName];
-      },
-    );
-
-    managementResult.refreshedJsons.forEach((fileName) => {
+    for (const [fileName, option] of Object.entries(
+      managementResult.removedJsons,
+    )) {
       const json = this._jsonFiles[fileName];
       if (!json) return;
-      json.forEach((songData) => {
+
+      if (option === 'FILE_AND_SONGS')
+        json.forEach((songData) => this.deleteSong(songData.id, false)); // FILE_AND_SONGS 옵션으로 삭제 시 파일 내 모든 곡들도 삭제함.
+
+      delete this._jsonFiles[fileName];
+    }
+
+    for (const fileName of managementResult.refreshedJsons) {
+      const json = this._jsonFiles[fileName];
+
+      if (!json) return;
+
+      for (const songData of json) {
         this.deleteSong(songData.id, false);
         this.addSong(songData);
-      }); // 파일 새로고침 시 파일 내 노래 모두 삭제 후 다시 추가함.
-    });
+      } // 파일 새로고침 시 파일 내 노래 모두 삭제 후 다시 추가함.
+    }
   }
 
   public async getExportSongLink(exportedId: SongId): Promise<string> {
@@ -425,14 +422,14 @@ export class SongManager {
     const exportList: SongInfo[] = [];
     const usedImgs = new Set<string>();
 
-    this._order.forEach((targetId) => {
+    for (const targetId of this._order) {
       const song = this._songs[targetId];
 
       const { id, ...exportedSong } = song as SongData;
 
       exportList.push(exportedSong);
       usedImgs.add(song.background);
-    });
+    }
 
     const zip = new JSZip();
 

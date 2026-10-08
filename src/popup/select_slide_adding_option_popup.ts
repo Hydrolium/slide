@@ -8,6 +8,8 @@ export class SlideAddingOptionSetterPopup extends PopupGenerator<SlideAddingOpti
   private static createButton(pos: string, what: string, onclick: () => void) {
     const created_button: HTMLButtonElement = document.createElement('button');
 
+    created_button.onclick = onclick;
+
     created_button.append(
       $createSpan('현재 선택된 슬라이드 '),
       $createSpan(pos, 'highlight'),
@@ -15,7 +17,6 @@ export class SlideAddingOptionSetterPopup extends PopupGenerator<SlideAddingOpti
       $createSpan(what, 'highlight'),
       $createSpan(' 삽입'),
     );
-    created_button.onclick = onclick;
     return created_button;
   }
 
@@ -23,9 +24,8 @@ export class SlideAddingOptionSetterPopup extends PopupGenerator<SlideAddingOpti
     element_popup: HTMLDivElement,
     resolve: (value: SlideAddingOption | null) => void,
   ): void {
-    const created_options = element_popup.appendChild(
-      $create('ul', 'slide-options'),
-    );
+    const created_options = $create('ul', 'slide-options');
+
     created_options.append(
       SlideAddingOptionSetterPopup.createButton('앞', '가사', () =>
         resolve('INSERT_LYRICS_BEFORE'),
@@ -40,6 +40,8 @@ export class SlideAddingOptionSetterPopup extends PopupGenerator<SlideAddingOpti
         resolve('INSERT_SONG_AFTER'),
       ),
     );
+
+    element_popup.replaceChildren(created_options);
 
     this.addNegativeButton('취소', () => {
       resolve(null);

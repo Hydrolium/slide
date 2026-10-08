@@ -50,31 +50,32 @@ export class SlideSorterPopup extends PopupGenerator<readonly number[]> {
     id: number,
   ): HTMLLIElement {
     const created_li = $create('li', 'sort-item');
-
     const created_buttonBox = $create('div', 'sort-up-down-buttons');
-
     const created_upButton = $create('button', 'sort-up-button');
+    const created_downButton = $create('button', 'sort-down-button');
+    const created_removeButton = $create('button', 'sort-remove-button');
+
     created_upButton.addEventListener('click', () => {
       this.moveUp(element_sortSlideBox, id);
     });
-    created_buttonBox.appendChild(created_upButton);
 
-    const created_downButton = $create('button', 'sort-down-button');
     created_downButton.addEventListener('click', () => {
       this.moveDown(element_sortSlideBox, id);
     });
-    created_buttonBox.appendChild(created_downButton);
 
-    const created_removeButton = $create('button', 'sort-remove-button');
     created_removeButton.addEventListener('click', () => {
       this.idList = this.idList.filter((i) => i != id);
       this.renderSlideBox(element_sortSlideBox);
     });
-    created_buttonBox.appendChild(created_removeButton);
 
-    created_li.appendChild(created_buttonBox);
+    created_buttonBox.append(
+      created_upButton,
+      created_downButton,
+      created_removeButton,
+    );
 
-    created_li.appendChild(
+    created_li.append(
+      created_buttonBox,
       $createDiv(this.infoMap[id].title, 'sort-item-text'),
     );
 
@@ -87,7 +88,7 @@ export class SlideSorterPopup extends PopupGenerator<readonly number[]> {
     );
 
     if (this.idList.length === 0)
-      element_sortSlideBox.appendChild(
+      element_sortSlideBox.append(
         $createDiv(
           '슬라이드가 없습니다.\n메인화면의 [추가하기]로 새 슬라이드를 생성하거나 [파일추가]로 파일을 업로드하세요.',
           'tip',
@@ -101,9 +102,9 @@ export class SlideSorterPopup extends PopupGenerator<readonly number[]> {
   ): void {
     const created_sortSlideBox = $create('ul', 'sort-slide-box');
 
-    element_popup.appendChild(created_sortSlideBox);
-
     this.renderSlideBox(created_sortSlideBox);
+
+    element_popup.replaceChildren(created_sortSlideBox);
 
     this.addNegativeButton('취소', () => {
       resolve(null);

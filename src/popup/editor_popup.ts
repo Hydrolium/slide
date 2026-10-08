@@ -85,10 +85,10 @@ export class EditorPopup extends PopupGenerator<ModifiedSongData> {
 
     created_inputEditor.appendChild($createDiv(label, 'input-editor-label'));
 
-    const created_input = created_inputEditor.appendChild(
-      this.createColorInput(color),
-    );
+    const created_input = this.createColorInput(color);
     created_input.onchange = () => onchange(created_input.value);
+
+    created_inputEditor.appendChild(created_input);
 
     onchange(color); // 최초 1회 실행해서 색상 초기화
 
@@ -154,31 +154,33 @@ export class EditorPopup extends PopupGenerator<ModifiedSongData> {
 
     const created_container = document.createDocumentFragment();
 
-    const created_colorInputEditor = created_container.appendChild(
-      $create('div', 'input-editor'),
-    );
+    const created_colorInputEditor = $create('div', 'input-editor');
 
-    created_colorInputEditor.appendChild(
+    const created_colorInput = this.createColorInput(splitedColor.color);
+
+    created_colorInputEditor.append(
       $createDiv(label + ' 색상', 'input-editor-label'),
+      created_colorInput,
     );
 
-    const created_colorInput = created_colorInputEditor.appendChild(
-      this.createColorInput(splitedColor.color),
+    const created_opacityInputEditor = $create('div', 'input-editor');
+
+    const created_rangeInput = this.createRangeInput(
+      splitedColor.opacityPercent,
+    );
+    const created_numberInput = this.createNumberInput(
+      splitedColor.opacityPercent,
     );
 
-    const created_opacityInputEditor = created_container.appendChild(
-      $create('div', 'input-editor'),
-    );
-
-    created_opacityInputEditor.appendChild(
+    created_opacityInputEditor.append(
       $createDiv(label + ' 투명도', 'input-editor-label'),
+      created_rangeInput,
+      created_numberInput,
     );
 
-    const created_rangeInput = created_opacityInputEditor.appendChild(
-      this.createRangeInput(splitedColor.opacityPercent),
-    );
-    const created_numberInput = created_opacityInputEditor.appendChild(
-      this.createNumberInput(splitedColor.opacityPercent),
+    created_container.append(
+      created_colorInputEditor,
+      created_opacityInputEditor,
     );
 
     created_colorInput.onchange = () =>
@@ -236,71 +238,59 @@ export class EditorPopup extends PopupGenerator<ModifiedSongData> {
     element_popup: HTMLDivElement,
     resolve: (value: ModifiedSongData | null) => void,
   ): void {
-    const created_editorInputsBox = element_popup.appendChild(
-      $create('div', 'editor-inputs-box'),
+    const created_editorInputsBox = $create('div', 'editor-inputs-box');
+    const created_textInputs = $create('div', 'text-inputs');
+    const created_titleInput = EditorPopup.createTextInput('');
+    const created_textArea = EditorPopup.createTextArea('');
+    const created_backgroundChangeButton = $create('button');
+    const created_titleColorEditorBox = EditorPopup.createdColorEditorBox(
+      this.songData.titleColor,
+      (color) => {
+        created_titleInput.style.color = color;
+        this.songData.titleColor = color;
+      },
+      this.songData.titleStroke,
+      (color) => {
+        created_titleInput.style.webkitTextStroke = `2px ${color}`;
+        this.songData.titleStroke = color;
+      },
+      this.songData.titleShadow,
+      (color) => {
+        created_titleInput.style.textShadow = `3.5px 3.5px 0 ${color}`;
+        this.songData.titleShadow = color;
+      },
+    );
+    const created_textColorEditorBox = EditorPopup.createdColorEditorBox(
+      this.songData.textColor,
+      (color) => {
+        created_textArea.style.color = color;
+        this.songData.textColor = color;
+      },
+      this.songData.textStroke,
+      (color) => {
+        created_textArea.style.webkitTextStroke = `2px ${color}`;
+        this.songData.textStroke = color;
+      },
+      this.songData.textShadow,
+      (color) => {
+        created_textArea.style.textShadow = `3.5px 3.5px 0 ${color}`;
+        this.songData.textShadow = color;
+      },
     );
 
-    const created_textInputs = $create('div', 'text-inputs');
     created_textInputs.style.backgroundImage = `url(${this.imgs[this.songData.background]?.url})`;
 
-    const created_titleInput = created_textInputs.appendChild(
-      EditorPopup.createTextInput(''),
-    );
     created_titleInput.value = this.songData.texts[this.songData.textIdx].title;
     created_titleInput.onchange = () => {
       this.songData.texts[this.songData.textIdx].title =
         created_titleInput.value;
     };
 
-    const created_textArea = created_textInputs.appendChild(
-      EditorPopup.createTextArea(''),
-    );
     created_textArea.value = this.songData.texts[this.songData.textIdx].text;
     created_textArea.onchange = () => {
       this.songData.texts[this.songData.textIdx].text = created_textArea.value;
     };
 
-    created_editorInputsBox.append(
-      EditorPopup.createdColorEditorBox(
-        this.songData.titleColor,
-        (color) => {
-          created_titleInput.style.color = color;
-          this.songData.titleColor = color;
-        },
-        this.songData.titleStroke,
-        (color) => {
-          created_titleInput.style.webkitTextStroke = `2px ${color}`;
-          this.songData.titleStroke = color;
-        },
-        this.songData.titleShadow,
-        (color) => {
-          created_titleInput.style.textShadow = `3.5px 3.5px 0 ${color}`;
-          this.songData.titleShadow = color;
-        },
-      ),
-      created_textInputs,
-      EditorPopup.createdColorEditorBox(
-        this.songData.textColor,
-        (color) => {
-          created_textArea.style.color = color;
-          this.songData.textColor = color;
-        },
-        this.songData.textStroke,
-        (color) => {
-          created_textArea.style.webkitTextStroke = `2px ${color}`;
-          this.songData.textStroke = color;
-        },
-        this.songData.textShadow,
-        (color) => {
-          created_textArea.style.textShadow = `3.5px 3.5px 0 ${color}`;
-          this.songData.textShadow = color;
-        },
-      ),
-    );
-
-    const created_backgroundChangeButton = element_popup.appendChild(
-      $create('button'),
-    );
     created_backgroundChangeButton.textContent = '배경 변경';
     created_backgroundChangeButton.classList.add('background-change-button');
     created_backgroundChangeButton.onclick = async () => {
@@ -312,7 +302,17 @@ export class EditorPopup extends PopupGenerator<ModifiedSongData> {
       }
     };
 
-    element_popup.appendChild(
+    created_textInputs.append(created_titleInput, created_textArea);
+
+    created_editorInputsBox.append(
+      created_titleColorEditorBox,
+      created_textInputs,
+      created_textColorEditorBox,
+    );
+
+    element_popup.replaceChildren(
+      created_editorInputsBox,
+      created_backgroundChangeButton,
       $createDiv('색상, 배경은 변경시 같은 노래가 전부 변경됩니다.', 'tip'),
     );
 

@@ -72,21 +72,20 @@ export class SlideShowViewController {
         if (this.element_slideText)
           this.element_slideText.style.fontSize = `${data.data}vw`;
       } else if (data.type == 'UPDATE_BACKGROUND') {
-        this.element_slideLayerContainer?.replaceChildren();
+        if (!this.element_slideLayerContainer) return;
+
         this.cachedLayers = {};
+        const layers = [$createDiv('', 'default_layer')];
 
-        this.element_slideLayerContainer?.appendChild(
-          $createDiv('', 'default_layer'),
-        );
-
-        Object.entries(data.data as ImgRecord).forEach(([name, info]) => {
+        for (const [name, info] of Object.entries(data.data as ImgRecord)) {
           const created_layer = $createDiv('', 'slide-layer');
 
           created_layer.style.backgroundImage = `url(${info.url})`;
 
-          this.element_slideLayerContainer?.appendChild(created_layer);
           this.cachedLayers[name] = created_layer;
-        });
+          layers.push(created_layer);
+        }
+        this.element_slideLayerContainer.replaceChildren(...layers);
 
         const temp = this.currentLayerName;
         this.currentLayerName = '';

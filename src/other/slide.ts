@@ -13,35 +13,36 @@ export class Slide {
     backgroundUrl: string,
     isSelected: boolean,
   ) {
-    if (isSelected) this.element_frame.classList.add('selected');
-
-    const created_slideLayerContainer = $createDiv('', 'slide-layer-container');
-
     const created_slideLayer = $createDiv('', 'slide-layer', 'visible');
-    created_slideLayer.style.backgroundImage = `url(${backgroundUrl})`;
-    created_slideLayerContainer.appendChild(created_slideLayer);
-
+    const created_slideLayerContainer = $createDiv('', 'slide-layer-container');
     const created_slideTitle = $createDiv(
       context.texts[context.textIdx].title,
       'slide-title',
     );
-    created_slideTitle.style.color = context.titleColor;
-    created_slideTitle.style.webkitTextStroke = `1px ${context.titleStroke}`;
-    created_slideTitle.style.textShadow = `3px 3px 0 ${context.titleShadow}`;
-
     const created_slideText = $createDiv(
       context.texts[context.textIdx].text,
       'slide-text',
     );
+
+    created_slideLayer.style.backgroundImage = `url(${backgroundUrl})`;
+
+    created_slideTitle.style.color = context.titleColor;
+    created_slideTitle.style.webkitTextStroke = `1px ${context.titleStroke}`;
+    created_slideTitle.style.textShadow = `3px 3px 0 ${context.titleShadow}`;
+
     created_slideText.style.color = context.textColor;
     created_slideText.style.webkitTextStroke = `1px ${context.textStroke}`;
     created_slideText.style.textShadow = `2px 2px 0 ${context.textShadow}`;
+
+    created_slideLayerContainer.append(created_slideLayer);
 
     this.element_frame.replaceChildren(
       created_slideLayerContainer,
       created_slideTitle,
       created_slideText,
     );
+
+    this.element_frame.classList.toggle('selected', isSelected);
   }
 
   render(): HTMLDivElement {

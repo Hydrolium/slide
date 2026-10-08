@@ -41,13 +41,13 @@ export abstract class PopupGenerator<T> {
 
       if (this.buttonList.length > 0) {
         const created_popupButtonBox = $create('div', 'popup-button-box');
-        created_popupButtonBox.replaceChildren(...this.buttonList);
-        created_popup.appendChild(created_popupButtonBox);
+        created_popupButtonBox.append(...this.buttonList);
+        created_popup.append(created_popupButtonBox);
       }
 
-      this.created_popupContainer.appendChild(created_popup);
+      this.created_popupContainer.append(created_popup);
 
-      element_app?.appendChild(this.created_popupContainer);
+      element_app?.append(this.created_popupContainer);
     });
   }
 

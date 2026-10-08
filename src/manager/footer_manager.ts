@@ -11,19 +11,16 @@ export class FooterManager {
     onclick: (e: Event) => void,
   ) {
     const created_menuButton = $create('div', 'menu-button');
-
     const created_button = $create('button');
-
     const created_iconBackground = $create('span', 'icon-background');
+
+    created_menuButton.onclick = onclick;
 
     created_iconBackground.style.webkitMaskImage = `url(${svgSrc})`;
     created_iconBackground.style.maskImage = `url(${svgSrc})`;
-    created_button.appendChild(created_iconBackground);
-    created_menuButton.appendChild(created_button);
 
-    created_menuButton.appendChild($createDiv(label));
-
-    created_menuButton.onclick = onclick;
+    created_button.append(created_iconBackground);
+    created_menuButton.append(created_button, $createDiv(label));
 
     return created_menuButton;
   }
@@ -37,7 +34,7 @@ export class FooterManager {
     svgSrc: string,
     onclick: (e: Event) => void,
   ) {
-    this.element_footer?.appendChild(
+    this.element_footer?.append(
       FooterManager.createFooterButton(label, svgSrc, onclick),
     );
   }

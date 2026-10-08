@@ -12,12 +12,14 @@ export class SlideDeletingOptionSetterPopup extends PopupGenerator<SlideDeleting
   ): HTMLButtonElement {
     const created_button: HTMLButtonElement = document.createElement('button');
 
+    created_button.onclick = onclick;
+
     created_button.append(
       $createSpan(prefix),
       $createSpan(what, 'highlight'),
       $createSpan(' 삭제'),
     );
-    created_button.onclick = onclick;
+
     return created_button;
   }
 
@@ -25,9 +27,8 @@ export class SlideDeletingOptionSetterPopup extends PopupGenerator<SlideDeleting
     element_popup: HTMLDivElement,
     resolve: (value: SlideDeletingOption | null) => void,
   ): void {
-    const created_options = element_popup.appendChild(
-      $create('ul', 'slide-options'),
-    );
+    const created_options = $create('ul', 'slide-options');
+
     created_options.append(
       SlideDeletingOptionSetterPopup.createButton(
         '현재 선택된 ',
@@ -45,6 +46,8 @@ export class SlideDeletingOptionSetterPopup extends PopupGenerator<SlideDeleting
         () => resolve('ALL'),
       ),
     );
+
+    element_popup.replaceChildren(created_options);
 
     this.addNegativeButton('취소', () => {
       resolve(null);

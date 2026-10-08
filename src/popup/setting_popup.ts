@@ -29,17 +29,18 @@ export class SettingEditorPopup extends PopupGenerator<null> {
     onchange: (e: Event) => void,
   ): HTMLLIElement {
     const created_settingItem = $create('li', 'setting-item');
-
-    created_settingItem.appendChild($createDiv(label, 'setting-label'));
-
     const created_input = $create('input', 'setting-input');
+
     created_input.type = 'number';
     created_input.value = initialValue;
     created_input.min = '0';
     created_input.step = '0.1';
     created_input.onchange = onchange;
 
-    created_settingItem.appendChild(created_input);
+    created_settingItem.append(
+      $createDiv(label, 'setting-label'),
+      created_input,
+    );
 
     return created_settingItem;
   }
@@ -50,7 +51,7 @@ export class SettingEditorPopup extends PopupGenerator<null> {
   ): void {
     const created_settingList = $create('ul', 'setting-list');
 
-    created_settingList.appendChild(
+    created_settingList.append(
       this.createdNumberInputSettingItem(
         '타이틀 크기',
         this.initialTitleFontSize,
@@ -59,9 +60,6 @@ export class SettingEditorPopup extends PopupGenerator<null> {
             this.titleSizeController(e.target.value);
         },
       ),
-    );
-
-    created_settingList.appendChild(
       this.createdNumberInputSettingItem(
         '텍스트 크기',
         this.initialTextFontSize,
@@ -72,7 +70,7 @@ export class SettingEditorPopup extends PopupGenerator<null> {
       ),
     );
 
-    element_popup.appendChild(created_settingList);
+    element_popup.replaceChildren(created_settingList);
 
     this.addNegativeButton('닫기', () => {
       resolve(null);

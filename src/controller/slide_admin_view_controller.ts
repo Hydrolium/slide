@@ -10,10 +10,11 @@ import { Slide } from '../other/slide';
 import { WindowManager } from '../manager/window_manager';
 import { FooterManager } from '../manager/footer_manager';
 import { SongManager } from '../manager/song_manager';
-import type { SongContext } from '../types/song';
+import type { SongContext, SongId, SongInfo } from '../types/song';
 
 import '../style/slide_style.css';
 import '../style/slide_list.css';
+import { mapNotNull } from '../other/utils';
 
 export class SlideAdminViewController {
   private readonly songManager = new SongManager();
@@ -33,60 +34,69 @@ export class SlideAdminViewController {
   private element_slideBox =
     document.querySelector<HTMLUListElement>('#slide-box');
 
-  private updateSong() {
-    this.element_slideBox?.replaceChildren();
+  private makeSongSlideBox(song: SongInfo, id: SongId, textIdx: number) {
+    const context: SongContext = {
+      ...song,
+      textIdx: textIdx,
+    };
 
+    const slide = new Slide(
+      context,
+      this.songManager.imgUrls[song.background]?.url,
+      id === this.songManager.currentSongId &&
+        textIdx === this.songManager.currentTextIdx,
+    ).render();
+
+    slide.addEventListener('click', () => {
+      this.songManager.goto(id, textIdx);
+      this.updateSong();
+    });
+
+    slide.addEventListener('contextmenu', async (event: MouseEvent) => {
+      event.preventDefault();
+
+      const result = await EditorPopup.show(
+        { ...context, id: id, textIdx: textIdx },
+        this.songManager.imgUrls,
+      );
+
+      if (result) this.songManager.modifySong(result);
+
+      this.updateSong();
+    });
+
+    return slide;
+  }
+
+  private updateSong() {
     if (this.songManager.isEmpty()) {
+      this.element_slideBox?.replaceChildren();
       this.windowManager.sendToPopup('CLOSE');
       return;
     }
 
+    if (!this.element_slideBox) return;
+
     this.songManager.normalize();
 
-    this.songManager.order.forEach((id) => {
-      const created_slide_li = document.createElement('li');
-      created_slide_li.classList.add('slide-li');
+    this.element_slideBox?.replaceChildren(
+      ...mapNotNull(this.songManager.order, (id) => {
+        const song = this.songManager.getSongWithId(id);
+        if (!song) return;
 
-      const song = this.songManager.getSongWithId(id);
+        const created_slide_li = document.createElement('li');
 
-      if (!song) return;
+        created_slide_li.classList.add('slide-li');
 
-      song.texts.forEach((_text, idx) => {
-        const context: SongContext = {
-          ...song,
-          textIdx: idx,
-        };
+        created_slide_li.replaceChildren(
+          ...mapNotNull(song.texts, (_text, idx) =>
+            this.makeSongSlideBox(song, id, idx),
+          ),
+        );
 
-        const slide = new Slide(
-          context,
-          this.songManager.imgUrls[song.background]?.url,
-          id === this.songManager.currentSongId &&
-            idx === this.songManager.currentTextIdx,
-        ).render();
-
-        slide.addEventListener('click', () => {
-          this.songManager.goto(id, idx);
-          this.updateSong();
-        });
-
-        slide.addEventListener('contextmenu', async (event: MouseEvent) => {
-          event.preventDefault();
-
-          const result = await EditorPopup.show(
-            { ...context, id: id, textIdx: idx },
-            this.songManager.imgUrls,
-          );
-
-          if (result) this.songManager.modifySong(result);
-
-          this.updateSong();
-        });
-
-        created_slide_li.appendChild(slide);
-      });
-
-      this.element_slideBox?.appendChild(created_slide_li);
-    });
+        return created_slide_li;
+      }),
+    );
 
     this.windowManager.sendToPopup('CHANGE', this.songManager.currentContext);
   }
@@ -115,11 +125,11 @@ export class SlideAdminViewController {
       'imgs/footer_icons/manage_file.svg',
       async () => {
         const aboutJsonFile: Record<string, string> = {};
-        Object.entries(this.songManager.jsonFiles).forEach(
-          ([fileName, data]) => {
-            aboutJsonFile[fileName] = `${data.map((d) => d.title).join(', ')}`;
-          },
-        );
+
+        for (const [fileName, data] of Object.entries(
+          this.songManager.jsonFiles,
+        ))
+          aboutJsonFile[fileName] = `${data.map((d) => d.title).join(', ')}`;
 
         const result = await FileManagerPopup.show(
           aboutJsonFile,
@@ -206,9 +216,8 @@ export class SlideAdminViewController {
       'imgs/footer_icons/export_slides.svg',
       async () => {
         const m = new Map<number, string>();
-        this.songManager.order.forEach((id) =>
-          m.set(id, this.songManager.songs[id].title),
-        );
+        for (const id of this.songManager.order)
+          m.set(id, this.songManager.songs[id].title);
 
         const result = await FileExportingOptionSetterPopup.show(m);
 

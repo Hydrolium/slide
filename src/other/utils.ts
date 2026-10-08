@@ -36,3 +36,14 @@ export const convertJSONtoSongInfo = (songInfoOnJson: SongInfoOnJSON) => {
     }),
   } as SongInfo;
 };
+
+export const mapNotNull = function* <T, U>(
+  array: readonly T[],
+  callbackfn: (value: T, idx: number) => U,
+) {
+  const len = array.length;
+  for (let i = 0; i < len; i++) {
+    const transposed = callbackfn(array[i], i);
+    if (transposed !== null && transposed !== undefined) yield transposed;
+  }
+};
