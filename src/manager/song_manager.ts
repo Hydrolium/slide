@@ -233,7 +233,7 @@ export class SongManager {
       const idAdded = { ...convertJSONtoSongInfo(songInfo), id: this.nextId };
 
       this.addSong(idAdded);
-      songDatas.push(idAdded);
+      songDatas.push(structuredClone(idAdded));
     }
 
     this._jsonFiles[fileName] = songDatas;
@@ -370,7 +370,6 @@ export class SongManager {
     this._songs[modified.id] = {
       ...original,
       ...modified,
-      texts: [...modified.texts],
     };
   }
 

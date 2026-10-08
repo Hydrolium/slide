@@ -14,7 +14,10 @@ export class EditorPopup extends PopupGenerator<ModifiedSongData> {
 
   constructor(songData: ModifiedSongData, imgs: Readonly<ImgRecord>) {
     super();
-    this.songData = { ...songData, texts: [...songData.texts] };
+    this.songData = structuredClone({
+      ...songData,
+      texts: [...songData.texts],
+    });
     this.imgs = imgs;
   }
 
