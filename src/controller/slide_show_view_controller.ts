@@ -1,9 +1,13 @@
 import { $createDiv } from '../other/utils';
 import type { ImgRecord, SongContext } from '../types/song';
+import { attachProperty } from '../other/css_property_attacher';
 
 import '../style/slide_style.css';
 
 export class SlideShowViewController {
+  private readonly element_slideShowFrame =
+    document.querySelector<HTMLDivElement>('#slide-show-frame');
+
   private readonly element_slideLayerContainer =
     document.querySelector<HTMLDivElement>('#slide-layer-container');
   private readonly element_slideTitle =
@@ -38,6 +42,7 @@ export class SlideShowViewController {
 
   private update(context: SongContext) {
     if (
+      !this.element_slideShowFrame ||
       !this.element_slideLayerContainer ||
       !this.element_slideTitle ||
       !this.element_slideText
@@ -47,14 +52,21 @@ export class SlideShowViewController {
     this.updateBackground(context.background);
 
     this.element_slideTitle.textContent = context.texts[context.textIdx].title;
-    this.element_slideTitle.style.color = context.titleColor;
-    this.element_slideTitle.style.webkitTextStroke = `4px ${context.titleStroke}`;
-    this.element_slideTitle.style.textShadow = `8px 8px 0 ${context.titleShadow}`;
-
     this.element_slideText.textContent = context.texts[context.textIdx].text;
-    this.element_slideText.style.color = context.textColor;
-    this.element_slideText.style.webkitTextStroke = `3px ${context.textStroke}`;
-    this.element_slideText.style.textShadow = `7px 7px 0 ${context.textShadow}`;
+
+    attachProperty(this.element_slideShowFrame, {
+      titleColor: context.titleColor,
+      titleStrokeColor: context.titleStroke,
+      titleStrokeThickness: '4px',
+      titleShadowColor: context.titleShadow,
+      titleShadowOffset: '8px',
+
+      textColor: context.textColor,
+      textStrokeColor: context.textStroke,
+      textStrokeThickness: '3px',
+      textShadowColor: context.textShadow,
+      textShadowOffset: '7px',
+    });
   }
 
   private initEvent() {
@@ -66,21 +78,25 @@ export class SlideShowViewController {
       } else if (data.type == 'CLOSE') {
         window.close();
       } else if (data.type == 'RESIZE_TITLE') {
-        if (this.element_slideTitle)
-          this.element_slideTitle.style.fontSize = `${data.data}vw`;
+        if (this.element_slideShowFrame)
+          attachProperty(this.element_slideShowFrame, {
+            titleFontSize: `${data.data}vw`,
+          });
       } else if (data.type == 'RESIZE_TEXT') {
-        if (this.element_slideText)
-          this.element_slideText.style.fontSize = `${data.data}vw`;
+        if (this.element_slideShowFrame)
+          attachProperty(this.element_slideShowFrame, {
+            textFontSize: `${data.data}vw`,
+          });
       } else if (data.type == 'UPDATE_BACKGROUND') {
         if (!this.element_slideLayerContainer) return;
 
         this.cachedLayers = {};
-        const layers = [$createDiv('', 'default_layer')];
+        const layers = [$createDiv('', 'default-layer')];
 
         for (const [name, info] of Object.entries(data.data as ImgRecord)) {
           const created_layer = $createDiv('', 'slide-layer');
 
-          created_layer.style.backgroundImage = `url(${info.url})`;
+          attachProperty(created_layer, { slideLayerImg: `url(${info.url})` });
 
           this.cachedLayers[name] = created_layer;
           layers.push(created_layer);

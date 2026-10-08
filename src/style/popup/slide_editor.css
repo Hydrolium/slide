@@ -54,46 +54,6 @@
   }
 }
 
-.text-inputs {
-
-  width: 600px;
-  height: 337px;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-
-  input, textarea {
-    width: 100%;
-
-    font-size: 40px;
-    line-height: 1.4;
-    text-align: center;
-    color: var(--color-black);
-
-    background-color: #0000;
-
-    border: none;
-
-    outline: none;
-    resize: none;
-    transition: all 0.2s ease;
-  }
-
-  input {
-    padding: 12px;
-  }
-
-  textarea {
-    height: 100%;
-    font-size: 33px;
-  }
-}
-
 .background-change-button {
   width: 100%;
   height: 30px;

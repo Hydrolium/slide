@@ -116,12 +116,8 @@
           background-color: currentColor;
           color: inherit;
 
-          -webkit-mask-repeat: no-repeat;
-          mask-repeat: no-repeat;
-          -webkit-mask-size: auto;
-          mask-size: auto;
-          -webkit-mask-position: center;
-          mask-position: center;
+          -webkit-mask: var(--footer-icon-mask-img) no-repeat center / auto;
+          mask: var(--footer-icon-mask-img) no-repeat center / auto;
 
           transition: all .2s ease;
         }

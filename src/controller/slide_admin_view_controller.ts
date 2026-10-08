@@ -11,10 +11,10 @@ import { WindowManager } from '../manager/window_manager';
 import { FooterManager } from '../manager/footer_manager';
 import { SongManager } from '../manager/song_manager';
 import type { SongContext, SongId, SongInfo } from '../types/song';
+import { mapNotNull } from '../other/utils';
 
 import '../style/slide_style.css';
 import '../style/slide_list.css';
-import { mapNotNull } from '../other/utils';
 
 export class SlideAdminViewController {
   private readonly songManager = new SongManager();
@@ -40,12 +40,12 @@ export class SlideAdminViewController {
       textIdx: textIdx,
     };
 
-    const slide = new Slide(
+    const slide = Slide.create(
       context,
       this.songManager.imgUrls[song.background]?.url,
       id === this.songManager.currentSongId &&
         textIdx === this.songManager.currentTextIdx,
-    ).render();
+    );
 
     slide.addEventListener('click', () => {
       this.songManager.goto(id, textIdx);

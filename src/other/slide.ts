@@ -1,20 +1,20 @@
-import type { SongContext } from '../types/song';
 import { $createDiv } from './utils';
+import type { SongContext } from '../types/song';
+import { attachProperty } from './css_property_attacher';
+
+import '../style/slide_style.css';
 
 export class Slide {
-  private element_frame: HTMLDivElement = $createDiv(
-    '',
-    'slide-frame',
-    'small-box',
-  );
-
-  constructor(
+  public static create(
     context: SongContext,
     backgroundUrl: string,
     isSelected: boolean,
   ) {
-    const created_slideLayer = $createDiv('', 'slide-layer', 'visible');
+    const created_slideFrame = $createDiv('', 'slide-frame', 'small-box');
+
     const created_slideLayerContainer = $createDiv('', 'slide-layer-container');
+    const created_slideLayer = $createDiv('', 'default-layer');
+
     const created_slideTitle = $createDiv(
       context.texts[context.textIdx].title,
       'slide-title',
@@ -24,28 +24,32 @@ export class Slide {
       'slide-text',
     );
 
-    created_slideLayer.style.backgroundImage = `url(${backgroundUrl})`;
+    created_slideFrame.classList.toggle('selected', isSelected);
 
-    created_slideTitle.style.color = context.titleColor;
-    created_slideTitle.style.webkitTextStroke = `1px ${context.titleStroke}`;
-    created_slideTitle.style.textShadow = `3px 3px 0 ${context.titleShadow}`;
+    attachProperty(created_slideFrame, {
+      titleColor: context.titleColor,
+      titleStrokeColor: context.titleStroke,
+      titleStrokeThickness: '1px',
+      titleShadowColor: context.titleShadow,
+      titleShadowOffset: '3px',
 
-    created_slideText.style.color = context.textColor;
-    created_slideText.style.webkitTextStroke = `1px ${context.textStroke}`;
-    created_slideText.style.textShadow = `2px 2px 0 ${context.textShadow}`;
+      textColor: context.textColor,
+      textStrokeColor: context.textStroke,
+      textStrokeThickness: '1px',
+      textShadowColor: context.textShadow,
+      textShadowOffset: '2px',
+
+      defaultLayerImg: `url(${backgroundUrl})`,
+    });
 
     created_slideLayerContainer.append(created_slideLayer);
 
-    this.element_frame.replaceChildren(
+    created_slideFrame.append(
       created_slideLayerContainer,
       created_slideTitle,
       created_slideText,
     );
 
-    this.element_frame.classList.toggle('selected', isSelected);
-  }
-
-  render(): HTMLDivElement {
-    return this.element_frame;
+    return created_slideFrame;
   }
 }

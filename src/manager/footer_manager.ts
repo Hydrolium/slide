@@ -1,3 +1,4 @@
+import { attachProperty } from '../other/css_property_attacher';
 import { $create, $createDiv } from '../other/utils';
 
 import '../style/footer.css';
@@ -5,6 +6,7 @@ import '../style/footer.css';
 export class FooterManager {
   private readonly element_footer =
     document.querySelector<HTMLDivElement>('#footer');
+
   private static createFooterButton(
     label: string,
     svgSrc: string,
@@ -16,8 +18,9 @@ export class FooterManager {
 
     created_menuButton.onclick = onclick;
 
-    created_iconBackground.style.webkitMaskImage = `url(${svgSrc})`;
-    created_iconBackground.style.maskImage = `url(${svgSrc})`;
+    attachProperty(created_iconBackground, {
+      footerIconMaskImg: `url(${svgSrc})`,
+    });
 
     created_button.append(created_iconBackground);
     created_menuButton.append(created_button, $createDiv(label));

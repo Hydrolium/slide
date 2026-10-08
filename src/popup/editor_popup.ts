@@ -3,7 +3,9 @@ import { PopupGenerator } from './popup';
 import { ImgSelectorPopup } from './select_img_popup';
 import type { ImgRecord, ModifiedSongData } from '../types/song';
 import type { SplitedColor } from '../types/popup_data';
+import { attachProperty } from '../other/css_property_attacher';
 
+import '../style/slide_style.css';
 import '../style/popup/slide_editor.css';
 
 export class EditorPopup extends PopupGenerator<ModifiedSongData> {
@@ -239,53 +241,85 @@ export class EditorPopup extends PopupGenerator<ModifiedSongData> {
     resolve: (value: ModifiedSongData | null) => void,
   ): void {
     const created_editorInputsBox = $create('div', 'editor-inputs-box');
-    const created_textInputs = $create('div', 'text-inputs');
+
+    const created_slideInputFrame = $create(
+      'div',
+      'text-inputs',
+      'slide-frame',
+      'editor-mode',
+    );
+    const created_slideLayerContainer = $create('div', 'slide-layer-container');
+    const created_defaultLayer = $create('div', 'default-layer');
+
     const created_titleInput = EditorPopup.createTextInput('');
     const created_textArea = EditorPopup.createTextArea('');
+
     const created_backgroundChangeButton = $create('button');
     const created_titleColorEditorBox = EditorPopup.createdColorEditorBox(
       this.songData.titleColor,
       (color) => {
-        created_titleInput.style.color = color;
+        attachProperty(created_slideInputFrame, { titleColor: color });
         this.songData.titleColor = color;
       },
       this.songData.titleStroke,
       (color) => {
-        created_titleInput.style.webkitTextStroke = `2px ${color}`;
+        attachProperty(created_slideInputFrame, {
+          titleStrokeColor: color,
+          titleStrokeThickness: '2px',
+        });
+
         this.songData.titleStroke = color;
       },
       this.songData.titleShadow,
       (color) => {
-        created_titleInput.style.textShadow = `3.5px 3.5px 0 ${color}`;
+        attachProperty(created_slideInputFrame, {
+          titleShadowColor: color,
+          titleShadowOffset: '3.5px',
+        });
+
         this.songData.titleShadow = color;
       },
     );
     const created_textColorEditorBox = EditorPopup.createdColorEditorBox(
       this.songData.textColor,
       (color) => {
-        created_textArea.style.color = color;
+        attachProperty(created_slideInputFrame, { textColor: color });
+
         this.songData.textColor = color;
       },
       this.songData.textStroke,
       (color) => {
-        created_textArea.style.webkitTextStroke = `2px ${color}`;
+        attachProperty(created_slideInputFrame, {
+          textStrokeColor: color,
+          textStrokeThickness: '2px',
+        });
+
         this.songData.textStroke = color;
       },
       this.songData.textShadow,
       (color) => {
-        created_textArea.style.textShadow = `3.5px 3.5px 0 ${color}`;
+        attachProperty(created_slideInputFrame, {
+          textShadowColor: color,
+          textShadowOffset: '3.5px',
+        });
         this.songData.textShadow = color;
       },
     );
 
-    created_textInputs.style.backgroundImage = `url(${this.imgs[this.songData.background]?.url})`;
+    attachProperty(created_slideInputFrame, {
+      titleFontSize: '40px',
+      textFontSize: '33px',
+      defaultLayerImg: `url(${this.imgs[this.songData.background]?.url})`,
+    });
 
+    created_titleInput.classList.add('slide-title');
     created_titleInput.value = this.songData.texts[this.songData.textIdx].title;
     created_titleInput.onchange = () => {
       this.songData.texts[this.songData.textIdx].title =
         created_titleInput.value;
     };
 
+    created_textArea.classList.add('slide-text');
     created_textArea.value = this.songData.texts[this.songData.textIdx].text;
     created_textArea.onchange = () => {
       this.songData.texts[this.songData.textIdx].text = created_textArea.value;
@@ -297,16 +331,21 @@ export class EditorPopup extends PopupGenerator<ModifiedSongData> {
       const result = await ImgSelectorPopup.show(this.imgs);
       if (result) {
         const url = this.imgs[result].url;
-        created_textInputs.style.backgroundImage = `url(${url})`;
+        created_slideInputFrame.style.backgroundImage = `url(${url})`;
         this.songData.background = result;
       }
     };
 
-    created_textInputs.append(created_titleInput, created_textArea);
+    created_slideLayerContainer.append(created_defaultLayer);
+    created_slideInputFrame.append(
+      created_slideLayerContainer,
+      created_titleInput,
+      created_textArea,
+    );
 
     created_editorInputsBox.append(
       created_titleColorEditorBox,
-      created_textInputs,
+      created_slideInputFrame,
       created_textColorEditorBox,
     );
 
