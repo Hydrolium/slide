@@ -1,4 +1,4 @@
-import { $create, $createDiv } from '../other/utils';
+import { $create, $createCheckbox, $createDiv } from '../other/utils';
 import { PopupGenerator } from './popup';
 import { FileDeletingOptionSetterPopup } from './select_file_deleting_option_popup';
 import type { ImgRecord } from '../types/song';
@@ -26,16 +26,38 @@ export class FileManagerPopup extends PopupGenerator<ManagementResult> {
     this.imgFiles = { ...imgCandidates };
   }
 
+  protected draw(
+    element_popup: HTMLDivElement,
+    resolve: (value: ManagementResult | null) => void,
+  ): void {
+    const created_existingFileList = $create('ul', 'file-list');
+
+    this.renderFileList(created_existingFileList);
+
+    element_popup.append(
+      created_existingFileList,
+      $createDiv(
+        'json 파일 새로고침 시 파일 내 모든 노래 슬라이드가 삭제 후 다시 추가됩니다.',
+        'tip',
+      ),
+    );
+
+    this.addNegativeButton('취소', () => {
+      resolve(null);
+    });
+
+    this.addPositiveButton('저장', () => {
+      resolve(structuredClone(this.managementResult));
+    });
+  }
+
   private createJsonFileItem(fileName: string, detail: string): HTMLLIElement {
     const created_fileItem = $create('li', 'file-item');
     const created_buttonBox = $create('div', 'file-button-box');
     const created_removeLabel = $create('label', 'remove-file-label');
-    const created_removeCheckbox = $create('input', 'remove-file-checkbox');
+    const created_removeCheckbox = $createCheckbox('remove-file-checkbox');
     const created_refreshLabel = $create('label', 'refresh-file-label');
-    const created_refreshCheckbox = $create('input', 'refresh-file-checkbox');
-
-    created_removeCheckbox.type = 'checkbox';
-    created_refreshCheckbox.type = 'checkbox';
+    const created_refreshCheckbox = $createCheckbox('refresh-file-checkbox');
 
     created_removeCheckbox.addEventListener('change', async (e: Event) => {
       if ((e.target as HTMLInputElement).checked) {
@@ -57,7 +79,7 @@ export class FileManagerPopup extends PopupGenerator<ManagementResult> {
         this.managementResult.refreshedJsons.delete(fileName); // 혹시 모를 중복 제거
 
         delete this.managementResult.removedJsons[fileName];
-        created_removeLabel.classList.remove('cascade', 'only-file');
+        created_removeLabel.classList.remove('file-and-songs', 'only-file');
       }
     });
 
@@ -92,7 +114,7 @@ export class FileManagerPopup extends PopupGenerator<ManagementResult> {
   private createImgFileItem(fileName: string, imgUrl: string): HTMLLIElement {
     const created_fileItem = $create('li', 'file-item');
     const created_removeLabel = $create('label', 'remove-file-label');
-    const created_removeCheckbox = $create('input', 'remove-file-checkbox');
+    const created_removeCheckbox = $createCheckbox('remove-file-checkbox');
     const created_img = $create('img', 'file-item-img');
 
     created_removeCheckbox.type = 'checkbox';
@@ -137,30 +159,5 @@ export class FileManagerPopup extends PopupGenerator<ManagementResult> {
         this.createJsonFileItem(name, `(${detail})`),
       ),
     );
-  }
-
-  protected draw(
-    element_popup: HTMLDivElement,
-    resolve: (value: ManagementResult | null) => void,
-  ): void {
-    const created_existingFileList = $create('ul', 'file-list');
-
-    this.renderFileList(created_existingFileList);
-
-    element_popup.append(
-      created_existingFileList,
-      $createDiv(
-        'json 파일 새로고침 시 파일 내 모든 노래 슬라이드가 삭제 후 다시 추가됩니다.',
-        'tip',
-      ),
-    );
-
-    this.addNegativeButton('취소', () => {
-      resolve(null);
-    });
-
-    this.addPositiveButton('저장', () => {
-      resolve(structuredClone(this.managementResult));
-    });
   }
 }

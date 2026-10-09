@@ -6,6 +6,39 @@ import '../style/popup/file_resetter.css';
 export class FileAdderPopup extends PopupGenerator<readonly File[]> {
   private candidates: File[] = [];
 
+  protected draw(
+    element_popup: HTMLDivElement,
+    resolve: (value: readonly File[] | null) => void,
+  ): void {
+    const created_dropFileBox = $create('div', 'drop-file-box');
+    const created_dropFileText = $createDiv(
+      '파일을 드래그하여 추가하세요',
+      'drop-file-text',
+    );
+    const created_addedFileList = $create('ul', 'file-list');
+
+    this.addDragDropEvent(created_dropFileBox, created_addedFileList);
+
+    created_dropFileBox.append(created_dropFileText);
+
+    element_popup.replaceChildren(
+      created_dropFileBox,
+      created_addedFileList,
+      $createDiv(
+        '기존에 추가한 동명의 파일 업로드 시 기존 파일은 삭제됩니다.\n기존 json 파일 내 노래와 관련된 슬라이드는 삭제되지 않습니다.',
+        'tip',
+      ),
+    );
+
+    this.addNegativeButton('취소', () => {
+      resolve(null);
+    });
+
+    this.addPositiveButton('저장', () => {
+      resolve(this.candidates);
+    });
+  }
+
   private addDragDropEvent(
     element_dropFileBox: HTMLDivElement,
     element_fileList: HTMLUListElement,
@@ -65,38 +98,5 @@ export class FileAdderPopup extends PopupGenerator<readonly File[]> {
         this.createFileItem(file.name, element_fileList),
       ),
     );
-  }
-
-  protected draw(
-    element_popup: HTMLDivElement,
-    resolve: (value: readonly File[] | null) => void,
-  ): void {
-    const created_dropFileBox = $create('div', 'drop-file-box');
-    const created_dropFileText = $createDiv(
-      '파일을 드래그하여 추가하세요',
-      'drop-file-text',
-    );
-    const created_addedFileList = $create('ul', 'file-list');
-
-    this.addDragDropEvent(created_dropFileBox, created_addedFileList);
-
-    created_dropFileBox.append(created_dropFileText);
-
-    element_popup.replaceChildren(
-      created_dropFileBox,
-      created_addedFileList,
-      $createDiv(
-        '기존에 추가한 동명의 파일 업로드 시 기존 파일은 삭제됩니다.\n기존 json 파일 내 노래와 관련된 슬라이드는 삭제되지 않습니다.',
-        'tip',
-      ),
-    );
-
-    this.addNegativeButton('취소', () => {
-      resolve(null);
-    });
-
-    this.addPositiveButton('저장', () => {
-      resolve(this.candidates);
-    });
   }
 }

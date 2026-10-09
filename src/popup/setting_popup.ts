@@ -1,4 +1,4 @@
-import { $create, $createDiv } from '../other/utils';
+import { $create, $createDiv, $createNumberInput } from '../other/utils';
 import { PopupGenerator } from './popup';
 
 import '../style/popup/setting_editor.css';
@@ -21,28 +21,6 @@ export class SettingEditorPopup extends PopupGenerator<null> {
     this.initialTextFontSize = textFontSize.toString();
     this.titleSizeController = titleSizeController;
     this.textSizeController = textSizeController;
-  }
-
-  private createdNumberInputSettingItem(
-    label: string,
-    initialValue: string,
-    onchange: (e: Event) => void,
-  ): HTMLLIElement {
-    const created_settingItem = $create('li', 'setting-item');
-    const created_input = $create('input', 'setting-input');
-
-    created_input.type = 'number';
-    created_input.value = initialValue;
-    created_input.min = '0';
-    created_input.step = '0.1';
-    created_input.onchange = onchange;
-
-    created_settingItem.append(
-      $createDiv(label, 'setting-label'),
-      created_input,
-    );
-
-    return created_settingItem;
   }
 
   protected draw(
@@ -75,5 +53,23 @@ export class SettingEditorPopup extends PopupGenerator<null> {
     this.addNegativeButton('닫기', () => {
       resolve(null);
     });
+  }
+
+  private createdNumberInputSettingItem(
+    label: string,
+    initialValue: string,
+    onchange: (e: Event) => void,
+  ): HTMLLIElement {
+    const created_settingItem = $create('li', 'setting-item');
+    const created_input = $createNumberInput(initialValue, '0', '', '0.1');
+
+    created_input.onchange = onchange;
+
+    created_settingItem.append(
+      $createDiv(label, 'setting-label'),
+      created_input,
+    );
+
+    return created_settingItem;
   }
 }

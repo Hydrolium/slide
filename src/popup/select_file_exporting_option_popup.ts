@@ -13,23 +13,6 @@ export class FileExportingOptionSetterPopup extends PopupGenerator<number> {
     this.idToTitle = idToTitle;
   }
 
-  private static createButton(
-    what: string,
-    onclick: () => void,
-  ): HTMLButtonElement {
-    const created_button = $create('button');
-
-    created_button.onclick = onclick;
-
-    created_button.append(
-      $createSpan("'"),
-      $createSpan(what, 'highlight'),
-      $createSpan("' 내보내기"),
-    );
-
-    return created_button;
-  }
-
   protected draw(
     element_popup: HTMLDivElement,
     resolve: (value: number | null) => void,
@@ -53,7 +36,7 @@ export class FileExportingOptionSetterPopup extends PopupGenerator<number> {
 
     created_singleExportingButtonBox.append(
       ...Array.from(this.idToTitle, ([id, title]) =>
-        FileExportingOptionSetterPopup.createButton(title, () => resolve(id)),
+        this.createOptionButton(title, () => resolve(id)),
       ),
     );
 
@@ -68,5 +51,22 @@ export class FileExportingOptionSetterPopup extends PopupGenerator<number> {
     this.addNegativeButton('취소', () => {
       resolve(null);
     });
+  }
+
+  private createOptionButton(
+    what: string,
+    onclick: () => void,
+  ): HTMLButtonElement {
+    const created_button = $create('button');
+
+    created_button.onclick = onclick;
+
+    created_button.append(
+      $createSpan("'"),
+      $createSpan(what, 'highlight'),
+      $createSpan("' 내보내기"),
+    );
+
+    return created_button;
   }
 }

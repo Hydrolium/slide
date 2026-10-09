@@ -5,19 +5,6 @@ import type { FileDeletingOption } from '../types/popup_data';
 import '../style/popup/slide_option_selector.css';
 
 export class FileDeletingOptionSetterPopup extends PopupGenerator<FileDeletingOption> {
-  private static createButton(
-    what: string,
-    onclick: () => void,
-  ): HTMLButtonElement {
-    const created_button: HTMLButtonElement = document.createElement('button');
-
-    created_button.onclick = onclick;
-
-    created_button.append($createSpan(what, 'highlight'), $createSpan(' 삭제'));
-
-    return created_button;
-  }
-
   protected draw(
     element_popup: HTMLDivElement,
     resolve: (value: FileDeletingOption | null) => void,
@@ -25,12 +12,9 @@ export class FileDeletingOptionSetterPopup extends PopupGenerator<FileDeletingOp
     const created_options = $create('ul', 'slide-options');
 
     created_options.append(
-      FileDeletingOptionSetterPopup.createButton('파일만', () =>
-        resolve('ONLY_FILE'),
-      ),
-      FileDeletingOptionSetterPopup.createButton(
-        '파일 및 파일 내 노래 일괄',
-        () => resolve('FILE_AND_SONGS'),
+      this.createOptionButton('파일만', () => resolve('ONLY_FILE')),
+      this.createOptionButton('파일 및 파일 내 노래 일괄', () =>
+        resolve('FILE_AND_SONGS'),
       ),
     );
 
@@ -49,5 +33,18 @@ export class FileDeletingOptionSetterPopup extends PopupGenerator<FileDeletingOp
     this.addNegativeButton('취소', () => {
       resolve(null);
     });
+  }
+
+  private createOptionButton(
+    what: string,
+    onclick: () => void,
+  ): HTMLButtonElement {
+    const created_button: HTMLButtonElement = document.createElement('button');
+
+    created_button.onclick = onclick;
+
+    created_button.append($createSpan(what, 'highlight'), $createSpan(' 삭제'));
+
+    return created_button;
   }
 }
