@@ -41,7 +41,7 @@ export class FileDeletingOptionSetterPopup extends PopupGenerator<FileDeletingOp
   ): HTMLButtonElement {
     const created_button: HTMLButtonElement = document.createElement('button');
 
-    created_button.onclick = onclick;
+    created_button.addEventListener('click', onclick);
 
     created_button.append($createSpan(what, 'highlight'), $createSpan(' 삭제'));
 

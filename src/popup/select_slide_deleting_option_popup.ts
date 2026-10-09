@@ -37,7 +37,7 @@ export class SlideDeletingOptionSetterPopup extends PopupGenerator<SlideDeleting
   ): HTMLButtonElement {
     const created_button: HTMLButtonElement = document.createElement('button');
 
-    created_button.onclick = onclick;
+    created_button.addEventListener('click', onclick);
 
     created_button.append(
       $createSpan(prefix),

@@ -16,14 +16,14 @@ export abstract class PopupGenerator<T> {
   protected addNegativeButton(text: string, onclick: (e: Event) => void): void {
     const created_button = $create('button', 'cancel-popup');
     created_button.textContent = text;
-    created_button.onclick = onclick;
+    created_button.addEventListener('click', onclick);
     this.buttonList.push(created_button);
   }
 
   protected addPositiveButton(text: string, onclick: (e: Event) => void): void {
     const created_button = $create('button', 'save-popup');
     created_button.textContent = text;
-    created_button.onclick = onclick;
+    created_button.addEventListener('click', onclick);
     this.buttonList.push(created_button);
   }
 

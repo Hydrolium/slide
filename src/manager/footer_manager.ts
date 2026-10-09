@@ -16,7 +16,7 @@ export class FooterManager {
     const created_button = $create('button');
     const created_iconBackground = $create('span', 'icon-background');
 
-    created_menuButton.onclick = onclick;
+    created_button.addEventListener('click', onclick);
 
     attachProperty(created_iconBackground, {
       footerIconMaskImg: `url(${svgSrc})`,

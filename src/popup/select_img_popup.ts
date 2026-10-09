@@ -23,7 +23,7 @@ export class ImgSelectorPopup extends PopupGenerator<string> {
         const created_imgBox = $create('div', 'img-box');
         const created_img = $create('img');
 
-        created_imgBox.onclick = () => resolve(name);
+        created_imgBox.addEventListener('click', () => resolve(name));
 
         created_img.src = info.url;
 

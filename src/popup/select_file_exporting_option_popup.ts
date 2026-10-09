@@ -21,8 +21,9 @@ export class FileExportingOptionSetterPopup extends PopupGenerator<number> {
     const created_exportingAllButton = $create('button');
     const created_singleExportingButtonBox = $create('div', 'button-box');
 
-    created_exportingAllButton.onclick = () =>
-      resolve(FileExportingOptionSetterPopup.EXPORT_ALL);
+    created_exportingAllButton.addEventListener('click', () =>
+      resolve(FileExportingOptionSetterPopup.EXPORT_ALL),
+    );
 
     created_exportingAllButton.append(
       $createSpan('전체', 'highlight'),
@@ -59,7 +60,7 @@ export class FileExportingOptionSetterPopup extends PopupGenerator<number> {
   ): HTMLButtonElement {
     const created_button = $create('button');
 
-    created_button.onclick = onclick;
+    created_button.addEventListener('click', onclick);
 
     created_button.append(
       $createSpan("'"),

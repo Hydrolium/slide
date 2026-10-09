@@ -59,11 +59,11 @@ export class FileManagerPopup extends PopupGenerator<ManagementResult> {
     const created_refreshLabel = $create('label', 'refresh-file-label');
     const created_refreshCheckbox = $createCheckbox('refresh-file-checkbox');
 
-    created_removeCheckbox.addEventListener('change', async (e: Event) => {
-      if ((e.target as HTMLInputElement).checked) {
+    created_removeCheckbox.addEventListener('change', async () => {
+      if (created_removeCheckbox.checked) {
         const result = await FileDeletingOptionSetterPopup.show();
         if (!result) {
-          (e.target as HTMLInputElement).checked = false;
+          created_removeCheckbox.checked = false;
           return;
         }
         created_refreshLabel.style.display = 'none';
@@ -83,8 +83,8 @@ export class FileManagerPopup extends PopupGenerator<ManagementResult> {
       }
     });
 
-    created_refreshCheckbox.addEventListener('change', (e: Event) => {
-      if ((e.target as HTMLInputElement).checked) {
+    created_refreshCheckbox.addEventListener('change', () => {
+      if (created_refreshCheckbox.checked) {
         created_removeLabel.style.display = 'none';
 
         this.managementResult.refreshedJsons.add(fileName);
@@ -118,8 +118,8 @@ export class FileManagerPopup extends PopupGenerator<ManagementResult> {
     const created_img = $create('img', 'file-item-img');
 
     created_removeCheckbox.type = 'checkbox';
-    created_removeCheckbox.addEventListener('change', async (e: Event) => {
-      if ((e.target as HTMLInputElement).checked)
+    created_removeCheckbox.addEventListener('change', async () => {
+      if (created_removeCheckbox.checked)
         this.managementResult.removedImgs.add(fileName);
       else this.managementResult.removedImgs.delete(fileName);
     });

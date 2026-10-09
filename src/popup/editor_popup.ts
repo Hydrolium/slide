@@ -108,27 +108,27 @@ export class EditorPopup extends PopupGenerator<ModifiedSongData> {
 
     created_titleInput.classList.add('slide-title');
     created_titleInput.value = this.songData.texts[this.songData.textIdx].title;
-    created_titleInput.onchange = () => {
+    created_titleInput.addEventListener('change', () => {
       this.songData.texts[this.songData.textIdx].title =
         created_titleInput.value;
-    };
+    });
 
     created_textArea.classList.add('slide-text');
     created_textArea.value = this.songData.texts[this.songData.textIdx].text;
-    created_textArea.onchange = () => {
+    created_textArea.addEventListener('change', () => {
       this.songData.texts[this.songData.textIdx].text = created_textArea.value;
-    };
+    });
 
     created_backgroundChangeButton.textContent = '배경 변경';
     created_backgroundChangeButton.classList.add('background-change-button');
-    created_backgroundChangeButton.onclick = async () => {
+    created_backgroundChangeButton.addEventListener('click', async () => {
       const result = await ImgSelectorPopup.show(this.imgs);
       if (result) {
         const url = this.imgs[result].url;
         created_slideInputFrame.style.backgroundImage = `url(${url})`;
         this.songData.background = result;
       }
-    };
+    });
 
     created_slideLayerContainer.append(created_defaultLayer);
     created_slideInputFrame.append(
@@ -168,7 +168,9 @@ export class EditorPopup extends PopupGenerator<ModifiedSongData> {
     created_inputEditor.appendChild($createDiv(label, 'input-editor-label'));
 
     const created_input = $createColorInput(color);
-    created_input.onchange = () => onchange(created_input.value);
+    created_input.addEventListener('change', () =>
+      onchange(created_input.value),
+    );
 
     created_inputEditor.appendChild(created_input);
 
@@ -211,18 +213,19 @@ export class EditorPopup extends PopupGenerator<ModifiedSongData> {
       created_opacityInputEditor,
     );
 
-    created_colorInput.onchange = () =>
-      onchange(withOpacity(created_colorInput.value, created_rangeInput.value));
+    created_colorInput.addEventListener('change', () =>
+      onchange(withOpacity(created_colorInput.value, created_rangeInput.value)),
+    );
 
-    created_rangeInput.onchange = () => {
+    created_rangeInput.addEventListener('change', () => {
       created_numberInput.value = created_rangeInput.value;
       onchange(withOpacity(created_colorInput.value, created_rangeInput.value));
-    };
+    });
 
-    created_numberInput.onchange = () => {
+    created_numberInput.addEventListener('change', () => {
       created_rangeInput.value = created_numberInput.value;
       onchange(withOpacity(created_colorInput.value, created_rangeInput.value));
-    };
+    });
 
     onchange(color); // 최초 1회 실행해서 색상 초기화
 

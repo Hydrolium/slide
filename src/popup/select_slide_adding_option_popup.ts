@@ -34,7 +34,7 @@ export class SlideAddingOptionSetterPopup extends PopupGenerator<SlideAddingOpti
   private createOptionButton(pos: string, what: string, onclick: () => void) {
     const created_button: HTMLButtonElement = document.createElement('button');
 
-    created_button.onclick = onclick;
+    created_button.addEventListener('click', onclick);
 
     created_button.append(
       $createSpan('현재 선택된 슬라이드 '),

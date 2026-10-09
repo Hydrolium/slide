@@ -63,7 +63,7 @@ export class SettingEditorPopup extends PopupGenerator<null> {
     const created_settingItem = $create('li', 'setting-item');
     const created_input = $createNumberInput(initialValue, '0', '', '0.1');
 
-    created_input.onchange = onchange;
+    created_input.addEventListener('change', onchange);
 
     created_settingItem.append(
       $createDiv(label, 'setting-label'),
