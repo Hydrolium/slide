@@ -38,10 +38,11 @@ export function $createCheckbox(...classes: string[]): HTMLInputElement {
   return created_checkbox;
 }
 
-export function $createColorInput(color: string): HTMLInputElement {
+export function $createColorInput(color: string, ...classes: string[]): HTMLInputElement {
   const created_input = $create('input');
   created_input.type = 'color';
   created_input.value = color;
+  created_input.classList.add(...classes);
   return created_input;
 }
 
@@ -50,6 +51,7 @@ export function $createRangeInput(
   min: string = '0',
   max: string = '100',
   step: string = '1',
+  ...classes: string[]
 ): HTMLInputElement {
   const created_rangeInput = $create('input');
   created_rangeInput.type = 'range';
@@ -57,7 +59,7 @@ export function $createRangeInput(
   created_rangeInput.min = min;
   created_rangeInput.max = max;
   created_rangeInput.step = step;
-
+  created_rangeInput.classList.add(...classes);
   return created_rangeInput;
 }
 
@@ -66,6 +68,7 @@ export function $createNumberInput(
   min: string = '0',
   max: string = '100',
   step: string = '1',
+  ...classes: string[]
 ): HTMLInputElement {
   const created_numberInput = $create('input');
   created_numberInput.type = 'number';
@@ -73,28 +76,29 @@ export function $createNumberInput(
   created_numberInput.min = min;
   created_numberInput.max = max;
   created_numberInput.step = step;
-
+  created_numberInput.classList.add(...classes);
   return created_numberInput;
 }
 
-export function $createTextInput(value: string): HTMLInputElement {
+export function $createTextInput(value: string, ...classes: string[]): HTMLInputElement {
   const created_textInput = $create('input');
   created_textInput.type = 'text';
   created_textInput.value = value;
-
+  created_textInput.classList.add(...classes);
   return created_textInput;
 }
 
 export function $createTextArea(
   value: string,
-  rows = 4,
-  cols = 10,
+  rows: number,
+  cols: number,
+  ...classes: string[]
 ): HTMLTextAreaElement {
   const created_textarea = $create('textarea');
   created_textarea.value = value;
   created_textarea.rows = rows;
   created_textarea.cols = cols;
-
+  created_textarea.classList.add(...classes);
   return created_textarea;
 }
 

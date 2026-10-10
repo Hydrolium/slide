@@ -45,8 +45,8 @@ export class EditorPopup extends PopupGenerator<ModifiedSongData> {
     const created_slideLayerContainer = $create('div', 'slide-layer-container');
     const created_defaultLayer = $create('div', 'default-layer');
 
-    const created_titleInput = $createTextInput('');
-    const created_textArea = $createTextArea('');
+    const created_titleInput = $createTextInput('', 'slide-title');
+    const created_textArea = $createTextArea('', 4, 10, 'slide-text');
 
     const created_backgroundChangeButton = $create('button');
     const created_titleColorEditorBox = this.createdColorEditorBox(
@@ -106,14 +106,12 @@ export class EditorPopup extends PopupGenerator<ModifiedSongData> {
       defaultLayerImg: `url("${this.imgs[this.songData.background]?.url}")`,
     });
 
-    created_titleInput.classList.add('slide-title');
     created_titleInput.value = this.songData.texts[this.songData.textIdx].title;
     created_titleInput.addEventListener('change', () => {
       this.songData.texts[this.songData.textIdx].title =
         created_titleInput.value;
     });
 
-    created_textArea.classList.add('slide-text');
     created_textArea.value = this.songData.texts[this.songData.textIdx].text;
     created_textArea.addEventListener('change', () => {
       this.songData.texts[this.songData.textIdx].text = created_textArea.value;

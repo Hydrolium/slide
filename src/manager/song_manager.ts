@@ -90,20 +90,6 @@ export class SongManager {
     return null;
   }
 
-  private get _defaultSongInfo(): SongInfo {
-    return {
-      title: '제목을 입력하세요',
-      texts: [{ title: '제목을 입력하세요', text: '가사를 입력하세요' }],
-      background: '',
-      titleColor: '#fff',
-      titleStroke: '#000',
-      titleShadow: '#0000',
-      textColor: '#fff',
-      textStroke: '#000',
-      textShadow: '#0000',
-    };
-  }
-
   public getSongWithId(id: number): SongInfo | null {
     const song = this._songs[id];
     if (!song) return null;
@@ -249,11 +235,21 @@ export class SongManager {
     this._songs[song.id] = { ...song };
   }
 
-  private insertNewSongAt(index: number, select: boolean = true): void {
+  private insertNewSongAt(index: number, title: string, select: boolean = true): void {
     const id = this.nextId;
 
     this._order = this._order.toSpliced(index, 0, id);
-    this._songs[id] = { ...this._defaultSongInfo };
+    this._songs[id] = {
+      title: title,
+      texts: [{ title: title, text: '가사를 입력하세요' }],
+      background: '',
+      titleColor: '#fff',
+      titleStroke: '#000',
+      titleShadow: '#0000',
+      textColor: '#fff',
+      textStroke: '#000',
+      textShadow: '#0000',
+    };
 
     if (select) {
       this._currentSongId = id;
@@ -261,18 +257,18 @@ export class SongManager {
     }
   }
 
-  public insertNewSongBeforeCurrent(): void {
+  public insertNewSongBeforeCurrent(title: string): void {
     const idx =
       this._currentSongId !== null
         ? this._order.indexOf(this._currentSongId)
         : 0;
-    if (idx !== -1) this.insertNewSongAt(idx, true);
+    if (idx !== -1) this.insertNewSongAt(idx, title, true);
   }
 
-  public insertNewSongAfterCurrent(): void {
+  public insertNewSongAfterCurrent(title: string): void {
     if (this._currentSongId === null) return;
     const idx = this._order.indexOf(this._currentSongId);
-    if (idx !== -1) this.insertNewSongAt(idx + 1, true);
+    if (idx !== -1) this.insertNewSongAt(idx + 1, title, true);
   }
 
   private insertNewTextAt(

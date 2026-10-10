@@ -24,6 +24,7 @@ import exportSlidesIcon from '/src/assets/imgs/footer_icons/export_slides.svg';
 import manageFileIcon from '/src/assets/imgs/footer_icons/manage_file.svg';
 import openViewerIcon from '/src/assets/imgs/footer_icons/open_viewer.svg';
 import resortSlidesIcon from '/src/assets/imgs/footer_icons/resort_slides.svg';
+import { SongTitleGetterPopup } from '../popup/get_song_title_popup';
 
 export class SlideAdminViewController {
   private readonly songManager = new SongManager();
@@ -170,14 +171,17 @@ export class SlideAdminViewController {
       async () => {
         if (this.songManager.isEmpty()) {
           // 아무 노래도 없으면 그냥 노래 하나 추가
-          this.songManager.insertNewSongBeforeCurrent();
+          const result = await SongTitleGetterPopup.show();
+          if(!result) return;
+          this.songManager.insertNewSongBeforeCurrent(result);
           this.updateSong();
           return;
         }
 
-        const result = await SlideAddingOptionSetterPopup.show();
+        const result_option = await SlideAddingOptionSetterPopup.show();
+        if(!result_option) return;
 
-        switch (result) {
+        switch (result_option) {
           case 'INSERT_LYRICS_BEFORE':
             this.songManager.insertNewTextBeforeCurrent();
             break;
@@ -185,10 +189,20 @@ export class SlideAdminViewController {
             this.songManager.insertNewTextAfterCurrent();
             break;
           case 'INSERT_SONG_BEFORE':
-            this.songManager.insertNewSongBeforeCurrent();
+            const result_title_before = await SongTitleGetterPopup.show();
+
+            if(!result_title_before?.trim()) return;
+
+            this.songManager.insertNewSongBeforeCurrent(result_title_before);
+
             break;
           case 'INSERT_SONG_AFTER':
-            this.songManager.insertNewSongAfterCurrent();
+            const result_title_after = await SongTitleGetterPopup.show();
+
+            if(!result_title_after?.trim()) return;
+
+            this.songManager.insertNewSongAfterCurrent(result_title_after);
+
             break;
         }
 
