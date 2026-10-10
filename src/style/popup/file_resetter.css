@@ -143,8 +143,8 @@
       }
 
       &.file-and-songs::after {
-        -webkit-mask: var(--remove-file-and-songs) no-repeat center / contain;
-        mask: var(--remove-file-and-songs) no-repeat center / contain;
+        -webkit-mask: var(--url-remove-file-and-songs) no-repeat center / contain;
+        mask: var(--url-remove-file-and-songs) no-repeat center / contain;
       }
 
       &:hover {
