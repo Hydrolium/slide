@@ -235,7 +235,11 @@ export class SongManager {
     this._songs[song.id] = { ...song };
   }
 
-  private insertNewSongAt(index: number, title: string, select: boolean = true): void {
+  private insertNewSongAt(
+    index: number,
+    title: string,
+    select: boolean = true,
+  ): void {
     const id = this.nextId;
 
     this._order = this._order.toSpliced(index, 0, id);

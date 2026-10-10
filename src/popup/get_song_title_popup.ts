@@ -8,15 +8,14 @@ export class SongTitleGetterPopup extends PopupGenerator<string> {
     element_popup: HTMLDivElement,
     resolve: (value: string | null) => void,
   ): void {
-
     const created_textInput = $createTextInput('', 'song-title-input');
     created_textInput.placeholder = '제목을 입력하세요';
 
     element_popup.append(
       $createDiv('노래 제목을 입력하세요', 'song-title-div'),
-      created_textInput
+      created_textInput,
     );
-    
+
     this.addNegativeButton('취소', () => {
       resolve(null);
     });

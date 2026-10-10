@@ -113,43 +113,33 @@ export class SlideAdminViewController {
 
   private initFooter() {
     this.footerManager.init();
-    this.footerManager.addFooterButton(
-      '파일추가',
-      addFileIcon,
-      async () => {
-        const result = await FileAdderPopup.show();
+    this.footerManager.addFooterButton('파일추가', addFileIcon, async () => {
+      const result = await FileAdderPopup.show();
 
-        if (result) await this.songManager.loadFiles(result);
+      if (result) await this.songManager.loadFiles(result);
 
-        this.windowManager.sendToPopup(
-          'UPDATE_BACKGROUND',
-          this.songManager.imgUrls,
-        );
+      this.windowManager.sendToPopup(
+        'UPDATE_BACKGROUND',
+        this.songManager.imgUrls,
+      );
 
-        this.updateSong();
-      },
-    );
+      this.updateSong();
+    });
 
-    this.footerManager.addFooterButton(
-      '파일관리',
-      manageFileIcon,
-      async () => {
-        const aboutJsonFile: Record<string, string> = {};
+    this.footerManager.addFooterButton('파일관리', manageFileIcon, async () => {
+      const aboutJsonFile: Record<string, string> = {};
 
-        for (const [fileName, data] of Object.entries(
-          this.songManager.jsonFiles,
-        ))
-          aboutJsonFile[fileName] = `${data.map((d) => d.title).join(', ')}`;
+      for (const [fileName, data] of Object.entries(this.songManager.jsonFiles))
+        aboutJsonFile[fileName] = `${data.map((d) => d.title).join(', ')}`;
 
-        const result = await FileManagerPopup.show(
-          aboutJsonFile,
-          this.songManager.imgUrls,
-        );
-        if (result) this.songManager.manageFile(result);
+      const result = await FileManagerPopup.show(
+        aboutJsonFile,
+        this.songManager.imgUrls,
+      );
+      if (result) this.songManager.manageFile(result);
 
-        this.updateSong();
-      },
-    );
+      this.updateSong();
+    });
 
     this.footerManager.addFooterButton(
       '순서수정',
@@ -165,50 +155,46 @@ export class SlideAdminViewController {
       },
     );
 
-    this.footerManager.addFooterButton(
-      '추가하기',
-      addSlideIcon,
-      async () => {
-        if (this.songManager.isEmpty()) {
-          // 아무 노래도 없으면 그냥 노래 하나 추가
-          const result = await SongTitleGetterPopup.show();
-          if(!result) return;
-          this.songManager.insertNewSongBeforeCurrent(result);
-          this.updateSong();
-          return;
-        }
-
-        const result_option = await SlideAddingOptionSetterPopup.show();
-        if(!result_option) return;
-
-        switch (result_option) {
-          case 'INSERT_LYRICS_BEFORE':
-            this.songManager.insertNewTextBeforeCurrent();
-            break;
-          case 'INSERT_LYRICS_AFTER':
-            this.songManager.insertNewTextAfterCurrent();
-            break;
-          case 'INSERT_SONG_BEFORE':
-            const result_title_before = await SongTitleGetterPopup.show();
-
-            if(!result_title_before?.trim()) return;
-
-            this.songManager.insertNewSongBeforeCurrent(result_title_before);
-
-            break;
-          case 'INSERT_SONG_AFTER':
-            const result_title_after = await SongTitleGetterPopup.show();
-
-            if(!result_title_after?.trim()) return;
-
-            this.songManager.insertNewSongAfterCurrent(result_title_after);
-
-            break;
-        }
-
+    this.footerManager.addFooterButton('추가하기', addSlideIcon, async () => {
+      if (this.songManager.isEmpty()) {
+        // 아무 노래도 없으면 그냥 노래 하나 추가
+        const result = await SongTitleGetterPopup.show();
+        if (!result) return;
+        this.songManager.insertNewSongBeforeCurrent(result);
         this.updateSong();
-      },
-    );
+        return;
+      }
+
+      const result_option = await SlideAddingOptionSetterPopup.show();
+      if (!result_option) return;
+
+      switch (result_option) {
+        case 'INSERT_LYRICS_BEFORE':
+          this.songManager.insertNewTextBeforeCurrent();
+          break;
+        case 'INSERT_LYRICS_AFTER':
+          this.songManager.insertNewTextAfterCurrent();
+          break;
+        case 'INSERT_SONG_BEFORE':
+          const result_title_before = await SongTitleGetterPopup.show();
+
+          if (!result_title_before?.trim()) return;
+
+          this.songManager.insertNewSongBeforeCurrent(result_title_before);
+
+          break;
+        case 'INSERT_SONG_AFTER':
+          const result_title_after = await SongTitleGetterPopup.show();
+
+          if (!result_title_after?.trim()) return;
+
+          this.songManager.insertNewSongAfterCurrent(result_title_after);
+
+          break;
+      }
+
+      this.updateSong();
+    });
 
     this.footerManager.addFooterButton(
       '삭제하기',
@@ -274,34 +260,26 @@ export class SlideAdminViewController {
       },
     );
 
-    this.footerManager.addFooterButton(
-      '전체화면',
-      openViewerIcon,
-      () => {
-        this.windowManager.openShow();
-      },
-    );
+    this.footerManager.addFooterButton('전체화면', openViewerIcon, () => {
+      this.windowManager.openShow();
+    });
 
-    this.footerManager.addFooterButton(
-      '설정변경',
-      editSettingIcon,
-      () => {
-        SettingEditorPopup.show(
-          this.songManager.titleFontSize,
-          this.songManager.textFontSize,
-          (size: string) => {
-            const conv = Number(size);
-            this.songManager.titleFontSize = conv;
-            this.windowManager.sendToPopup('RESIZE_TITLE', conv);
-          },
-          (size: string) => {
-            const conv = Number(size);
-            this.songManager.textFontSize = conv;
-            this.windowManager.sendToPopup('RESIZE_TEXT', conv);
-          },
-        );
-      },
-    );
+    this.footerManager.addFooterButton('설정변경', editSettingIcon, () => {
+      SettingEditorPopup.show(
+        this.songManager.titleFontSize,
+        this.songManager.textFontSize,
+        (size: string) => {
+          const conv = Number(size);
+          this.songManager.titleFontSize = conv;
+          this.windowManager.sendToPopup('RESIZE_TITLE', conv);
+        },
+        (size: string) => {
+          const conv = Number(size);
+          this.songManager.textFontSize = conv;
+          this.windowManager.sendToPopup('RESIZE_TEXT', conv);
+        },
+      );
+    });
   }
 
   private initEvent() {

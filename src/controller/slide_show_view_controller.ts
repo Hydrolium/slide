@@ -96,7 +96,9 @@ export class SlideShowViewController {
         for (const [name, info] of Object.entries(data.data as ImgRecord)) {
           const created_layer = $createDiv('', 'slide-layer');
 
-          attachProperty(created_layer, { slideLayerImg: `url("${info.url}")` });
+          attachProperty(created_layer, {
+            slideLayerImg: `url("${info.url}")`,
+          });
 
           this.cachedLayers[name] = created_layer;
           layers.push(created_layer);

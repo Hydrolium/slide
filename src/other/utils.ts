@@ -38,7 +38,10 @@ export function $createCheckbox(...classes: string[]): HTMLInputElement {
   return created_checkbox;
 }
 
-export function $createColorInput(color: string, ...classes: string[]): HTMLInputElement {
+export function $createColorInput(
+  color: string,
+  ...classes: string[]
+): HTMLInputElement {
   const created_input = $create('input');
   created_input.type = 'color';
   created_input.value = color;
@@ -80,7 +83,10 @@ export function $createNumberInput(
   return created_numberInput;
 }
 
-export function $createTextInput(value: string, ...classes: string[]): HTMLInputElement {
+export function $createTextInput(
+  value: string,
+  ...classes: string[]
+): HTMLInputElement {
   const created_textInput = $create('input');
   created_textInput.type = 'text';
   created_textInput.value = value;
