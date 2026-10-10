@@ -133,18 +133,18 @@
 
         background-color: currentColor;
 
-        -webkit-mask: url('/imgs/remove.svg') no-repeat center / contain;
-        mask: url('/imgs/remove.svg') no-repeat center / contain;
+        -webkit-mask: var(--url-remove) no-repeat center / contain;
+        mask: var(--url-remove) no-repeat center / contain;
       }
 
       &.only-file::after {
-        -webkit-mask: url('/imgs/remove_file.svg') no-repeat center / contain;
-        mask: url('/imgs/remove_file.svg') no-repeat center / contain;
+        -webkit-mask: var(--url-remove-file) no-repeat center / contain;
+        mask: var(--url-remove-file) no-repeat center / contain;
       }
 
       &.file-and-songs::after {
-        -webkit-mask: url('/imgs/remove_file_and_songs.svg') no-repeat center / contain;
-        mask: url('/imgs/remove_file_and_songs.svg') no-repeat center / contain;
+        -webkit-mask: var(--remove-file-and-songs) no-repeat center / contain;
+        mask: var(--remove-file-and-songs) no-repeat center / contain;
       }
 
       &:hover {
@@ -209,8 +209,8 @@
 
         background-color: currentColor;
 
-        -webkit-mask: url('/imgs/refresh.svg') no-repeat center / contain;
-        mask: url('/imgs/refresh.svg') no-repeat center / contain;
+        -webkit-mask: var(--url-refresh) no-repeat center / contain;
+        mask: var(--url-refresh) no-repeat center / contain;
       }
 
       &:hover {

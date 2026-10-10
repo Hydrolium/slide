@@ -27,6 +27,18 @@
 
   --color-dark-gray: #333;
   --color-black: #000;
+
+  --url-lock-close: url('/src/assets/imgs/footer_icons/lock_close.svg');
+  --url-lock-open: url('/src/assets/imgs/footer_icons/lock_open.svg');
+  --url-triangle: url('/src/assets/imgs/footer_icons/triangle.svg');
+
+  --url-remove: url('/src/assets/imgs/remove.svg');
+  --url-remove-file: url('/src/assets/imgs/remove_file.svg');
+  --url-remove-file-and-songs: url('/src/assets/imgs/remove_file_and_songs.svg');
+  --url-refresh: url('/src/assets/imgs/refresh.svg');
+
+  --url-up: url('/src/assets/imgs/up.svg');
+
 }
 
 * {

@@ -103,7 +103,7 @@ export class EditorPopup extends PopupGenerator<ModifiedSongData> {
     attachProperty(created_slideInputFrame, {
       titleFontSize: '40px',
       textFontSize: '33px',
-      defaultLayerImg: `url(${this.imgs[this.songData.background]?.url})`,
+      defaultLayerImg: `url("${this.imgs[this.songData.background]?.url}")`,
     });
 
     created_titleInput.classList.add('slide-title');
@@ -125,7 +125,7 @@ export class EditorPopup extends PopupGenerator<ModifiedSongData> {
       const result = await ImgSelectorPopup.show(this.imgs);
       if (result) {
         const url = this.imgs[result].url;
-        created_slideInputFrame.style.backgroundImage = `url(${url})`;
+        created_slideInputFrame.style.backgroundImage = `url("${url}")`;
         this.songData.background = result;
       }
     });

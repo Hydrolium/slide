@@ -19,7 +19,7 @@ export class FooterManager {
     created_button.addEventListener('click', onclick);
 
     attachProperty(created_iconBackground, {
-      footerIconMaskImg: `url(${svgSrc})`,
+      footerIconMaskImg: `url("${svgSrc}")`,
     });
 
     created_button.append(created_iconBackground);

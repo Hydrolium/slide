@@ -33,7 +33,7 @@
         transition: all 0.2s ease;
 
         &.sort-up-button, &.sort-down-button {
-          background: url('/imgs/up.svg') var(--color-cool-white);
+          background: var(--url-up) var(--color-cool-white);
           background-size: contain;
           background-repeat: no-repeat;
         }

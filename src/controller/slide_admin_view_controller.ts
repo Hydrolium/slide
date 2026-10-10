@@ -16,6 +16,15 @@ import { mapNotNull } from '../other/utils';
 import '../style/slide_style.css';
 import '../style/slide_list.css';
 
+import addFileIcon from '/src/assets/imgs/footer_icons/add_file.svg';
+import addSlideIcon from '/src/assets/imgs/footer_icons/add_slide.svg';
+import deleteSlideIcon from '/src/assets/imgs/footer_icons/delete_slide.svg';
+import editSettingIcon from '/src/assets/imgs/footer_icons/edit_setting.svg';
+import exportSlidesIcon from '/src/assets/imgs/footer_icons/export_slides.svg';
+import manageFileIcon from '/src/assets/imgs/footer_icons/manage_file.svg';
+import openViewerIcon from '/src/assets/imgs/footer_icons/open_viewer.svg';
+import resortSlidesIcon from '/src/assets/imgs/footer_icons/resort_slides.svg';
+
 export class SlideAdminViewController {
   private readonly songManager = new SongManager();
   private readonly windowManager = new WindowManager();
@@ -105,7 +114,7 @@ export class SlideAdminViewController {
     this.footerManager.init();
     this.footerManager.addFooterButton(
       '파일추가',
-      'imgs/footer_icons/add_file.svg',
+      addFileIcon,
       async () => {
         const result = await FileAdderPopup.show();
 
@@ -122,7 +131,7 @@ export class SlideAdminViewController {
 
     this.footerManager.addFooterButton(
       '파일관리',
-      'imgs/footer_icons/manage_file.svg',
+      manageFileIcon,
       async () => {
         const aboutJsonFile: Record<string, string> = {};
 
@@ -143,7 +152,7 @@ export class SlideAdminViewController {
 
     this.footerManager.addFooterButton(
       '순서수정',
-      'imgs/footer_icons/resort_slides.svg',
+      resortSlidesIcon,
       async () => {
         const result = await SlideSorterPopup.show(
           this.songManager.order,
@@ -157,7 +166,7 @@ export class SlideAdminViewController {
 
     this.footerManager.addFooterButton(
       '추가하기',
-      'imgs/footer_icons/add_slide.svg',
+      addSlideIcon,
       async () => {
         if (this.songManager.isEmpty()) {
           // 아무 노래도 없으면 그냥 노래 하나 추가
@@ -189,7 +198,7 @@ export class SlideAdminViewController {
 
     this.footerManager.addFooterButton(
       '삭제하기',
-      'imgs/footer_icons/delete_slide.svg',
+      deleteSlideIcon,
       async () => {
         if (this.songManager.isEmpty()) return; // 아무 노래도 없으면 삭제 x
 
@@ -213,7 +222,7 @@ export class SlideAdminViewController {
 
     this.footerManager.addFooterButton(
       '내보내기',
-      'imgs/footer_icons/export_slides.svg',
+      exportSlidesIcon,
       async () => {
         const m = new Map<number, string>();
         for (const id of this.songManager.order)
@@ -253,7 +262,7 @@ export class SlideAdminViewController {
 
     this.footerManager.addFooterButton(
       '전체화면',
-      'imgs/footer_icons/open_viewer.svg',
+      openViewerIcon,
       () => {
         this.windowManager.openShow();
       },
@@ -261,7 +270,7 @@ export class SlideAdminViewController {
 
     this.footerManager.addFooterButton(
       '설정변경',
-      'imgs/footer_icons/edit_setting.svg',
+      editSettingIcon,
       () => {
         SettingEditorPopup.show(
           this.songManager.titleFontSize,

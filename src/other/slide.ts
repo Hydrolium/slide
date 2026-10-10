@@ -39,7 +39,7 @@ export class Slide {
       textShadowColor: context.textShadow,
       textShadowOffset: '2px',
 
-      defaultLayerImg: `url(${backgroundUrl})`,
+      defaultLayerImg: `url("${backgroundUrl}")`,
     });
 
     created_slideLayerContainer.append(created_slideLayer);

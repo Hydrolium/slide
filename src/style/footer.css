@@ -6,8 +6,8 @@
   transform: translateX(0);
 
   .menu-toggle-label {
-    -webkit-mask: url('/imgs/footer_icons/lock_close.svg') no-repeat center / contain;
-    mask: url('/imgs/footer_icons/lock_close.svg') no-repeat center / contain;
+    -webkit-mask: var(--url-lock-close) no-repeat center / contain;
+    mask: var(--url-lock-close) no-repeat center / contain;
   }
 }
 
@@ -17,8 +17,8 @@
   .menu-toggle-label {
 
     transform: rotateY(180deg);
-    -webkit-mask: url('/imgs/footer_icons/lock_open.svg') no-repeat center / contain;
-    mask: url('/imgs/footer_icons/lock_open.svg') no-repeat center / contain;
+    -webkit-mask: var(--url-lock-open) no-repeat center / contain;
+    mask: urlvar(--url-lock-open) no-repeat center / contain;
 
     &:hover {
       transform: rotateY(180deg) translateY(-3px);
@@ -51,8 +51,8 @@
 
     color: var(--color-dark-cool-gray);
 
-    -webkit-mask: url('/imgs/footer_icons/triangle.svg') no-repeat center / contain;
-    mask: url('/imgs/footer_icons/triangle.svg') no-repeat center / contain;
+    -webkit-mask: var(--url-triangle) no-repeat center / contain;
+    mask: var(--url-triangle) no-repeat center / contain;
 
     cursor: pointer;
 
