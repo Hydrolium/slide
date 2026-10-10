@@ -123,7 +123,9 @@ export class EditorPopup extends PopupGenerator<ModifiedSongData> {
       const result = await ImgSelectorPopup.show(this.imgs);
       if (result) {
         const url = this.imgs[result].url;
-        attachProperty(created_slideInputFrame, {defaultLayerImg:  `url("${url}")`});
+        attachProperty(created_slideInputFrame, {
+          defaultLayerImg: `url("${url}")`,
+        });
         this.songData.background = result;
       }
     });
