@@ -239,13 +239,7 @@ export class SlideAdminViewController {
           downloadUrl = await this.songManager.getExportAllLink();
           link.href = downloadUrl;
           link.download =
-            new Intl.DateTimeFormat('ko-KR', {
-              year: 'numeric',
-              month: '2-digit',
-              day: '2-digit',
-            })
-              .format(new Date())
-              .replace(/\.$/, '') + '.zip';
+            new Date().toISOString().slice(0, 10) + '.zip';
         } else {
           downloadUrl = await this.songManager.getExportSongLink(result);
           link.href = downloadUrl;
