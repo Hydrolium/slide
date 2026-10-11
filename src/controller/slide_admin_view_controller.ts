@@ -243,7 +243,7 @@ export class SlideAdminViewController {
         } else {
           downloadUrl = await this.songManager.getExportSongLink(result);
           link.href = downloadUrl;
-          link.download = this.songManager.songs[result].title ?? 'UNKNOWN';
+          link.download = this.songManager.songs[result]?.title ?? 'UNKNOWN';
         }
 
         link.click();
