@@ -238,8 +238,7 @@ export class SlideAdminViewController {
         if (result === FileExportingOptionSetterPopup.EXPORT_ALL) {
           downloadUrl = await this.songManager.getExportAllLink();
           link.href = downloadUrl;
-          link.download =
-            new Date().toISOString().slice(0, 10) + '.zip';
+          link.download = new Date().toISOString().slice(0, 10) + '.zip';
         } else {
           downloadUrl = await this.songManager.getExportSongLink(result);
           link.href = downloadUrl;
