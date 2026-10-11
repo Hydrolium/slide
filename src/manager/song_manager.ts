@@ -286,14 +286,14 @@ export class SongManager {
 
       const fileType = getFileTypeFromPath(zipEntry.name);
       if (fileType === 'JSON')
-        this.loadJsonFile(
+        await this.loadJsonFile(
           new File([await zipEntry.async('blob')], fileName, {
             type: getMimeType(fileName),
             lastModified: zipEntry.date.getTime(),
           }),
         );
       else if (fileType === 'IMAGE')
-        this.loadImageFile(
+        await this.loadImageFile(
           new File([await zipEntry.async('blob')], fileName, {
             type: getMimeType(fileName),
             lastModified: zipEntry.date.getTime(),
