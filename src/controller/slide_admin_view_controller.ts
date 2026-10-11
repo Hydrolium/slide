@@ -11,7 +11,6 @@ import { WindowManager } from '../manager/window_manager';
 import { FooterManager } from '../manager/footer_manager';
 import { SongManager } from '../manager/song_manager';
 import type { SongContext, SongId, SongInfo } from '../types/song';
-import { mapNotNull } from '../other/utils';
 
 import '../style/slide_style.css';
 import '../style/slide_list.css';
@@ -90,22 +89,24 @@ export class SlideAdminViewController {
     this.songManager.normalize();
 
     this.element_slideBox?.replaceChildren(
-      ...mapNotNull(this.songManager.order, (id) => {
-        const song = this.songManager.getSongWithId(id);
-        if (!song) return;
+      ...this.songManager.order
+        .map((id) => {
+          const song = this.songManager.getSongWithId(id);
+          if (!song) return null;
 
-        const created_slide_li = document.createElement('li');
+          const created_slide_li = document.createElement('li');
 
-        created_slide_li.classList.add('slide-li');
+          created_slide_li.classList.add('slide-li');
 
-        created_slide_li.append(
-          ...mapNotNull(song.texts, (_text, idx) =>
-            this.makeSongSlideBox(song, id, idx),
-          ),
-        );
+          created_slide_li.append(
+            ...song.texts.map((_text, idx) =>
+              this.makeSongSlideBox(song, id, idx),
+            ),
+          );
 
-        return created_slide_li;
-      }),
+          return created_slide_li;
+        })
+        .filter((v) => v !== null),
     );
 
     this.windowManager.sendToPopup('CHANGE', this.songManager.currentContext);
