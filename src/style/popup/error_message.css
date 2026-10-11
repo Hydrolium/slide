@@ -1,0 +1,19 @@
+.error-title {
+  font-size: 25px;
+  text-align: center;
+
+  color: var(--color-dark-red);
+
+  user-select: none;
+}
+
+.error-message {
+  font-size: 20px;
+  text-align: center;
+
+  color: var(--color-dark-gray);
+
+  margin-bottom: 20px;
+
+  user-select: none;
+}

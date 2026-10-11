@@ -163,15 +163,32 @@ export function splitHex(hex: string): SplitedColor {
   return { color: '#000', opacityPercent: '100' }; // 기본값(완전 투명)
 }
 
-export function convertJSONtoSongInfo(songInfoOnJson: SongInfoOnJSON) {
-  return {
+export function convertJSONtoSongInfo(
+  songInfoOnJson: SongInfoOnJSON,
+): SongInfo | null {
+  // 노래 제목은 없으면 안됨.
+  if (!songInfoOnJson.title?.trim()) return null;
+
+  const songInfo = {
+    ...{
+      background: '',
+      titleColor: '#fff',
+      titleStroke: '#000',
+      titleShadow: '#0000',
+      textColor: '#fff',
+      textStroke: '#000',
+      textShadow: '#0000',
+    },
     ...songInfoOnJson,
-    texts: songInfoOnJson.texts.map((v) => {
-      if (typeof v === 'string')
-        return { title: songInfoOnJson.title, text: v };
-      return { ...v };
-    }),
-  } as SongInfo;
+  };
+
+  songInfo.texts = songInfo.texts?.map((v) => {
+    if (typeof v === 'object')
+      return { ...{ title: songInfo.title, text: '알 수 없는 가사' }, ...v };
+    return { title: songInfo.title, text: `${v}` };
+  }) ?? [{ title: songInfo.title, text: '알 수 없는 가사' }];
+
+  return songInfo as SongInfo;
 }
 
 const allowedMimeTypesOfZip: readonly string[] = [

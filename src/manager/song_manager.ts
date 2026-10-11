@@ -17,6 +17,7 @@ import {
   getMimeType,
 } from '../other/utils';
 import type { ManagementResult } from '../types/popup_data';
+import { ErrorMessagePopup } from '../popup/show_error_meesage_popup';
 
 export class SongManager {
   private _jsonFiles: Record<string, SongData[]> = {}; // 파일 이름: 곡 정보 리스트
@@ -255,17 +256,31 @@ export class SongManager {
   }
 
   private async loadJsonFile(file: File): Promise<void> {
-    const parsed = JSON.parse(await file.text());
+    try {
+      const parsed = JSON.parse(await file.text());
+      if (Array.isArray(parsed)) this.loadJson(file.name, parsed);
+      else this.loadJson(file.name, [parsed]);
+    } catch (err) {
+      if (err instanceof SyntaxError)
+        ErrorMessagePopup.show(`[${file.name}] 파일의 형식이 잘못되었습니다.`);
 
-    if (Array.isArray(parsed)) this.loadJson(file.name, parsed);
-    else this.loadJson(file.name, [parsed]);
+      console.error(err);
+    }
   }
 
   private loadJson(fileName: string, songInfos: SongInfoOnJSON[]): void {
     const songDatas: SongData[] = [];
 
     for (const songInfo of songInfos) {
-      const idAdded = { ...convertJSONtoSongInfo(songInfo), id: this.nextId };
+      const coverted = convertJSONtoSongInfo(songInfo);
+      if (!coverted) {
+        ErrorMessagePopup.show(
+          `[${fileName}] 에 title 속성이 누락되어 로드할 수 없습니다.`,
+        );
+        return;
+      }
+
+      const idAdded = { ...coverted, id: this.nextId };
 
       this.addSong(idAdded);
       songDatas.push(structuredClone(idAdded));

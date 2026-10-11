@@ -11,6 +11,7 @@ import { WindowManager } from '../manager/window_manager';
 import { FooterManager } from '../manager/footer_manager';
 import { SongManager } from '../manager/song_manager';
 import type { SongContext, SongId, SongInfo } from '../types/song';
+import { SongTitleGetterPopup } from '../popup/get_song_title_popup';
 
 import '../style/slide_style.css';
 import '../style/slide_list.css';
@@ -23,7 +24,6 @@ import exportSlidesIcon from '/src/assets/imgs/footer_icons/export_slides.svg';
 import manageFileIcon from '/src/assets/imgs/footer_icons/manage_file.svg';
 import openViewerIcon from '/src/assets/imgs/footer_icons/open_viewer.svg';
 import resortSlidesIcon from '/src/assets/imgs/footer_icons/resort_slides.svg';
-import { SongTitleGetterPopup } from '../popup/get_song_title_popup';
 
 export class SlideAdminViewController {
   private readonly songManager = new SongManager();
