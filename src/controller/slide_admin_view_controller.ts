@@ -116,7 +116,7 @@ export class SlideAdminViewController {
     this.footerManager.addFooterButton('파일추가', addFileIcon, async () => {
       const result = await FileAdderPopup.show();
 
-      if (result) await this.songManager.loadFiles(result);
+      if (result) await this.songManager.loadFileSystemEntries(result);
 
       this.windowManager.sendToPopup(
         'UPDATE_BACKGROUND',
@@ -203,7 +203,6 @@ export class SlideAdminViewController {
         if (this.songManager.isEmpty()) return; // 아무 노래도 없으면 삭제 x
 
         const result = await SlideDeletingOptionSetterPopup.show();
-        console.log(result);
         switch (result) {
           case 'SELCTED_SONG':
             this.songManager.deleteCurrentSong();

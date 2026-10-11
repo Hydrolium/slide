@@ -44,3 +44,8 @@ export interface ModifiedSongData extends SongContext {
   readonly textIdx: number;
   readonly id: SongId;
 }
+
+type FileType = 'ZIP' | 'JSON' | 'IMAGE' | 'FOLDER' | 'UNKNOWN';
+
+type MimeType =
+  'application/json' | 'image/png' | 'image/jpeg' | 'image/webp' | 'UNKNOWN';

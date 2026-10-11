@@ -3,12 +3,12 @@ import { PopupGenerator } from './popup';
 
 import '../style/popup/file_resetter.css';
 
-export class FileAdderPopup extends PopupGenerator<readonly File[]> {
-  private candidates: File[] = [];
+export class FileAdderPopup extends PopupGenerator<readonly FileSystemEntry[]> {
+  private candidates: FileSystemEntry[] = [];
 
   protected draw(
     element_popup: HTMLDivElement,
-    resolve: (value: readonly File[] | null) => void,
+    resolve: (value: readonly FileSystemEntry[] | null) => void,
   ): void {
     const created_dropFileBox = $create('div', 'drop-file-box');
     const created_dropFileText = $createDiv(
@@ -25,7 +25,7 @@ export class FileAdderPopup extends PopupGenerator<readonly File[]> {
       created_dropFileBox,
       created_addedFileList,
       $createDiv(
-        '기존에 추가한 동명의 파일 업로드 시 기존 파일은 삭제됩니다.\n기존 json 파일 내 노래와 관련된 슬라이드는 삭제되지 않습니다.',
+        '기존에 추가한 동일명의 파일 업로드 시 기존 파일은 덮어쓰기됩니다.\n단, 기존 json 파일 내 노래와 관련된 슬라이드는 삭제되지 않습니다.',
         'tip',
       ),
     );
@@ -62,11 +62,15 @@ export class FileAdderPopup extends PopupGenerator<readonly File[]> {
 
     element_dropFileBox?.addEventListener('drop', (e: DragEvent) => {
       const files = e.dataTransfer?.files;
+      if (!files) return;
 
-      if (files)
-        for (const f of files)
-          if (f.type.includes('json') || f.type.startsWith('image/'))
-            this.candidates.push(f);
+      const items = e.dataTransfer?.items;
+      if (!items) return;
+
+      for (const item of items) {
+        const entry = item.webkitGetAsEntry();
+        if (entry) this.candidates.push(entry);
+      }
 
       this.renderFileList(element_fileList);
     });

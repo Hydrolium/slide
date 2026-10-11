@@ -1,5 +1,10 @@
 import type { SplitedColor } from '../types/popup_data';
-import type { SongInfo, SongInfoOnJSON } from '../types/song';
+import type {
+  FileType,
+  MimeType,
+  SongInfo,
+  SongInfoOnJSON,
+} from '../types/song';
 
 export function $create<K extends keyof HTMLElementTagNameMap>(
   tag: K,
@@ -178,4 +183,45 @@ export function* mapNotNull<T, U>(
     const transposed = callbackfn(array[i], i);
     if (transposed !== null && transposed !== undefined) yield transposed;
   }
+}
+
+const allowedMimeTypesOfZip: readonly string[] = [
+  'application/zip',
+  'application/x-zip-compressed',
+  'multipart/x-zip',
+];
+
+export function getFileType(file: File): FileType {
+  if (file.type.includes('json')) return 'JSON';
+  if (file.type.startsWith('image/')) return 'IMAGE';
+  if (allowedMimeTypesOfZip.includes(file.type)) return 'ZIP';
+
+  return 'UNKNOWN';
+}
+
+export function getFileTypeFromPath(path: string): FileType {
+  if (path.endsWith('.json')) return 'JSON';
+  if (
+    ['png', 'jpeg', 'jpg', 'webp'].includes(
+      path.split('.').pop()?.toLowerCase() ?? '',
+    )
+  )
+    return 'IMAGE';
+
+  return 'UNKNOWN';
+}
+
+export function getMimeType(fileName: string): MimeType {
+  switch (fileName.split('.').pop()?.toLowerCase()) {
+    case 'json':
+      return 'application/json';
+    case 'png':
+      return 'image/png';
+    case 'jpg':
+    case 'jpeg':
+      return 'image/jpeg';
+    case 'webp':
+      return 'image/webp';
+  }
+  return 'UNKNOWN';
 }

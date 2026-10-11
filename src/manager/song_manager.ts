@@ -10,7 +10,12 @@ import type {
   SongInfoOnJSON,
   SongRecord,
 } from '../types/song';
-import { convertJSONtoSongInfo } from '../other/utils';
+import {
+  convertJSONtoSongInfo,
+  getFileType,
+  getFileTypeFromPath,
+  getMimeType,
+} from '../other/utils';
 import type { ManagementResult } from '../types/popup_data';
 
 export class SongManager {
@@ -192,24 +197,68 @@ export class SongManager {
     }
   }
 
-  public async loadFiles(files: readonly File[]): Promise<void> {
-    if (!files || files.length === 0) return;
+  private getFileFromEntry(fileEntry: FileSystemFileEntry): Promise<File> {
+    return new Promise((resolve, reject) => fileEntry.file(resolve, reject));
+  }
 
-    for (const file of files) {
-      if (file.type.includes('json')) {
-        const parsed = JSON.parse(await file.text());
+  private readDirectoryEntries(
+    dirEntry: FileSystemDirectoryEntry,
+  ): Promise<FileSystemEntry[]> {
+    return new Promise((resolve, reject) =>
+      dirEntry.createReader().readEntries(resolve, reject),
+    );
+  }
 
-        if (Array.isArray(parsed)) this.loadJson(file.name, parsed);
-        else this.loadJson(file.name, [parsed]);
-      } else if (file.type.startsWith('image/')) this.loadImage(file);
+  private async loadFile(file: File): Promise<void> {
+    const fileType = getFileType(file);
+
+    switch (fileType) {
+      case 'IMAGE':
+        this.loadImageFile(file);
+        break;
+      case 'JSON':
+        await this.loadJsonFile(file);
+        break;
+      case 'ZIP':
+        await this.loadZipFile(file);
+        break;
+      case 'UNKNOWN':
+        break;
     }
   }
 
-  private loadImage(file: File): void {
+  public async loadFileSystemEntries(
+    entries: readonly FileSystemEntry[],
+  ): Promise<void> {
+    if (!entries || entries.length === 0) return;
+
+    for (const entry of entries)
+      if (entry.isFile)
+        await this.loadFile(
+          await this.getFileFromEntry(entry as FileSystemFileEntry),
+        );
+      else if (entry.isDirectory)
+        for (const subEntry of await this.readDirectoryEntries(
+          entry as FileSystemDirectoryEntry,
+        ))
+          if (subEntry.isFile)
+            await this.loadFile(
+              await this.getFileFromEntry(subEntry as FileSystemFileEntry),
+            );
+  }
+
+  private loadImageFile(file: File): void {
     if (file.name in this._imgUrls)
       URL.revokeObjectURL(this._imgUrls[file.name].url);
 
     this._imgUrls[file.name] = { file: file, url: URL.createObjectURL(file) };
+  }
+
+  private async loadJsonFile(file: File): Promise<void> {
+    const parsed = JSON.parse(await file.text());
+
+    if (Array.isArray(parsed)) this.loadJson(file.name, parsed);
+    else this.loadJson(file.name, [parsed]);
   }
 
   private loadJson(fileName: string, songInfos: SongInfoOnJSON[]): void {
@@ -223,6 +272,34 @@ export class SongManager {
     }
 
     this._jsonFiles[fileName] = songDatas;
+  }
+
+  private async loadZipFile(file: File): Promise<void> {
+    const zipContent = await new JSZip().loadAsync(file);
+
+    for (const zipEntry of Object.values(zipContent.files)) {
+      if (zipEntry.dir) return;
+
+      const fileName = zipEntry.name.split('/').pop();
+
+      if (!fileName) return;
+
+      const fileType = getFileTypeFromPath(zipEntry.name);
+      if (fileType === 'JSON')
+        this.loadJsonFile(
+          new File([await zipEntry.async('blob')], fileName, {
+            type: getMimeType(fileName),
+            lastModified: zipEntry.date.getTime(),
+          }),
+        );
+      else if (fileType === 'IMAGE')
+        this.loadImageFile(
+          new File([await zipEntry.async('blob')], fileName, {
+            type: getMimeType(fileName),
+            lastModified: zipEntry.date.getTime(),
+          }),
+        );
+    }
   }
 
   private removeImg(imgName: ImgName): void {
