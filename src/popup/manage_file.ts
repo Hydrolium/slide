@@ -66,7 +66,6 @@ export class FileManagerPopup extends PopupGenerator<ManagementResult> {
           created_removeCheckbox.checked = false;
           return;
         }
-        created_refreshLabel.style.display = 'none';
 
         this.managementResult.refreshedJsons.delete(fileName); // 혹시 모를 중복 제거
         created_removeLabel.classList.add(
@@ -74,8 +73,6 @@ export class FileManagerPopup extends PopupGenerator<ManagementResult> {
         );
         this.managementResult.removedJsons[fileName] = result;
       } else {
-        created_refreshLabel.style.display = 'block';
-
         this.managementResult.refreshedJsons.delete(fileName); // 혹시 모를 중복 제거
 
         delete this.managementResult.removedJsons[fileName];
@@ -85,13 +82,9 @@ export class FileManagerPopup extends PopupGenerator<ManagementResult> {
 
     created_refreshCheckbox.addEventListener('change', () => {
       if (created_refreshCheckbox.checked) {
-        created_removeLabel.style.display = 'none';
-
         this.managementResult.refreshedJsons.add(fileName);
         delete this.managementResult.removedJsons[fileName]; // 혹시 모를 중복 제거
       } else {
-        created_removeLabel.style.display = 'block';
-
         this.managementResult.refreshedJsons.delete(fileName);
         delete this.managementResult.removedJsons[fileName]; // 혹시 모를 중복 제거
       }

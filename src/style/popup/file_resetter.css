@@ -170,6 +170,10 @@
       .file-item-detail, .file-item-text {
         color: var(--color-dark-red);
       }
+
+      .refresh-file-label {
+        display: none;
+      }
     }
 
     .refresh-file-label {
@@ -235,6 +239,10 @@
     &:has(.refresh-file-checkbox:checked) {
       .file-item-detail, .file-item-text {
         color: var(--color-dark-blue);
+      }
+
+      .remove-file-label {
+        display: none;
       }
     }
 
