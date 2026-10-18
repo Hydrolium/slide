@@ -26,7 +26,7 @@ export abstract class PopupGenerator<T> {
     this.buttonList.push(created_button);
   }
 
-  public close(value?: T) {
+  protected close(value?: T) {
     if (!this.defered) return;
 
     this.hide();
@@ -68,10 +68,23 @@ export abstract class PopupGenerator<T> {
     }
   }
 
-  public static async show<T, Args extends any[]>(
+  public static show<T, Args extends any[]>(
     this: new (...args: Args) => PopupGenerator<T>,
     ...args: Args
   ): Promise<T | null> {
     return (new (this as any)(...args) as PopupGenerator<T>).run();
+  }
+
+  public static open<T, Args extends any[]>(
+    this: new (...args: Args) => PopupGenerator<T>,
+    ...args: Args
+  ): { value: Promise<T | null>; close: (value?: T) => void } {
+    const popup = new (this as any)(...args) as PopupGenerator<T>;
+    return {
+      value: popup.run(),
+      close: () => {
+        popup.close();
+      },
+    };
   }
 }

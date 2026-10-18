@@ -12,6 +12,7 @@ import { FooterManager } from '../manager/footer_manager';
 import { SongManager } from '../manager/song_manager';
 import type { SongContext, SongId, SongInfo } from '../types/song';
 import { SongTitleGetterPopup } from '../popup/get_song_title_popup';
+import { LoadingPopup } from '../popup/show_loading_popup';
 
 import '../style/slide_style.css';
 import '../style/slide_list.css';
@@ -117,7 +118,13 @@ export class SlideAdminViewController {
     this.footerManager.addFooterButton('파일추가', addFileIcon, async () => {
       const result = await FileAdderPopup.show();
 
-      if (result) await this.songManager.loadFileSystemEntries(result);
+      if (!result) return;
+
+      const { close } = LoadingPopup.open();
+
+      await this.songManager.loadFileSystemEntries(result);
+
+      close();
 
       this.windowManager.sendToPopup(
         'UPDATE_BACKGROUND',
