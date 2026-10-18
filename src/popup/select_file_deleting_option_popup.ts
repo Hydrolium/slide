@@ -5,16 +5,13 @@ import type { FileDeletingOption } from '../types/popup_data';
 import '../style/popup/slide_option_selector.css';
 
 export class FileDeletingOptionSetterPopup extends PopupGenerator<FileDeletingOption> {
-  protected draw(
-    element_popup: HTMLDivElement,
-    resolve: (value: FileDeletingOption | null) => void,
-  ): void {
+  protected draw(element_popup: HTMLDivElement): void {
     const created_options = $create('ul', 'slide-options');
 
     created_options.append(
-      this.createOptionButton('파일만', () => resolve('ONLY_FILE')),
+      this.createOptionButton('파일만', () => this.close('ONLY_FILE')),
       this.createOptionButton('파일 및 파일 내 노래 일괄', () =>
-        resolve('FILE_AND_SONGS'),
+        this.close('FILE_AND_SONGS'),
       ),
     );
 
@@ -31,7 +28,7 @@ export class FileDeletingOptionSetterPopup extends PopupGenerator<FileDeletingOp
     );
 
     this.addNegativeButton('취소', () => {
-      resolve(null);
+      this.close();
     });
   }
 

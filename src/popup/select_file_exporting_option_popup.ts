@@ -13,16 +13,13 @@ export class FileExportingOptionSetterPopup extends PopupGenerator<number> {
     this.idToTitle = idToTitle;
   }
 
-  protected draw(
-    element_popup: HTMLDivElement,
-    resolve: (value: number | null) => void,
-  ): void {
+  protected draw(element_popup: HTMLDivElement): void {
     const created_exportingButtonBox = $create('ul', 'slide-options');
     const created_exportingAllButton = $create('button');
     const created_singleExportingButtonBox = $create('div', 'button-box');
 
     created_exportingAllButton.addEventListener('click', () =>
-      resolve(FileExportingOptionSetterPopup.EXPORT_ALL),
+      this.close(FileExportingOptionSetterPopup.EXPORT_ALL),
     );
 
     created_exportingAllButton.append(
@@ -37,7 +34,7 @@ export class FileExportingOptionSetterPopup extends PopupGenerator<number> {
 
     created_singleExportingButtonBox.append(
       ...Array.from(this.idToTitle, ([id, title]) =>
-        this.createOptionButton(title, () => resolve(id)),
+        this.createOptionButton(title, () => this.close(id)),
       ),
     );
 
@@ -50,7 +47,7 @@ export class FileExportingOptionSetterPopup extends PopupGenerator<number> {
     );
 
     this.addNegativeButton('취소', () => {
-      resolve(null);
+      this.close();
     });
   }
 

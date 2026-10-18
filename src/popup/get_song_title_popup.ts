@@ -4,10 +4,7 @@ import { $createDiv, $createTextInput } from '../other/utils';
 import '../style/popup/song_title_getter.css';
 
 export class SongTitleGetterPopup extends PopupGenerator<string> {
-  protected draw(
-    element_popup: HTMLDivElement,
-    resolve: (value: string | null) => void,
-  ): void {
+  protected draw(element_popup: HTMLDivElement): void {
     const created_textInput = $createTextInput('', 'song-title-input');
     created_textInput.placeholder = '제목을 입력하세요';
 
@@ -17,11 +14,11 @@ export class SongTitleGetterPopup extends PopupGenerator<string> {
     );
 
     this.addNegativeButton('취소', () => {
-      resolve(null);
+      this.close();
     });
 
     this.addPositiveButton('저장', () => {
-      resolve(created_textInput.value);
+      this.close(created_textInput.value);
     });
   }
 }

@@ -6,10 +6,7 @@ import '../style/popup/file_resetter.css';
 export class FileAdderPopup extends PopupGenerator<readonly FileSystemEntry[]> {
   private candidates: FileSystemEntry[] = [];
 
-  protected draw(
-    element_popup: HTMLDivElement,
-    resolve: (value: readonly FileSystemEntry[] | null) => void,
-  ): void {
+  protected draw(element_popup: HTMLDivElement): void {
     const created_dropFileBox = $create('div', 'drop-file-box');
     const created_dropFileText = $createDiv(
       '파일을 드래그하여 추가하세요',
@@ -31,11 +28,11 @@ export class FileAdderPopup extends PopupGenerator<readonly FileSystemEntry[]> {
     );
 
     this.addNegativeButton('취소', () => {
-      resolve(null);
+      this.close();
     });
 
     this.addPositiveButton('저장', () => {
-      resolve(this.candidates);
+      this.close(this.candidates);
     });
   }
 

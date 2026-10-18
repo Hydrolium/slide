@@ -5,29 +5,28 @@ import type { SlideAddingOption } from '../types/popup_data';
 import '../style/popup/slide_option_selector.css';
 
 export class SlideAddingOptionSetterPopup extends PopupGenerator<SlideAddingOption> {
-  protected draw(
-    element_popup: HTMLDivElement,
-    resolve: (value: SlideAddingOption | null) => void,
-  ): void {
+  protected draw(element_popup: HTMLDivElement): void {
     const created_options = $create('ul', 'slide-options');
 
     created_options.append(
       this.createOptionButton('앞', '가사', () =>
-        resolve('INSERT_LYRICS_BEFORE'),
+        this.close('INSERT_LYRICS_BEFORE'),
       ),
       this.createOptionButton('뒤', '가사', () =>
-        resolve('INSERT_LYRICS_AFTER'),
+        this.close('INSERT_LYRICS_AFTER'),
       ),
       this.createOptionButton('앞', '노래', () =>
-        resolve('INSERT_SONG_BEFORE'),
+        this.close('INSERT_SONG_BEFORE'),
       ),
-      this.createOptionButton('뒤', '노래', () => resolve('INSERT_SONG_AFTER')),
+      this.createOptionButton('뒤', '노래', () =>
+        this.close('INSERT_SONG_AFTER'),
+      ),
     );
 
     element_popup.replaceChildren(created_options);
 
     this.addNegativeButton('취소', () => {
-      resolve(null);
+      this.close();
     });
   }
 

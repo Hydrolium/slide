@@ -26,10 +26,7 @@ export class FileManagerPopup extends PopupGenerator<ManagementResult> {
     this.imgFiles = { ...imgCandidates };
   }
 
-  protected draw(
-    element_popup: HTMLDivElement,
-    resolve: (value: ManagementResult | null) => void,
-  ): void {
+  protected draw(element_popup: HTMLDivElement): void {
     const created_existingFileList = $create('ul', 'file-list');
 
     this.renderFileList(created_existingFileList);
@@ -43,11 +40,11 @@ export class FileManagerPopup extends PopupGenerator<ManagementResult> {
     );
 
     this.addNegativeButton('취소', () => {
-      resolve(null);
+      this.close();
     });
 
     this.addPositiveButton('저장', () => {
-      resolve(structuredClone(this.managementResult));
+      this.close(structuredClone(this.managementResult));
     });
   }
 

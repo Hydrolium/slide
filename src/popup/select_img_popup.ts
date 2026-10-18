@@ -12,10 +12,7 @@ export class ImgSelectorPopup extends PopupGenerator<string> {
     this.imgs = imgs;
   }
 
-  protected draw(
-    element_popup: HTMLDivElement,
-    resolve: (value: string | null) => void,
-  ): void {
+  protected draw(element_popup: HTMLDivElement): void {
     const created_imgBoxList = $create('div', 'img-box-list');
 
     created_imgBoxList.append(
@@ -23,7 +20,7 @@ export class ImgSelectorPopup extends PopupGenerator<string> {
         const created_imgBox = $create('div', 'img-box');
         const created_img = $create('img');
 
-        created_imgBox.addEventListener('click', () => resolve(name));
+        created_imgBox.addEventListener('click', () => this.close(name));
 
         created_img.src = info.url;
 
@@ -42,7 +39,7 @@ export class ImgSelectorPopup extends PopupGenerator<string> {
     );
 
     this.addNegativeButton('취소', () => {
-      resolve(null);
+      this.close();
     });
   }
 }

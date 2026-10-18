@@ -23,10 +23,7 @@ export class SettingEditorPopup extends PopupGenerator<null> {
     this.textSizeController = textSizeController;
   }
 
-  protected draw(
-    element_popup: HTMLDivElement,
-    resolve: (value: null) => void,
-  ): void {
+  protected draw(element_popup: HTMLDivElement): void {
     const created_settingList = $create('ul', 'setting-list');
 
     created_settingList.append(
@@ -51,7 +48,7 @@ export class SettingEditorPopup extends PopupGenerator<null> {
     element_popup.replaceChildren(created_settingList);
 
     this.addNegativeButton('닫기', () => {
-      resolve(null);
+      this.close(null);
     });
   }
 

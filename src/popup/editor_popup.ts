@@ -30,10 +30,7 @@ export class EditorPopup extends PopupGenerator<ModifiedSongData> {
     this.imgs = imgs;
   }
 
-  protected draw(
-    element_popup: HTMLDivElement,
-    resolve: (value: ModifiedSongData | null) => void,
-  ): void {
+  protected draw(element_popup: HTMLDivElement): void {
     const created_editorInputsBox = $create('div', 'editor-inputs-box');
 
     const created_slideInputFrame = $create(
@@ -150,11 +147,11 @@ export class EditorPopup extends PopupGenerator<ModifiedSongData> {
     );
 
     this.addNegativeButton('취소', () => {
-      resolve(null);
+      this.close();
     });
 
     this.addPositiveButton('저장', () => {
-      resolve({ ...this.songData });
+      this.close({ ...this.songData });
     });
   }
 

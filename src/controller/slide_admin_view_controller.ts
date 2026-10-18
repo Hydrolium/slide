@@ -161,6 +161,7 @@ export class SlideAdminViewController {
         // 아무 노래도 없으면 그냥 노래 하나 추가
         const result = await SongTitleGetterPopup.show();
         if (!result) return;
+
         this.songManager.insertNewSongBeforeCurrent(result);
         this.updateSong();
         return;

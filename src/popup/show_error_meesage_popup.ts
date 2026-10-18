@@ -12,17 +12,14 @@ export class ErrorMessagePopup extends PopupGenerator<null> {
     this.errorMessage = errorMessage;
   }
 
-  protected draw(
-    element_popup: HTMLDivElement,
-    resolve: (value: null) => void,
-  ): void {
+  protected draw(element_popup: HTMLDivElement): void {
     element_popup.replaceChildren(
       $createDiv('에러 발생', 'error-title'),
       $createDiv(this.errorMessage, 'error-message'),
     );
 
     this.addNegativeButton('닫기', () => {
-      resolve(null);
+      this.close(null);
     });
   }
 }

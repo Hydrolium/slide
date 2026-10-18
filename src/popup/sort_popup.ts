@@ -15,10 +15,7 @@ export class SlideSorterPopup extends PopupGenerator<readonly number[]> {
     this.infoMap = { ...infoMap };
   }
 
-  protected draw(
-    element_popup: HTMLDivElement,
-    resolve: (value: readonly number[] | null) => void,
-  ): void {
+  protected draw(element_popup: HTMLDivElement): void {
     const created_sortSlideBox = $create('ul', 'sort-slide-box');
 
     this.renderSlideBox(created_sortSlideBox);
@@ -26,11 +23,11 @@ export class SlideSorterPopup extends PopupGenerator<readonly number[]> {
     element_popup.replaceChildren(created_sortSlideBox);
 
     this.addNegativeButton('취소', () => {
-      resolve(null);
+      this.close();
     });
 
     this.addPositiveButton('저장', () => {
-      resolve(this.idList);
+      this.close(this.idList);
     });
   }
 

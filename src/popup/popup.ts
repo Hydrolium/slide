@@ -8,10 +8,9 @@ export abstract class PopupGenerator<T> {
   private created_popupContainer: HTMLDivElement | null = null;
   private buttonList: HTMLButtonElement[] = [];
 
-  protected abstract draw(
-    element_popup: HTMLDivElement,
-    resolve: (value: T | null) => void,
-  ): void;
+  private defered: PromiseWithResolvers<T | null> | null = null;
+
+  protected abstract draw(element_popup: HTMLDivElement): void;
 
   protected addNegativeButton(text: string, onclick: (e: Event) => void): void {
     const created_button = $create('button', 'cancel-popup');
@@ -27,28 +26,39 @@ export abstract class PopupGenerator<T> {
     this.buttonList.push(created_button);
   }
 
+  public close(value?: T) {
+    if (!this.defered) return;
+
+    this.hide();
+    this.defered.resolve(value ?? null);
+  }
+
   private run(): Promise<T | null> {
-    return new Promise<T | null>((resolve) => {
-      this.buttonList = [];
-
-      this.created_popupContainer = $create('div', 'popup-container');
-      const created_popup = $create('div', 'popup');
-
-      this.draw(created_popup, (value: T | null) => {
-        this.hide();
-        resolve(value);
+    if (this.defered)
+      return new Promise((_resolve, reject) => {
+        reject('이미 실행된 팝업은 열 수 없습니다.');
       });
 
-      if (this.buttonList.length > 0) {
-        const created_popupButtonBox = $create('div', 'popup-button-box');
-        created_popupButtonBox.append(...this.buttonList);
-        created_popup.append(created_popupButtonBox);
-      }
+    this.buttonList = [];
 
-      this.created_popupContainer.append(created_popup);
+    this.created_popupContainer = $create('div', 'popup-container');
+    const created_popup = $create('div', 'popup');
 
-      element_app?.append(this.created_popupContainer);
-    });
+    this.draw(created_popup);
+
+    if (this.buttonList.length > 0) {
+      const created_popupButtonBox = $create('div', 'popup-button-box');
+      created_popupButtonBox.append(...this.buttonList);
+      created_popup.append(created_popupButtonBox);
+    }
+
+    this.created_popupContainer.append(created_popup);
+
+    element_app?.append(this.created_popupContainer);
+
+    this.defered = Promise.withResolvers<T | null>();
+
+    return this.defered.promise;
   }
 
   private hide(): void {
