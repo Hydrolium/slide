@@ -78,13 +78,13 @@ export abstract class PopupGenerator<T> {
   public static open<T, Args extends any[]>(
     this: new (...args: Args) => PopupGenerator<T>,
     ...args: Args
-  ): { value: Promise<T | null>; close: (value?: T) => void } {
+  ): { close: () => void } {
     const popup = new (this as any)(...args) as PopupGenerator<T>;
+    popup.run();
     return {
-      value: popup.run(),
       close: () => {
         popup.close();
-      },
+      }
     };
   }
 }
